@@ -1,0 +1,11 @@
+# Enforce LF line endings globally for all text files
+* text eol=lf
+
+# Force specific line endings for OS-native scripts
+*.bat text eol=crlf
+gradlew text eol=lf
+
+# Ensure binary images/jars remain completely untouched
+*.jar binary
+*.png binary
+*.jpg binary
