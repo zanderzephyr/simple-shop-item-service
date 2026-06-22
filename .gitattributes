@@ -1,11 +1,24 @@
-# Enforce LF line endings globally for all text files
-* text eol=lf
+# Text
+.gitattributes text eol=lf
+.gitignore   text eol=lf
+gradlew      text eol=lf
+*.java       text eol=lf
+*.gradle     text eol=lf
+*.json       text eol=lf
+*.md         text eol=lf
+*.prefs 	 text eol=lf
+*.project    text eol=lf
+*.properties text eol=lf
+*.txt        text eol=lf
+*.xml        text eol=lf
+*.yaml       text eol=lf
+*.yml        text eol=lf
 
-# Force specific line endings for OS-native scripts
+# OS-native scripts
 *.bat text eol=crlf
 gradlew text eol=lf
 
-# Ensure binary images/jars remain completely untouched
+# Binaries
 *.jar binary
 *.png binary
 *.jpg binary
