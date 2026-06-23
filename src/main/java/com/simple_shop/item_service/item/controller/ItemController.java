@@ -1,10 +1,14 @@
-package com.simple_shop.item_service.controller;
+package com.simple_shop.item_service.item.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public final class HelloController {
+public final class ItemController {
+
+	public ItemController() {
+		super();
+	}
 
 	@GetMapping("/hello")
 	public String sayHello() {
