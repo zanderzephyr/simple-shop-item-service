@@ -20,7 +20,12 @@ public final class Item {
 
 	private final Integer lastChangedBy;
 
-	private Item(final ItemBuilder builder) {
+	/**
+	 * @param  builder
+	 *
+	 * @throws IllegalArgumentException When the builder doesn't validate properly.
+	 */
+	private Item(final ItemBuilder builder) throws IllegalArgumentException {
 		super();
 
 		builder.validate();
@@ -168,7 +173,10 @@ public final class Item {
 			return this;
 		}
 
-		public void validate() {
+		/**
+		 * @throws IllegalArgumentException When a field is not properly set.
+		 */
+		public void validate() throws IllegalArgumentException {
 			if (this.title == null || this.title.isBlank()) {
 				throw new IllegalArgumentException("Invalid title!");
 			}
@@ -190,7 +198,12 @@ public final class Item {
 			}
 		}
 
-		public Item build() {
+		/**
+		 * @return
+		 *
+		 * @throws IllegalArgumentException When the builder doesn't validate properly.
+		 */
+		public Item build() throws IllegalArgumentException {
 			return new Item(this);
 		}
 
