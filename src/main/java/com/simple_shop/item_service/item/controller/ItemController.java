@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.simple_shop.item_service.item.dto.ItemDto;
 import com.simple_shop.item_service.item.model.Item;
 import com.simple_shop.item_service.item.model.Item.ItemBuilder;
+import com.simple_shop.item_service.item.model.ItemValidationException;
 
 /*
  * Proper version compatibility between frontend and backend is quite complex
@@ -62,8 +63,8 @@ public final class ItemController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(createdItemDto);
 	}
 
-	@ExceptionHandler(IllegalArgumentException.class)
-	public ResponseEntity<Map<String, Object>> handleItemValidationException(final IllegalArgumentException exception) {
+	@ExceptionHandler(ItemValidationException.class)
+	public ResponseEntity<Map<String, Object>> handleItemValidationException(final ItemValidationException exception) {
 		final Map<String, Object> errorBody = new HashMap<>();
 		errorBody.put("timestamp", Instant.now());
 		errorBody.put("status", HttpStatus.BAD_REQUEST.value());

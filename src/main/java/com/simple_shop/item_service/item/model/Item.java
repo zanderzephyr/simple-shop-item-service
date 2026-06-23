@@ -23,9 +23,9 @@ public final class Item {
 	/**
 	 * @param  builder
 	 *
-	 * @throws IllegalArgumentException When the builder doesn't validate properly.
+	 * @throws ItemValidationException When the builder doesn't validate properly.
 	 */
-	private Item(final ItemBuilder builder) throws IllegalArgumentException {
+	private Item(final ItemBuilder builder) throws ItemValidationException {
 		super();
 
 		builder.validate();
@@ -174,36 +174,36 @@ public final class Item {
 		}
 
 		/**
-		 * @throws IllegalArgumentException When a field is not properly set.
+		 * @throws ItemValidationException When a field is not properly set.
 		 */
-		public void validate() throws IllegalArgumentException {
+		public void validate() throws ItemValidationException {
 			if (this.title == null || this.title.isBlank()) {
-				throw new IllegalArgumentException("Invalid title!");
+				throw new ItemValidationException("Invalid title!");
 			}
 
 			if (this.mediaType == null) {
-				throw new IllegalArgumentException("Invalid media type!");
+				throw new ItemValidationException("Invalid media type!");
 			}
 
 			if (this.stock == null || this.stock < 0) {
-				throw new IllegalArgumentException("Invalid stock!");
+				throw new ItemValidationException("Invalid stock!");
 			}
 
 			if (this.price == null || this.price.compareTo(BigDecimal.ZERO) < 0) {
-				throw new IllegalArgumentException("Invalid price!");
+				throw new ItemValidationException("Invalid price!");
 			}
 
 			if (this.imageUrl == null || this.imageUrl.isBlank()) {
-				throw new IllegalArgumentException("Invalid Image URL!");
+				throw new ItemValidationException("Invalid Image URL!");
 			}
 		}
 
 		/**
 		 * @return
 		 *
-		 * @throws IllegalArgumentException When the builder doesn't validate properly.
+		 * @throws ItemValidationException When the builder doesn't validate properly.
 		 */
-		public Item build() throws IllegalArgumentException {
+		public Item build() throws ItemValidationException {
 			return new Item(this);
 		}
 
