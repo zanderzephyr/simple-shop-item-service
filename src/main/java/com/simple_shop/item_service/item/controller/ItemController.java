@@ -10,7 +10,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -46,8 +48,8 @@ public final class ItemController {
 		final Item itemToCreate = this.convert(itemDto);
 
 		/*
-		 * TODO Write item into the DB, get the related entity object and translate it
-		 * back into the response ItemDto.
+		 * TODO Write item into the DB, add history entry, get the related entity object
+		 * and translate it back into the response ItemDto.
 		 */
 
 		final Item createdItem = ItemBuilder.initFrom(itemToCreate)//
@@ -61,6 +63,40 @@ public final class ItemController {
 		final ItemDto createdItemDto = this.convert(createdItem);
 
 		return ResponseEntity.status(HttpStatus.CREATED).body(createdItemDto);
+	}
+
+	@PutMapping("/{id}")
+	public ResponseEntity<ItemDto> modifyItem(@PathVariable final Integer id, @RequestBody final ItemDto itemDto) {
+		/*
+		 * TODO Validate session is ok. If it isn't, answer appropriately with negative
+		 * response.
+		 */
+
+		final Item itemToModify = this.convert(itemDto);
+		final Integer itemId = itemToModify.getId();
+		if (itemId == null) {
+			throw new ItemValidationException("No item ID!");
+		}
+
+		if (!itemId.equals(id)) {
+			throw new ItemValidationException("Path ID and payload ID mismatch!");
+		}
+
+		/*
+		 * TODO Update item in the DB (handle unknown item ID issue), add history entry,
+		 * get the related entity object and translate it back into the response
+		 * ItemDto.
+		 */
+
+		final Item modifiedItem = ItemBuilder.initFrom(itemToModify)//
+				.setLastChange(ZonedDateTime.now().withZoneSameInstant(ZoneOffset.UTC))//
+				// TODO Change to user ID from the session
+				.setLastChangedBy(42)//
+				.build();
+
+		final ItemDto modifiedItemDto = this.convert(modifiedItem);
+
+		return ResponseEntity.status(HttpStatus.OK).body(modifiedItemDto);
 	}
 
 	@ExceptionHandler(ItemValidationException.class)
@@ -81,7 +117,10 @@ public final class ItemController {
 
 	private Item convert(final ItemDto itemDto) {
 		return new ItemBuilder()//
+				.setId(itemDto.getId())//
 				.setImageUrl(itemDto.getImageUrl())//
+				.setLastChange(itemDto.getLastChange() == null ? null : itemDto.getLastChange().atZone(ZoneOffset.UTC))//
+				.setLastChangedBy(itemDto.getLastChangedBy())//
 				.setMediaType(itemDto.getMediaType())//
 				.setPrice(itemDto.getPrice())//
 				.setStock(itemDto.getStock())//
