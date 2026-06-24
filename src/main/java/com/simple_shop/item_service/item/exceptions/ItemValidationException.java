@@ -1,4 +1,4 @@
-package com.simple_shop.item_service.item.model;
+package com.simple_shop.item_service.item.exceptions;
 
 public final class ItemValidationException extends IllegalArgumentException {
 	private static final long serialVersionUID = 3126015455269952391L;

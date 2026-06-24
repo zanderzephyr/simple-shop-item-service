@@ -3,6 +3,8 @@ package com.simple_shop.item_service.item.model;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 
+import com.simple_shop.item_service.item.exceptions.ItemValidationException;
+
 public final class Item {
 	private final Integer id;
 
