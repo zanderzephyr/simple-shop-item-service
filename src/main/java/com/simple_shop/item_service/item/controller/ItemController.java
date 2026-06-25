@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.simple_shop.item_service.item.dto.ItemDto;
+import com.simple_shop.item_service.item.exceptions.InvalidPageSetupException;
 import com.simple_shop.item_service.item.exceptions.ItemNotFoundException;
 import com.simple_shop.item_service.item.exceptions.ItemValidationException;
 import com.simple_shop.item_service.item.model.Item;
@@ -52,6 +53,8 @@ import com.simple_shop.item_service.item.model.MediaType;
 public final class ItemController {
 	// Just for initial scaffolding
 	private static final AtomicInteger ID_GENERATOR = new AtomicInteger(0);
+
+	private static final int MAX_PAGE_SIZE = 100;
 
 	public ItemController() {
 		super();
@@ -154,12 +157,7 @@ public final class ItemController {
 		 * response.
 		 */
 
-		/*
-		 * TODO Validate pageable object and return error if not valid. Don't allow
-		 * sorting over any entity member that is inappropriate, i.e. hidden members,
-		 * members that are mapped to unindexed columns, members with a lot of content
-		 * (e.g. the imageUrl might be too long to sort).
-		 */
+		this.validate(pageable);
 
 		/*
 		 * TODO Find items with the pageable object - for now, we hard return two items
@@ -198,6 +196,20 @@ public final class ItemController {
 		final Page<ItemDto> page = new PageImpl<>(pageItems, pageable, 2);
 
 		return ResponseEntity.status(HttpStatus.OK).body(page);
+	}
+
+	private void validate(final Pageable pageable) throws InvalidPageSetupException {
+		/*
+		 * TODO Don't allow sorting over any entity member that is inappropriate, i.e.
+		 * hidden members, members that are mapped to unindexed columns, members with a
+		 * lot of content (e.g. the imageUrl might be too long to sort).
+		 */
+
+		if (pageable.isPaged()) {
+			if (pageable.getPageSize() > ItemController.MAX_PAGE_SIZE) {
+				throw new InvalidPageSetupException("Max page size is " + ItemController.MAX_PAGE_SIZE);
+			}
+		}
 	}
 
 	@GetMapping("/{id}")
@@ -252,6 +264,17 @@ public final class ItemController {
 		errorBody.put("error", "Item not found");
 		errorBody.put("message", exception.getMessage());
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorBody);
+	}
+
+	@ExceptionHandler(InvalidPageSetupException.class)
+	public ResponseEntity<Map<String, Object>> handleInvalidPageSetupException(
+			final InvalidPageSetupException exception) {
+		final Map<String, Object> errorBody = new HashMap<>();
+		errorBody.put("timestamp", Instant.now());
+		errorBody.put("status", HttpStatus.BAD_REQUEST.value());
+		errorBody.put("error", "Page setup is invalid");
+		errorBody.put("message", exception.getMessage());
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorBody);
 	}
 
 	private Item convert(final ItemDto itemDto) {
