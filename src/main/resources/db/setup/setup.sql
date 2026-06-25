@@ -2,6 +2,13 @@
 USE master;
 GO
 
+-- Create the database container if it doesn't exist yet
+IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'simple_shop')
+BEGIN
+    CREATE DATABASE simple_shop;
+END
+GO
+
 -- Create the server-Level logins (Authentication)
 -- This creates the credentials that match the environment variables
 CREATE LOGIN simple_shop_item_service_db_admin 
