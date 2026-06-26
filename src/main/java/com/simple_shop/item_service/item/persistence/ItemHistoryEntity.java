@@ -1,15 +1,15 @@
 package com.simple_shop.item_service.item.persistence;
 
 import java.math.BigDecimal;
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 import com.simple_shop.item_service.item.model.ItemAction;
 import com.simple_shop.item_service.item.model.MediaType;
 
 public class ItemHistoryEntity {
-	private Integer historyEntryId;
+	private Long historyEntryId;
 
-	private Integer id;
+	private Long id;
 
 	private String title;
 
@@ -21,9 +21,9 @@ public class ItemHistoryEntity {
 
 	private String imageUrl;
 
-	private Instant lastChange;
+	private LocalDateTime lastChange;
 
-	private Integer lastChangedBy;
+	private Long lastChangedBy;
 
 	private ItemAction action;
 
@@ -31,21 +31,21 @@ public class ItemHistoryEntity {
 		super();
 	}
 
-	public Integer getHistoryEntryId() {
+	public Long getHistoryEntryId() {
 		return this.historyEntryId;
 	}
 
-	public ItemHistoryEntity setHistoryEntryId(final Integer historyEntryId) {
+	public ItemHistoryEntity setHistoryEntryId(final Long historyEntryId) {
 		this.historyEntryId = historyEntryId;
 
 		return this;
 	}
 
-	public Integer getId() {
+	public Long getId() {
 		return this.id;
 	}
 
-	public ItemHistoryEntity setId(final Integer id) {
+	public ItemHistoryEntity setId(final Long id) {
 		this.id = id;
 
 		return this;
@@ -101,21 +101,21 @@ public class ItemHistoryEntity {
 		return this;
 	}
 
-	public Instant getLastChange() {
+	public LocalDateTime getLastChange() {
 		return this.lastChange;
 	}
 
-	public ItemHistoryEntity setLastChange(final Instant lastChange) {
+	public ItemHistoryEntity setLastChange(final LocalDateTime lastChange) {
 		this.lastChange = lastChange;
 
 		return this;
 	}
 
-	public Integer getLastChangedBy() {
+	public Long getLastChangedBy() {
 		return this.lastChangedBy;
 	}
 
-	public ItemHistoryEntity setLastChangedBy(final Integer lastChangedBy) {
+	public ItemHistoryEntity setLastChangedBy(final Long lastChangedBy) {
 		this.lastChangedBy = lastChangedBy;
 
 		return this;
