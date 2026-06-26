@@ -1,12 +1,11 @@
 package com.simple_shop.item_service.item.dto;
 
-import java.math.BigDecimal;
 import java.time.Instant;
 
 import com.simple_shop.item_service.item.model.MediaType;
 
 public class ItemDto {
-	private Integer id;
+	private Long id;
 
 	private String title;
 
@@ -14,23 +13,23 @@ public class ItemDto {
 
 	private Integer stock;
 
-	private BigDecimal price;
+	private Integer price;
 
 	private String imageUrl;
 
 	private Instant lastChange;
 
-	private Integer lastChangedBy;
+	private Long lastChangedBy;
 
 	public ItemDto() {
 		super();
 	}
 
-	public Integer getId() {
+	public Long getId() {
 		return this.id;
 	}
 
-	public ItemDto setId(final Integer id) {
+	public ItemDto setId(final Long id) {
 		this.id = id;
 
 		return this;
@@ -66,11 +65,11 @@ public class ItemDto {
 		return this;
 	}
 
-	public BigDecimal getPrice() {
+	public Integer getPrice() {
 		return this.price;
 	}
 
-	public ItemDto setPrice(final BigDecimal price) {
+	public ItemDto setPrice(final Integer price) {
 		this.price = price;
 
 		return this;
@@ -96,13 +95,43 @@ public class ItemDto {
 		return this;
 	}
 
-	public Integer getLastChangedBy() {
+	public Long getLastChangedBy() {
 		return this.lastChangedBy;
 	}
 
-	public ItemDto setLastChangedBy(final Integer lastChangedBy) {
+	public ItemDto setLastChangedBy(final Long lastChangedBy) {
 		this.lastChangedBy = lastChangedBy;
 
 		return this;
+	}
+
+	public static enum ItemDtoMember {
+		ID("id"),
+
+		TITLE("title"),
+
+		MEDIA_TYPE("mediaType"),
+
+		STOCK("stock"),
+
+		PRICE("price"),
+
+		IMAGE_URL("imageUrl"),
+
+		LAST_CHANGE("lastChange"),
+
+		LAST_CHANGED_BY("lastChangedBy"),
+
+		;
+
+		private final String domainName;
+
+		private ItemDtoMember(final String domainName) {
+			this.domainName = domainName;
+		}
+
+		public String getDomainName() {
+			return this.domainName;
+		}
 	}
 }

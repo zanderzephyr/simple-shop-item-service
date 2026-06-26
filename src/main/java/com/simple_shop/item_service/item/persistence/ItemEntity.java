@@ -1,13 +1,12 @@
 package com.simple_shop.item_service.item.persistence;
 
-import java.math.BigDecimal;
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 import com.simple_shop.item_service.item.model.MediaType;
 
 // TODO Later: Add Hibernate stuff
 public class ItemEntity {
-	private Integer id;
+	private Long id;
 
 	private String title;
 
@@ -15,95 +14,112 @@ public class ItemEntity {
 
 	private Integer stock;
 
-	private BigDecimal price;
+	private Integer price;
 
 	private String imageUrl;
 
-	private Instant lastChange;
+	/**
+	 * In UTC.
+	 */
+	private LocalDateTime lastChange;
 
-	private Integer lastChangedBy;
+	private Long lastChangedBy;
 
 	public ItemEntity() {
 		super();
 	}
 
-	public Integer getId() {
+	public Long getId() {
 		return this.id;
 	}
 
-	public ItemEntity setId(final Integer id) {
+	public void setId(final Long id) {
 		this.id = id;
-
-		return this;
 	}
 
 	public String getTitle() {
 		return this.title;
 	}
 
-	public ItemEntity setTitle(final String title) {
+	public void setTitle(final String title) {
 		this.title = title;
-
-		return this;
 	}
 
 	public MediaType getMediaType() {
 		return this.mediaType;
 	}
 
-	public ItemEntity setMediaType(final MediaType mediaType) {
+	public void setMediaType(final MediaType mediaType) {
 		this.mediaType = mediaType;
-
-		return this;
 	}
 
 	public Integer getStock() {
 		return this.stock;
 	}
 
-	public ItemEntity setStock(final Integer stock) {
+	public void setStock(final Integer stock) {
 		this.stock = stock;
-
-		return this;
 	}
 
-	public BigDecimal getPrice() {
+	public Integer getPrice() {
 		return this.price;
 	}
 
-	public ItemEntity setPrice(final BigDecimal price) {
+	public void setPrice(final Integer price) {
 		this.price = price;
-
-		return this;
 	}
 
 	public String getImageUrl() {
 		return this.imageUrl;
 	}
 
-	public ItemEntity setImageUrl(final String imageUrl) {
+	public void setImageUrl(final String imageUrl) {
 		this.imageUrl = imageUrl;
-
-		return this;
 	}
 
-	public Instant getLastChange() {
+	public LocalDateTime getLastChange() {
 		return this.lastChange;
 	}
 
-	public ItemEntity setLastChange(final Instant lastChange) {
+	public void setLastChange(final LocalDateTime lastChange) {
 		this.lastChange = lastChange;
-
-		return this;
 	}
 
-	public Integer getLastChangedBy() {
+	public Long getLastChangedBy() {
 		return this.lastChangedBy;
 	}
 
-	public ItemEntity setLastChangedBy(final Integer lastChangedBy) {
+	public void setLastChangedBy(final Long lastChangedBy) {
 		this.lastChangedBy = lastChangedBy;
+	}
 
-		return this;
+	public static enum ItemEntityMember {
+		ID("id"),
+
+		TITLE("title"),
+
+		MEDIA_TYPE("mediaType"),
+
+		STOCK("stock"),
+
+		PRICE("price"),
+
+		IMAGE_URL("imageUrl"),
+
+		LAST_CHANGE("lastChange"),
+
+		LAST_CHANGED_BY("lastChangedBy"),
+
+		;
+
+		private final String domainName;
+
+		private ItemEntityMember(final String domainName) {
+			this.domainName = domainName;
+		}
+
+		public String getDomainName() {
+			return this.domainName;
+		}
 	}
 }

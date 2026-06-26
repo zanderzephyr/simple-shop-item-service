@@ -1,12 +1,11 @@
 package com.simple_shop.item_service.item.model;
 
-import java.math.BigDecimal;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 
 import com.simple_shop.item_service.item.exceptions.ItemValidationException;
 
 public final class Item {
-	private final Integer id;
+	private final Long id;
 
 	private final String title;
 
@@ -14,13 +13,13 @@ public final class Item {
 
 	private final int stock;
 
-	private final BigDecimal price;
+	private final int price;
 
 	private final String imageUrl;
 
-	private final ZonedDateTime lastChange;
+	private final LocalDateTime lastChange;
 
-	private final Integer lastChangedBy;
+	private final Long lastChangedBy;
 
 	/**
 	 * @param  builder
@@ -42,7 +41,7 @@ public final class Item {
 		this.lastChangedBy = builder.getLastChangedBy();
 	}
 
-	public Integer getId() {
+	public Long getId() {
 		return this.id;
 	}
 
@@ -58,7 +57,7 @@ public final class Item {
 		return this.stock;
 	}
 
-	public BigDecimal getPrice() {
+	public int getPrice() {
 		return this.price;
 	}
 
@@ -66,16 +65,16 @@ public final class Item {
 		return this.imageUrl;
 	}
 
-	public ZonedDateTime getLastChange() {
+	public LocalDateTime getLastChange() {
 		return this.lastChange;
 	}
 
-	public Integer getLastChangedBy() {
+	public Long getLastChangedBy() {
 		return this.lastChangedBy;
 	}
 
 	public static final class ItemBuilder {
-		private Integer id;
+		private Long id;
 
 		private String title;
 
@@ -83,23 +82,23 @@ public final class Item {
 
 		private Integer stock;
 
-		private BigDecimal price;
+		private Integer price;
 
 		private String imageUrl;
 
-		private ZonedDateTime lastChange;
+		private LocalDateTime lastChange;
 
-		private Integer lastChangedBy;
+		private Long lastChangedBy;
 
 		public ItemBuilder() {
 			super();
 		}
 
-		public Integer getId() {
+		public Long getId() {
 			return this.id;
 		}
 
-		public ItemBuilder setId(final Integer id) {
+		public ItemBuilder setId(final Long id) {
 			this.id = id;
 
 			return this;
@@ -135,11 +134,11 @@ public final class Item {
 			return this;
 		}
 
-		public BigDecimal getPrice() {
+		public Integer getPrice() {
 			return this.price;
 		}
 
-		public ItemBuilder setPrice(final BigDecimal price) {
+		public ItemBuilder setPrice(final Integer price) {
 			this.price = price;
 
 			return this;
@@ -155,21 +154,21 @@ public final class Item {
 			return this;
 		}
 
-		public ZonedDateTime getLastChange() {
+		public LocalDateTime getLastChange() {
 			return this.lastChange;
 		}
 
-		public ItemBuilder setLastChange(final ZonedDateTime lastChange) {
+		public ItemBuilder setLastChange(final LocalDateTime lastChange) {
 			this.lastChange = lastChange;
 
 			return this;
 		}
 
-		public Integer getLastChangedBy() {
+		public Long getLastChangedBy() {
 			return this.lastChangedBy;
 		}
 
-		public ItemBuilder setLastChangedBy(final Integer lastChangedBy) {
+		public ItemBuilder setLastChangedBy(final Long lastChangedBy) {
 			this.lastChangedBy = lastChangedBy;
 
 			return this;
@@ -197,7 +196,7 @@ public final class Item {
 				throw new ItemValidationException("Invalid stock!");
 			}
 
-			if (this.price == null || this.price.compareTo(BigDecimal.ZERO) < 0) {
+			if (this.price == null || this.price < 0) {
 				throw new ItemValidationException("Invalid price!");
 			}
 

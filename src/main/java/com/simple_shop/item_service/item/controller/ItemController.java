@@ -1,25 +1,28 @@
 package com.simple_shop.item_service.item.controller;
 
-import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -28,12 +31,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.simple_shop.item_service.item.dto.ItemDto;
-import com.simple_shop.item_service.item.exceptions.InvalidPageSetupException;
+import com.simple_shop.item_service.item.dto.ItemDto.ItemDtoMember;
+import com.simple_shop.item_service.item.exceptions.InvalidItemRequestConstraintsException;
 import com.simple_shop.item_service.item.exceptions.ItemNotFoundException;
 import com.simple_shop.item_service.item.exceptions.ItemValidationException;
 import com.simple_shop.item_service.item.model.Item;
 import com.simple_shop.item_service.item.model.Item.ItemBuilder;
 import com.simple_shop.item_service.item.model.MediaType;
+import com.simple_shop.item_service.item.persistence.ItemEntity.ItemEntityMember;
 
 /*
  * Proper version compatibility between frontend and backend is quite complex
@@ -52,9 +57,24 @@ import com.simple_shop.item_service.item.model.MediaType;
 @RequestMapping("/api/v1/items")
 public final class ItemController {
 	// Just for initial scaffolding
-	private static final AtomicInteger ID_GENERATOR = new AtomicInteger(0);
+	private static final AtomicLong ID_GENERATOR = new AtomicLong(0);
 
-	private static final int MAX_PAGE_SIZE = 100;
+	private static final long MAX_PAGE_SIZE = 100;
+
+	private static final Map<String, String> SORTABLE_DTO_TO_ENTITY_COLUMNS = ItemController.collectSortableColumns();
+
+	private static Map<String, String> collectSortableColumns() {
+		final Map<String, String> columns = new HashMap<>();
+
+		columns.put(ItemDtoMember.LAST_CHANGE.getDomainName(), ItemEntityMember.LAST_CHANGE.getDomainName());
+		columns.put(ItemDtoMember.LAST_CHANGED_BY.getDomainName(), ItemEntityMember.LAST_CHANGED_BY.getDomainName());
+		columns.put(ItemDtoMember.MEDIA_TYPE.getDomainName(), ItemEntityMember.MEDIA_TYPE.getDomainName());
+		columns.put(ItemDtoMember.PRICE.getDomainName(), ItemEntityMember.PRICE.getDomainName());
+		columns.put(ItemDtoMember.STOCK.getDomainName(), ItemEntityMember.STOCK.getDomainName());
+		columns.put(ItemDtoMember.TITLE.getDomainName(), ItemEntityMember.TITLE.getDomainName());
+
+		return columns;
+	}
 
 	public ItemController() {
 		super();
@@ -78,9 +98,9 @@ public final class ItemController {
 		final Item createdItem = ItemBuilder.initFrom(itemToCreate)//
 				// TODO Take from the DB entity later
 				.setId(ItemController.ID_GENERATOR.getAndIncrement())//
-				.setLastChange(ZonedDateTime.now().withZoneSameInstant(ZoneOffset.UTC))//
+				.setLastChange(ZonedDateTime.now(ZoneOffset.UTC).toLocalDateTime())//
 				// TODO Change to user ID from the session
-				.setLastChangedBy(42)//
+				.setLastChangedBy(42l)//
 				.build();
 
 		final ItemDto createdItemDto = this.convert(createdItem);
@@ -89,14 +109,14 @@ public final class ItemController {
 	}
 
 	@PutMapping("/{id}")
-	public ResponseEntity<ItemDto> modifyItem(@PathVariable final Integer id, @RequestBody final ItemDto itemDto) {
+	public ResponseEntity<ItemDto> modifyItem(@PathVariable final Long id, @RequestBody final ItemDto itemDto) {
 		/*
 		 * TODO Validate session is ok. If it isn't, answer appropriately with negative
 		 * response.
 		 */
 
 		final Item itemToModify = this.convert(itemDto);
-		final Integer itemId = itemToModify.getId();
+		final Long itemId = itemToModify.getId();
 		if (itemId == null) {
 			throw new ItemValidationException("No item ID!");
 		}
@@ -116,9 +136,9 @@ public final class ItemController {
 		 */
 
 		final Item modifiedItem = ItemBuilder.initFrom(itemToModify)//
-				.setLastChange(ZonedDateTime.now().withZoneSameInstant(ZoneOffset.UTC))//
+				.setLastChange(ZonedDateTime.now(ZoneOffset.UTC).toLocalDateTime())//
 				// TODO Change to user ID from the session
-				.setLastChangedBy(42)//
+				.setLastChangedBy(42l)//
 				.build();
 
 		final ItemDto modifiedItemDto = this.convert(modifiedItem);
@@ -127,7 +147,7 @@ public final class ItemController {
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> deleteItem(@PathVariable final Integer id) {
+	public ResponseEntity<Void> deleteItem(@PathVariable final Long id) {
 		/*
 		 * TODO Validate session is ok. If it isn't, answer appropriately with negative
 		 * response.
@@ -145,19 +165,17 @@ public final class ItemController {
 		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 	}
 
-	/*
-	 * The sort string is the name of a member of the Item persistence class (i.e.
-	 * of the entity class).
-	 */
+	// Using ModelAttribute to prevent GET requests without body causing issues
 	@GetMapping
-	public ResponseEntity<Page<ItemDto>> getAllItems(
-			@PageableDefault(page = 0, size = 20, sort = "title", direction = Sort.Direction.ASC) final Pageable pageable) {
+	public ResponseEntity<Page<ItemDto>> getAllItems(@ModelAttribute final ItemRequestConstraints constraints) {
 		/*
 		 * TODO Validate session is ok. If it isn't, answer appropriately with negative
 		 * response.
 		 */
 
-		this.validate(pageable);
+		this.validate(constraints);
+
+		// TODO Convert constraints to Pageable
 
 		/*
 		 * TODO Find items with the pageable object - for now, we hard return two items
@@ -167,28 +185,29 @@ public final class ItemController {
 		// TODO Convert entities into ItemDto
 		final List<ItemDto> pageItems = new ArrayList<>();
 		final Item item1 = new ItemBuilder()//
-				.setId(0)//
+				.setId(1l)//
 				.setImageUrl("www.bla.com")//
-				.setLastChange(ZonedDateTime.now(ZoneOffset.UTC))//
-				.setLastChangedBy(0)//
+				.setLastChange(ZonedDateTime.now(ZoneOffset.UTC).toLocalDateTime())//
+				.setLastChangedBy(1l)//
 				.setMediaType(MediaType.BOOK)//
-				.setPrice(new BigDecimal("12.99"))//
+				.setPrice(1299)//
 				.setStock(3)//
 				.setTitle("Harry Potter and the Philosopher's Stone")//
 				.build();
 		pageItems.add(this.convert(item1));
 		final Item item2 = new ItemBuilder()//
-				.setId(1)//
+				.setId(1l)//
 				.setImageUrl("www.bla.com")//
-				.setLastChange(ZonedDateTime.now(ZoneOffset.UTC))//
-				.setLastChangedBy(0)//
+				.setLastChange(ZonedDateTime.now(ZoneOffset.UTC).toLocalDateTime())//
+				.setLastChangedBy(1l)//
 				.setMediaType(MediaType.BOOK)//
-				.setPrice(new BigDecimal("12.99"))//
+				.setPrice(1299)//
 				.setStock(3)//
 				.setTitle("Harry Potter and the Chamber of Secrets")//
 				.build();
 		pageItems.add(this.convert(item2));
 
+		final Pageable pageable = this.createPageable(constraints);
 		/*
 		 * TODO Hard-coded a number of 2 as the item count for now. Later, return the
 		 * actual value.
@@ -198,22 +217,48 @@ public final class ItemController {
 		return ResponseEntity.status(HttpStatus.OK).body(page);
 	}
 
-	private void validate(final Pageable pageable) throws InvalidPageSetupException {
-		/*
-		 * TODO Don't allow sorting over any entity member that is inappropriate, i.e.
-		 * hidden members, members that are mapped to unindexed columns, members with a
-		 * lot of content (e.g. the imageUrl might be too long to sort).
-		 */
+	private Pageable createPageable(final ItemRequestConstraints constraints) {
+		final SortingDirection sortingDirection = constraints.getSortingDirection();
+		final Direction direction;
+		if (SortingDirection.ASCENDING.equals(sortingDirection)) {
+			direction = Direction.ASC;
+		} else if (SortingDirection.DESCENDING.equals(sortingDirection)) {
+			direction = Direction.DESC;
+		} else {
+			throw new IllegalStateException("Unexpected sorting direction: " + sortingDirection);
+		}
+		final String sortingColumnEntity = ItemController.SORTABLE_DTO_TO_ENTITY_COLUMNS
+				.get(constraints.getSortingColumn());
+		final Sort sort = Sort.by(Arrays.asList(new Order(direction, sortingColumnEntity)));
 
-		if (pageable.isPaged()) {
-			if (pageable.getPageSize() > ItemController.MAX_PAGE_SIZE) {
-				throw new InvalidPageSetupException("Max page size is " + ItemController.MAX_PAGE_SIZE);
-			}
+		return PageRequest.of(constraints.getPageIndex(), constraints.getPageSize(), sort);
+	}
+
+	private void validate(final ItemRequestConstraints constraints) throws InvalidItemRequestConstraintsException {
+		if (constraints == null) {
+			throw new InvalidItemRequestConstraintsException("No item search constraints!");
+		}
+
+		final int pageIndex = constraints.getPageIndex();
+		if (pageIndex < 0) {
+			throw new InvalidItemRequestConstraintsException("Page index must not be negative, but was " + pageIndex);
+		}
+
+		final int pageSize = constraints.getPageSize();
+		if (pageSize <= 0 || pageSize > ItemController.MAX_PAGE_SIZE) {
+			throw new InvalidItemRequestConstraintsException(
+					"Page size must be in [1," + ItemController.MAX_PAGE_SIZE + "]!");
+		}
+
+		final String sortingColumn = constraints.getSortingColumn();
+		if (!ItemController.SORTABLE_DTO_TO_ENTITY_COLUMNS.keySet().contains(sortingColumn)) {
+			throw new InvalidItemRequestConstraintsException(
+					"Columns " + sortingColumn + " is not allowed for sorting!");
 		}
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<ItemDto> getItem(@PathVariable final Integer id) {
+	public ResponseEntity<ItemDto> getItem(@PathVariable final Long id) {
 		/*
 		 * TODO Validate session is ok. If it isn't, answer appropriately with negative
 		 * response.
@@ -225,12 +270,12 @@ public final class ItemController {
 		 */
 
 		final Item item = new ItemBuilder()//
-				.setId(0)//
+				.setId(1l)//
 				.setImageUrl("www.bla.com")//
-				.setLastChange(ZonedDateTime.now(ZoneOffset.UTC))//
-				.setLastChangedBy(0)//
+				.setLastChange(ZonedDateTime.now(ZoneOffset.UTC).toLocalDateTime())//
+				.setLastChangedBy(1l)//
 				.setMediaType(MediaType.BOOK)//
-				.setPrice(new BigDecimal("12.99"))//
+				.setPrice(1299)//
 				.setStock(3)//
 				.setTitle("Harry Potter and the Philosopher's Stone")//
 				.build();
@@ -266,9 +311,9 @@ public final class ItemController {
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorBody);
 	}
 
-	@ExceptionHandler(InvalidPageSetupException.class)
-	public ResponseEntity<Map<String, Object>> handleInvalidPageSetupException(
-			final InvalidPageSetupException exception) {
+	@ExceptionHandler(InvalidItemRequestConstraintsException.class)
+	public ResponseEntity<Map<String, Object>> handleInvalidItemRequestConstraintsException(
+			final InvalidItemRequestConstraintsException exception) {
 		final Map<String, Object> errorBody = new HashMap<>();
 		errorBody.put("timestamp", Instant.now());
 		errorBody.put("status", HttpStatus.BAD_REQUEST.value());
@@ -277,11 +322,22 @@ public final class ItemController {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorBody);
 	}
 
+	@ExceptionHandler(IllegalStateException.class)
+	public ResponseEntity<Map<String, Object>> handleIllegalStateException(final IllegalStateException exception) {
+		final Map<String, Object> errorBody = new HashMap<>();
+		errorBody.put("timestamp", Instant.now());
+		errorBody.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+		errorBody.put("error", "Internal server error");
+		errorBody.put("message", exception.getMessage());
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorBody);
+	}
+
 	private Item convert(final ItemDto itemDto) {
 		return new ItemBuilder()//
 				.setId(itemDto.getId())//
 				.setImageUrl(itemDto.getImageUrl())//
-				.setLastChange(itemDto.getLastChange() == null ? null : itemDto.getLastChange().atZone(ZoneOffset.UTC))//
+				.setLastChange(itemDto.getLastChange() == null ? null
+						: itemDto.getLastChange().atZone(ZoneOffset.UTC).toLocalDateTime())//
 				.setLastChangedBy(itemDto.getLastChangedBy())//
 				.setMediaType(itemDto.getMediaType())//
 				.setPrice(itemDto.getPrice())//
@@ -295,7 +351,7 @@ public final class ItemController {
 
 		itemDto.setId(item.getId());
 		itemDto.setImageUrl(item.getImageUrl());
-		itemDto.setLastChange(item.getLastChange().toInstant());
+		itemDto.setLastChange(item.getLastChange().toInstant(ZoneOffset.UTC));
 		itemDto.setLastChangedBy(item.getLastChangedBy());
 		itemDto.setMediaType(item.getMediaType());
 		itemDto.setPrice(item.getPrice());
@@ -303,5 +359,64 @@ public final class ItemController {
 		itemDto.setTitle(item.getTitle());
 
 		return itemDto;
+	}
+
+	/*
+	 * Must never contain sensitive information, as the properties of this object
+	 * are passed via URL arguments.
+	 */
+	public static final class ItemRequestConstraints {
+		private int pageIndex = 0;
+
+		private int pageSize = 20;
+
+		/**
+		 * This is the name of a member of the ItemDto class.
+		 */
+		private String sortingColumn = ItemDtoMember.TITLE.getDomainName();
+
+		private SortingDirection sortingDirection = SortingDirection.ASCENDING;
+
+		public ItemRequestConstraints() {
+			super();
+		}
+
+		public int getPageIndex() {
+			return this.pageIndex;
+		}
+
+		public void setPageIndex(final int pageIndex) {
+			this.pageIndex = pageIndex;
+		}
+
+		public int getPageSize() {
+			return this.pageSize;
+		}
+
+		public void setPageSize(final int pageSize) {
+			this.pageSize = pageSize;
+		}
+
+		public String getSortingColumn() {
+			return this.sortingColumn;
+		}
+
+		public void setSortingColumn(final String sortingColumn) {
+			this.sortingColumn = sortingColumn;
+		}
+
+		public SortingDirection getSortingDirection() {
+			return this.sortingDirection;
+		}
+
+		public void setSortingDirection(final SortingDirection sortingDirection) {
+			this.sortingDirection = sortingDirection;
+		}
+	}
+
+	public enum SortingDirection {
+		ASCENDING,
+
+		DESCENDING,
 	}
 }
