@@ -3,9 +3,9 @@ package com.simple_shop.item_service.item.model;
 import java.time.LocalDateTime;
 
 public final class ItemHistory {
-	private final Long historyEntryId;
-
 	private final Long id;
+
+	private final Long itemId;
 
 	private final String title;
 
@@ -28,8 +28,8 @@ public final class ItemHistory {
 
 		builder.validate();
 
-		this.historyEntryId = builder.getHistoryEntryId();
 		this.id = builder.getId();
+		this.itemId = builder.getItemId();
 		this.title = builder.getTitle();
 		this.mediaType = builder.getMediaType();
 		this.stock = builder.getStock();
@@ -40,12 +40,12 @@ public final class ItemHistory {
 		this.action = builder.getAction();
 	}
 
-	public Long getHistoryEntryId() {
-		return this.historyEntryId;
-	}
-
 	public Long getId() {
 		return this.id;
+	}
+
+	public Long getItemId() {
+		return this.itemId;
 	}
 
 	public String getTitle() {
@@ -81,9 +81,9 @@ public final class ItemHistory {
 	}
 
 	public static final class ItemHistoryBuilder {
-		private Long historyEntryId;
-
 		private Long id;
+
+		private Long itemId;
 
 		private String title;
 
@@ -105,22 +105,22 @@ public final class ItemHistory {
 			super();
 		}
 
-		public Long getHistoryEntryId() {
-			return this.historyEntryId;
-		}
-
-		public ItemHistoryBuilder setHistoryEntryId(final Long historyEntryId) {
-			this.historyEntryId = historyEntryId;
-
-			return this;
-		}
-
 		public Long getId() {
 			return this.id;
 		}
 
 		public ItemHistoryBuilder setId(final Long id) {
 			this.id = id;
+
+			return this;
+		}
+
+		public Long getItemId() {
+			return this.itemId;
+		}
+
+		public ItemHistoryBuilder setItemId(final Long itemId) {
+			this.itemId = itemId;
 
 			return this;
 		}
@@ -237,8 +237,8 @@ public final class ItemHistory {
 
 		public static ItemHistoryBuilder initFrom(final ItemHistory itemHistory) {
 			return new ItemHistoryBuilder()//
-					.setHistoryEntryId(itemHistory.getHistoryEntryId())//
 					.setId(itemHistory.getId())//
+					.setItemId(itemHistory.getItemId())//
 					.setImageUrl(itemHistory.getImageUrl())//
 					.setLastChange(itemHistory.getLastChange())//
 					.setLastChangedBy(itemHistory.getLastChangedBy())//

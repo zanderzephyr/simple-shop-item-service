@@ -17,6 +17,9 @@ public class ItemDto {
 
 	private String imageUrl;
 
+	/**
+	 * In UTC.
+	 */
 	private Instant lastChange;
 
 	private Long lastChangedBy;

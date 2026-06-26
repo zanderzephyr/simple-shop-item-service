@@ -5,37 +5,57 @@ import java.time.LocalDateTime;
 import com.simple_shop.item_service.item.model.ItemAction;
 import com.simple_shop.item_service.item.model.MediaType;
 
-public class ItemHistoryEntity {
-	private Long historyEntryId;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
+@Entity
+@Table(name = "ItemHistory", schema = "item_shop")
+public class ItemHistoryEntity {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "Id")
 	private Long id;
 
+	@Column(name = "ItemId", nullable = false)
+	private Long itemId;
+
+	@Column(name = "Title", length = 400, nullable = false)
 	private String title;
 
+	@Enumerated(EnumType.STRING)
+	@Column(name = "MediaType", length = 20, nullable = false)
 	private MediaType mediaType;
 
+	@Column(name = "Stock", nullable = false)
 	private Integer stock;
 
+	@Column(name = "Price", nullable = false)
 	private Integer price;
 
+	@Column(name = "ImageUrl", length = 2048, nullable = false)
 	private String imageUrl;
 
+	/**
+	 * In UTC.
+	 */
+	@Column(name = "LastChange", nullable = false)
 	private LocalDateTime lastChange;
 
+	@Column(name = "LastChangedBy", nullable = false)
 	private Long lastChangedBy;
 
+	@Enumerated(EnumType.STRING)
+	@Column(name = "Action", length = 10, nullable = false)
 	private ItemAction action;
 
 	public ItemHistoryEntity() {
 		super();
-	}
-
-	public Long getHistoryEntryId() {
-		return this.historyEntryId;
-	}
-
-	public void setHistoryEntryId(final Long historyEntryId) {
-		this.historyEntryId = historyEntryId;
 	}
 
 	public Long getId() {
@@ -44,6 +64,14 @@ public class ItemHistoryEntity {
 
 	public void setId(final Long id) {
 		this.id = id;
+	}
+
+	public Long getItemId() {
+		return this.itemId;
+	}
+
+	public void setItemId(final Long itemId) {
+		this.itemId = itemId;
 	}
 
 	public String getTitle() {

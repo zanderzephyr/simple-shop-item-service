@@ -4,25 +4,46 @@ import java.time.LocalDateTime;
 
 import com.simple_shop.item_service.item.model.MediaType;
 
-// TODO Later: Add Hibernate stuff
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "Item", schema = "item_shop")
 public class ItemEntity {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "Id")
 	private Long id;
 
+	@Column(name = "Title", length = 400, nullable = false)
 	private String title;
 
+	@Enumerated(EnumType.STRING)
+	@Column(name = "MediaType", length = 20, nullable = false)
 	private MediaType mediaType;
 
+	@Column(name = "Stock", nullable = false)
 	private Integer stock;
 
+	@Column(name = "Price", nullable = false)
 	private Integer price;
 
+	@Column(name = "ImageUrl", length = 2048, nullable = false)
 	private String imageUrl;
 
 	/**
 	 * In UTC.
 	 */
+	@Column(name = "LastChange", nullable = false)
 	private LocalDateTime lastChange;
 
+	@Column(name = "LastChangedBy", nullable = false)
 	private Long lastChangedBy;
 
 	public ItemEntity() {

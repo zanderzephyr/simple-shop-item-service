@@ -17,6 +17,9 @@ public final class Item {
 
 	private final String imageUrl;
 
+	/**
+	 * In UTC.
+	 */
 	private final LocalDateTime lastChange;
 
 	private final Long lastChangedBy;
@@ -86,6 +89,9 @@ public final class Item {
 
 		private String imageUrl;
 
+		/**
+		 * In UTC.
+		 */
 		private LocalDateTime lastChange;
 
 		private Long lastChangedBy;
