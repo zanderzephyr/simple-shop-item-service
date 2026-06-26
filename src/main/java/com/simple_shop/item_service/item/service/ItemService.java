@@ -40,7 +40,7 @@ public class ItemService {
 	}
 
 	@Transactional(readOnly = true)
-	public Item getItemById(final Long id) {
+	public Item getItemById(final long id) {
 		return this.itemRepository.findById(id) //
 				.map(ItemEntityMapper::toDomain) //
 				.orElseThrow(() -> new ItemNotFoundException("Didn't find item with ID " + id + "!"));

@@ -1,17 +1,11 @@
 package com.simple_shop.item_service.item.controller;
 
 import java.time.Instant;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -37,9 +31,8 @@ import com.simple_shop.item_service.item.exceptions.InvalidItemRequestConstraint
 import com.simple_shop.item_service.item.exceptions.ItemNotFoundException;
 import com.simple_shop.item_service.item.exceptions.ItemValidationException;
 import com.simple_shop.item_service.item.model.Item;
-import com.simple_shop.item_service.item.model.Item.ItemBuilder;
-import com.simple_shop.item_service.item.model.MediaType;
 import com.simple_shop.item_service.item.persistence.ItemEntity.ItemEntityMember;
+import com.simple_shop.item_service.item.service.ItemService;
 
 /*
  * Proper version compatibility between frontend and backend is quite complex
@@ -57,12 +50,11 @@ import com.simple_shop.item_service.item.persistence.ItemEntity.ItemEntityMember
 @RestController
 @RequestMapping("/api/v1/items")
 public final class ItemController {
-	// Just for initial scaffolding
-	private static final AtomicLong ID_GENERATOR = new AtomicLong(0);
-
 	private static final long MAX_PAGE_SIZE = 100;
 
 	private static final Map<String, String> SORTABLE_DTO_TO_ENTITY_COLUMNS = ItemController.collectSortableColumns();
+
+	private final ItemService itemService;
 
 	private static Map<String, String> collectSortableColumns() {
 		final Map<String, String> columns = new HashMap<>();
@@ -77,8 +69,10 @@ public final class ItemController {
 		return columns;
 	}
 
-	public ItemController() {
+	public ItemController(final ItemService itemService) {
 		super();
+
+		this.itemService = itemService;
 	}
 
 	@PostMapping
@@ -90,74 +84,39 @@ public final class ItemController {
 
 		final Item itemToCreate = ItemDtoMapper.toDomain(itemDto);
 
-		/*
-		 * TODO Write item into the DB, add history entry (as one transaction with the
-		 * Item insertion before), get the related entity object and translate it back
-		 * into the response ItemDto.
-		 */
-
-		final Item createdItem = ItemBuilder.initFrom(itemToCreate)//
-				// TODO Take from the DB entity later
-				.setId(ItemController.ID_GENERATOR.getAndIncrement())//
-				.setLastChange(ZonedDateTime.now(ZoneOffset.UTC).toLocalDateTime())//
-				// TODO Change to user ID from the session
-				.setLastChangedBy(42l)//
-				.build();
-
+		// TODO Replace userId by actual session user ID
+		final Item createdItem = this.itemService.createItem(itemToCreate, 42l);
 		final ItemDto createdItemDto = ItemDtoMapper.toDto(createdItem);
-
 		return ResponseEntity.status(HttpStatus.CREATED).body(createdItemDto);
 	}
 
-	@PutMapping("/{id}")
-	public ResponseEntity<ItemDto> modifyItem(@PathVariable final Long id, @RequestBody final ItemDto itemDto) {
+	@PutMapping("/{itemId}")
+	public ResponseEntity<ItemDto> modifyItem(@PathVariable final long itemId, @RequestBody final ItemDto itemDto) {
 		/*
 		 * TODO Validate session is ok. If it isn't, answer appropriately with negative
 		 * response.
 		 */
 
 		final Item itemToModify = ItemDtoMapper.toDomain(itemDto);
-		final Long itemId = itemToModify.getId();
-		if (itemId == null) {
-			throw new ItemValidationException("No item ID!");
-		}
-
-		if (!itemId.equals(id)) {
+		if (!Long.valueOf(itemId).equals(itemToModify.getId())) {
 			throw new ItemValidationException("Path ID and payload ID mismatch!");
 		}
 
-		/*
-		 * TODO Update item in the DB (handle unknown item ID issue -> 404), add history
-		 * entry (as one transaction with the Item update before), get the related
-		 * entity object and translate it back into the response ItemDto. (Even though
-		 * we might know the item state after modification for the initial rather simple
-		 * DB schema, the schema could become more complex later, leading to an update
-		 * with fairly complex consequences. Therefore, we should just always request
-		 * the modified state from the DB before mirroring it back to the client.)
-		 */
-
-		final Item modifiedItem = ItemBuilder.initFrom(itemToModify)//
-				.setLastChange(ZonedDateTime.now(ZoneOffset.UTC).toLocalDateTime())//
-				// TODO Change to user ID from the session
-				.setLastChangedBy(42l)//
-				.build();
-
+		// TODO Replace userId by actual session user ID
+		final Item modifiedItem = this.itemService.modifyItem(itemToModify, 42l);
 		final ItemDto modifiedItemDto = ItemDtoMapper.toDto(modifiedItem);
-
 		return ResponseEntity.status(HttpStatus.OK).body(modifiedItemDto);
 	}
 
-	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> deleteItem(@PathVariable final Long id) {
+	@DeleteMapping("/{itemId}")
+	public ResponseEntity<Void> deleteItem(@PathVariable final long itemId) {
 		/*
 		 * TODO Validate session is ok. If it isn't, answer appropriately with negative
 		 * response.
 		 */
 
-		/*
-		 * TODO Delete item in the DB (handle unknown item ID issue -> 404) and add
-		 * history entry (as one transaction with the Item deletion before).
-		 */
+		// TODO Replace userId by actual session user ID
+		this.itemService.deleteItem(itemId, 42l);
 
 		/*
 		 * NO_CONTENT (204) means no response body. If we return OK (200), there would
@@ -176,45 +135,8 @@ public final class ItemController {
 
 		this.validate(constraints);
 
-		// TODO Convert constraints to Pageable
-
-		/*
-		 * TODO Find items with the pageable object - for now, we hard return two items
-		 * and ignore the pageable.
-		 */
-
-		// TODO Convert entities into ItemDto
-		final List<ItemDto> pageItems = new ArrayList<>();
-		final Item item1 = new ItemBuilder()//
-				.setId(1l)//
-				.setImageUrl("www.bla.com")//
-				.setLastChange(ZonedDateTime.now(ZoneOffset.UTC).toLocalDateTime())//
-				.setLastChangedBy(1l)//
-				.setMediaType(MediaType.BOOK)//
-				.setPrice(1299)//
-				.setStock(3)//
-				.setTitle("Harry Potter and the Philosopher's Stone")//
-				.build();
-		pageItems.add(ItemDtoMapper.toDto(item1));
-		final Item item2 = new ItemBuilder()//
-				.setId(1l)//
-				.setImageUrl("www.bla.com")//
-				.setLastChange(ZonedDateTime.now(ZoneOffset.UTC).toLocalDateTime())//
-				.setLastChangedBy(1l)//
-				.setMediaType(MediaType.BOOK)//
-				.setPrice(1299)//
-				.setStock(3)//
-				.setTitle("Harry Potter and the Chamber of Secrets")//
-				.build();
-		pageItems.add(ItemDtoMapper.toDto(item2));
-
 		final Pageable pageable = this.createPageable(constraints);
-		/*
-		 * TODO Hard-coded a number of 2 as the item count for now. Later, return the
-		 * actual value.
-		 */
-		final Page<ItemDto> page = new PageImpl<>(pageItems, pageable, 2);
-
+		final Page<ItemDto> page = this.itemService.getAllItems(pageable).map(ItemDtoMapper::toDto);
 		return ResponseEntity.status(HttpStatus.OK).body(page);
 	}
 
@@ -258,31 +180,15 @@ public final class ItemController {
 		}
 	}
 
-	@GetMapping("/{id}")
-	public ResponseEntity<ItemDto> getItem(@PathVariable final Long id) {
+	@GetMapping("/{itemId}")
+	public ResponseEntity<ItemDto> getItem(@PathVariable final long itemId) {
 		/*
 		 * TODO Validate session is ok. If it isn't, answer appropriately with negative
 		 * response.
 		 */
 
-		/*
-		 * TODO Request the requested item and handle unknown item ID issue -> 404.
-		 * Translate the item back into the response ItemDto.
-		 */
-
-		final Item item = new ItemBuilder()//
-				.setId(1l)//
-				.setImageUrl("www.bla.com")//
-				.setLastChange(ZonedDateTime.now(ZoneOffset.UTC).toLocalDateTime())//
-				.setLastChangedBy(1l)//
-				.setMediaType(MediaType.BOOK)//
-				.setPrice(1299)//
-				.setStock(3)//
-				.setTitle("Harry Potter and the Philosopher's Stone")//
-				.build();
-
+		final Item item = this.itemService.getItemById(itemId);
 		final ItemDto itemDto = ItemDtoMapper.toDto(item);
-
 		return ResponseEntity.status(HttpStatus.OK).body(itemDto);
 	}
 
@@ -293,12 +199,6 @@ public final class ItemController {
 		errorBody.put("status", HttpStatus.BAD_REQUEST.value());
 		errorBody.put("error", "Item validation Failed");
 		errorBody.put("message", exception.getMessage());
-		/*
-		 * The map is simply converted to a JSON representation by Spring transparently.
-		 * Each data type has a formatter defined in Spring. If we use our own types, we
-		 * need to make sure, they are properly formatted to be contained in the JSON
-		 * representation, i.e. it has to be a valid JSON value with valid value type.
-		 */
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorBody);
 	}
 
