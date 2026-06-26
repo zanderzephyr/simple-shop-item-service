@@ -94,8 +94,6 @@ public class ItemService {
 				.orElseThrow(() -> new ItemNotFoundException("Cannot delete item. Item " + itemId + " not found!"));
 		final Item existingItem = ItemEntityMapper.toDomain(existingItemEntity);
 
-		this.itemRepository.delete(existingItemEntity);
-
 		final Item itemDeletionState = ItemBuilder.initFrom(existingItem) //
 				.setLastChange(ItemServiceUtils.createNow()) //
 				.setLastChangedBy(userId) //
@@ -103,6 +101,8 @@ public class ItemService {
 
 		final ItemHistoryState itemHistoryState = this.buildItemHistoryState(itemDeletionState, ItemAction.DELETE);
 		final ItemHistoryStateEntity itemHistoryStateEntity = ItemEntityMapper.toEntity(itemHistoryState);
+
+		this.itemRepository.delete(existingItemEntity);
 		this.itemHistoryStateRepository.save(itemHistoryStateEntity);
 	}
 
