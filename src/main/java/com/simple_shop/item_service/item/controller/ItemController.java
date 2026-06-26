@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.simple_shop.item_service.item.controller.ItemRequestConstraints.SortingDirection;
 import com.simple_shop.item_service.item.dto.ItemDto;
 import com.simple_shop.item_service.item.dto.ItemDto.ItemDtoMember;
 import com.simple_shop.item_service.item.exceptions.InvalidItemRequestConstraintsException;
@@ -87,7 +88,7 @@ public final class ItemController {
 		 * response.
 		 */
 
-		final Item itemToCreate = this.convert(itemDto);
+		final Item itemToCreate = ItemDtoMapper.toDomain(itemDto);
 
 		/*
 		 * TODO Write item into the DB, add history entry (as one transaction with the
@@ -103,7 +104,7 @@ public final class ItemController {
 				.setLastChangedBy(42l)//
 				.build();
 
-		final ItemDto createdItemDto = this.convert(createdItem);
+		final ItemDto createdItemDto = ItemDtoMapper.toDto(createdItem);
 
 		return ResponseEntity.status(HttpStatus.CREATED).body(createdItemDto);
 	}
@@ -115,7 +116,7 @@ public final class ItemController {
 		 * response.
 		 */
 
-		final Item itemToModify = this.convert(itemDto);
+		final Item itemToModify = ItemDtoMapper.toDomain(itemDto);
 		final Long itemId = itemToModify.getId();
 		if (itemId == null) {
 			throw new ItemValidationException("No item ID!");
@@ -141,7 +142,7 @@ public final class ItemController {
 				.setLastChangedBy(42l)//
 				.build();
 
-		final ItemDto modifiedItemDto = this.convert(modifiedItem);
+		final ItemDto modifiedItemDto = ItemDtoMapper.toDto(modifiedItem);
 
 		return ResponseEntity.status(HttpStatus.OK).body(modifiedItemDto);
 	}
@@ -194,7 +195,7 @@ public final class ItemController {
 				.setStock(3)//
 				.setTitle("Harry Potter and the Philosopher's Stone")//
 				.build();
-		pageItems.add(this.convert(item1));
+		pageItems.add(ItemDtoMapper.toDto(item1));
 		final Item item2 = new ItemBuilder()//
 				.setId(1l)//
 				.setImageUrl("www.bla.com")//
@@ -205,7 +206,7 @@ public final class ItemController {
 				.setStock(3)//
 				.setTitle("Harry Potter and the Chamber of Secrets")//
 				.build();
-		pageItems.add(this.convert(item2));
+		pageItems.add(ItemDtoMapper.toDto(item2));
 
 		final Pageable pageable = this.createPageable(constraints);
 		/*
@@ -280,7 +281,7 @@ public final class ItemController {
 				.setTitle("Harry Potter and the Philosopher's Stone")//
 				.build();
 
-		final ItemDto itemDto = this.convert(item);
+		final ItemDto itemDto = ItemDtoMapper.toDto(item);
 
 		return ResponseEntity.status(HttpStatus.OK).body(itemDto);
 	}
@@ -330,93 +331,5 @@ public final class ItemController {
 		errorBody.put("error", "Internal server error");
 		errorBody.put("message", exception.getMessage());
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorBody);
-	}
-
-	private Item convert(final ItemDto itemDto) {
-		return new ItemBuilder()//
-				.setId(itemDto.getId())//
-				.setImageUrl(itemDto.getImageUrl())//
-				.setLastChange(itemDto.getLastChange() == null ? null
-						: itemDto.getLastChange().atZone(ZoneOffset.UTC).toLocalDateTime())//
-				.setLastChangedBy(itemDto.getLastChangedBy())//
-				.setMediaType(itemDto.getMediaType())//
-				.setPrice(itemDto.getPrice())//
-				.setStock(itemDto.getStock())//
-				.setTitle(itemDto.getTitle())//
-				.build();
-	}
-
-	private ItemDto convert(final Item item) {
-		final ItemDto itemDto = new ItemDto();
-
-		itemDto.setId(item.getId());
-		itemDto.setImageUrl(item.getImageUrl());
-		itemDto.setLastChange(item.getLastChange().toInstant(ZoneOffset.UTC));
-		itemDto.setLastChangedBy(item.getLastChangedBy());
-		itemDto.setMediaType(item.getMediaType());
-		itemDto.setPrice(item.getPrice());
-		itemDto.setStock(item.getStock());
-		itemDto.setTitle(item.getTitle());
-
-		return itemDto;
-	}
-
-	/*
-	 * Must never contain sensitive information, as the properties of this object
-	 * are passed via URL arguments.
-	 */
-	public static final class ItemRequestConstraints {
-		private int pageIndex = 0;
-
-		private int pageSize = 20;
-
-		/**
-		 * This is the name of a member of the ItemDto class.
-		 */
-		private String sortingColumn = ItemDtoMember.TITLE.getDomainName();
-
-		private SortingDirection sortingDirection = SortingDirection.ASCENDING;
-
-		public ItemRequestConstraints() {
-			super();
-		}
-
-		public int getPageIndex() {
-			return this.pageIndex;
-		}
-
-		public void setPageIndex(final int pageIndex) {
-			this.pageIndex = pageIndex;
-		}
-
-		public int getPageSize() {
-			return this.pageSize;
-		}
-
-		public void setPageSize(final int pageSize) {
-			this.pageSize = pageSize;
-		}
-
-		public String getSortingColumn() {
-			return this.sortingColumn;
-		}
-
-		public void setSortingColumn(final String sortingColumn) {
-			this.sortingColumn = sortingColumn;
-		}
-
-		public SortingDirection getSortingDirection() {
-			return this.sortingDirection;
-		}
-
-		public void setSortingDirection(final SortingDirection sortingDirection) {
-			this.sortingDirection = sortingDirection;
-		}
-	}
-
-	public enum SortingDirection {
-		ASCENDING,
-
-		DESCENDING,
 	}
 }
