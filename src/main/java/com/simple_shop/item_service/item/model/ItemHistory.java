@@ -1,6 +1,5 @@
 package com.simple_shop.item_service.item.model;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public final class ItemHistory {
@@ -14,7 +13,7 @@ public final class ItemHistory {
 
 	private final int stock;
 
-	private final BigDecimal price;
+	private final int price;
 
 	private final String imageUrl;
 
@@ -61,7 +60,7 @@ public final class ItemHistory {
 		return this.stock;
 	}
 
-	public BigDecimal getPrice() {
+	public int getPrice() {
 		return this.price;
 	}
 
@@ -92,7 +91,7 @@ public final class ItemHistory {
 
 		private Integer stock;
 
-		private BigDecimal price;
+		private Integer price;
 
 		private String imageUrl;
 
@@ -156,11 +155,11 @@ public final class ItemHistory {
 			return this;
 		}
 
-		public BigDecimal getPrice() {
+		public Integer getPrice() {
 			return this.price;
 		}
 
-		public ItemHistoryBuilder setPrice(final BigDecimal price) {
+		public ItemHistoryBuilder setPrice(final Integer price) {
 			this.price = price;
 
 			return this;
@@ -219,7 +218,7 @@ public final class ItemHistory {
 				throw new IllegalArgumentException("Invalid stock!");
 			}
 
-			if (this.price == null || this.price.compareTo(BigDecimal.ZERO) < 0) {
+			if (this.price == null || this.price < 0) {
 				throw new IllegalArgumentException("Invalid price!");
 			}
 

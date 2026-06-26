@@ -1,6 +1,5 @@
 package com.simple_shop.item_service.item.persistence;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import com.simple_shop.item_service.item.model.ItemAction;
@@ -17,7 +16,7 @@ public class ItemHistoryEntity {
 
 	private Integer stock;
 
-	private BigDecimal price;
+	private Integer price;
 
 	private String imageUrl;
 
@@ -81,11 +80,11 @@ public class ItemHistoryEntity {
 		return this;
 	}
 
-	public BigDecimal getPrice() {
+	public Integer getPrice() {
 		return this.price;
 	}
 
-	public ItemHistoryEntity setPrice(final BigDecimal price) {
+	public ItemHistoryEntity setPrice(final Integer price) {
 		this.price = price;
 
 		return this;
