@@ -2,7 +2,7 @@ package com.simple_shop.item_service.item.model;
 
 import java.time.LocalDateTime;
 
-public final class ItemHistory {
+public final class ItemHistoryState {
 	private final Long id;
 
 	private final Long itemId;
@@ -23,7 +23,7 @@ public final class ItemHistory {
 
 	private final ItemAction action;
 
-	private ItemHistory(final ItemHistoryBuilder builder) {
+	private ItemHistoryState(final ItemHistoryStateBuilder builder) {
 		super();
 
 		builder.validate();
@@ -80,7 +80,7 @@ public final class ItemHistory {
 		return this.action;
 	}
 
-	public static final class ItemHistoryBuilder {
+	public static final class ItemHistoryStateBuilder {
 		private Long id;
 
 		private Long itemId;
@@ -101,7 +101,7 @@ public final class ItemHistory {
 
 		private ItemAction action;
 
-		public ItemHistoryBuilder() {
+		public ItemHistoryStateBuilder() {
 			super();
 		}
 
@@ -109,7 +109,7 @@ public final class ItemHistory {
 			return this.id;
 		}
 
-		public ItemHistoryBuilder setId(final Long id) {
+		public ItemHistoryStateBuilder setId(final Long id) {
 			this.id = id;
 
 			return this;
@@ -119,7 +119,7 @@ public final class ItemHistory {
 			return this.itemId;
 		}
 
-		public ItemHistoryBuilder setItemId(final Long itemId) {
+		public ItemHistoryStateBuilder setItemId(final Long itemId) {
 			this.itemId = itemId;
 
 			return this;
@@ -129,7 +129,7 @@ public final class ItemHistory {
 			return this.title;
 		}
 
-		public ItemHistoryBuilder setTitle(final String title) {
+		public ItemHistoryStateBuilder setTitle(final String title) {
 			this.title = title;
 
 			return this;
@@ -139,7 +139,7 @@ public final class ItemHistory {
 			return this.mediaType;
 		}
 
-		public ItemHistoryBuilder setMediaType(final MediaType mediaType) {
+		public ItemHistoryStateBuilder setMediaType(final MediaType mediaType) {
 			this.mediaType = mediaType;
 
 			return this;
@@ -149,7 +149,7 @@ public final class ItemHistory {
 			return this.stock;
 		}
 
-		public ItemHistoryBuilder setStock(final Integer stock) {
+		public ItemHistoryStateBuilder setStock(final Integer stock) {
 			this.stock = stock;
 
 			return this;
@@ -159,7 +159,7 @@ public final class ItemHistory {
 			return this.price;
 		}
 
-		public ItemHistoryBuilder setPrice(final Integer price) {
+		public ItemHistoryStateBuilder setPrice(final Integer price) {
 			this.price = price;
 
 			return this;
@@ -169,7 +169,7 @@ public final class ItemHistory {
 			return this.imageUrl;
 		}
 
-		public ItemHistoryBuilder setImageUrl(final String imageUrl) {
+		public ItemHistoryStateBuilder setImageUrl(final String imageUrl) {
 			this.imageUrl = imageUrl;
 
 			return this;
@@ -179,7 +179,7 @@ public final class ItemHistory {
 			return this.lastChange;
 		}
 
-		public ItemHistoryBuilder setLastChange(final LocalDateTime lastChange) {
+		public ItemHistoryStateBuilder setLastChange(final LocalDateTime lastChange) {
 			this.lastChange = lastChange;
 
 			return this;
@@ -189,7 +189,7 @@ public final class ItemHistory {
 			return this.lastChangedBy;
 		}
 
-		public ItemHistoryBuilder setLastChangedBy(final Long lastChangedBy) {
+		public ItemHistoryStateBuilder setLastChangedBy(final Long lastChangedBy) {
 			this.lastChangedBy = lastChangedBy;
 
 			return this;
@@ -199,7 +199,7 @@ public final class ItemHistory {
 			return this.action;
 		}
 
-		public ItemHistoryBuilder setAction(final ItemAction action) {
+		public ItemHistoryStateBuilder setAction(final ItemAction action) {
 			this.action = action;
 
 			return this;
@@ -231,12 +231,12 @@ public final class ItemHistory {
 			}
 		}
 
-		public ItemHistory build() {
-			return new ItemHistory(this);
+		public ItemHistoryState build() {
+			return new ItemHistoryState(this);
 		}
 
-		public static ItemHistoryBuilder initFrom(final ItemHistory itemHistory) {
-			return new ItemHistoryBuilder()//
+		public static ItemHistoryStateBuilder initFrom(final ItemHistoryState itemHistory) {
+			return new ItemHistoryStateBuilder()//
 					.setId(itemHistory.getId())//
 					.setItemId(itemHistory.getItemId())//
 					.setImageUrl(itemHistory.getImageUrl())//

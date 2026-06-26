@@ -16,7 +16,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "ItemHistory", schema = "item_shop")
-public class ItemHistoryEntity {
+public class ItemHistoryStateEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "Id")
@@ -54,7 +54,7 @@ public class ItemHistoryEntity {
 	@Column(name = "Action", length = 10, nullable = false)
 	private ItemAction action;
 
-	public ItemHistoryEntity() {
+	public ItemHistoryStateEntity() {
 		super();
 	}
 

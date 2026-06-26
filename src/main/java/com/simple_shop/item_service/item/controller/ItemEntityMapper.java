@@ -2,10 +2,10 @@ package com.simple_shop.item_service.item.controller;
 
 import com.simple_shop.item_service.item.model.Item;
 import com.simple_shop.item_service.item.model.Item.ItemBuilder;
-import com.simple_shop.item_service.item.model.ItemHistory;
-import com.simple_shop.item_service.item.model.ItemHistory.ItemHistoryBuilder;
+import com.simple_shop.item_service.item.model.ItemHistoryState;
+import com.simple_shop.item_service.item.model.ItemHistoryState.ItemHistoryStateBuilder;
 import com.simple_shop.item_service.item.persistence.ItemEntity;
-import com.simple_shop.item_service.item.persistence.ItemHistoryEntity;
+import com.simple_shop.item_service.item.persistence.ItemHistoryStateEntity;
 
 public final class ItemEntityMapper {
 	private ItemEntityMapper() {
@@ -40,34 +40,34 @@ public final class ItemEntityMapper {
 		return entity;
 	}
 
-	public static ItemHistory toDomain(final ItemHistoryEntity itemHistoryEntity) {
-		return new ItemHistoryBuilder()//
-				.setAction(itemHistoryEntity.getAction())//
-				.setId(itemHistoryEntity.getId()) //
-				.setItemId(itemHistoryEntity.getItemId()) //
-				.setImageUrl(itemHistoryEntity.getImageUrl()) //
-				.setLastChange(itemHistoryEntity.getLastChange()) //
-				.setLastChangedBy(itemHistoryEntity.getLastChangedBy()) //
-				.setMediaType(itemHistoryEntity.getMediaType())//
-				.setPrice(itemHistoryEntity.getPrice())//
-				.setStock(itemHistoryEntity.getStock())//
-				.setTitle(itemHistoryEntity.getTitle())//
+	public static ItemHistoryState toDomain(final ItemHistoryStateEntity itemHistoryStateEntity) {
+		return new ItemHistoryStateBuilder()//
+				.setAction(itemHistoryStateEntity.getAction())//
+				.setId(itemHistoryStateEntity.getId()) //
+				.setItemId(itemHistoryStateEntity.getItemId()) //
+				.setImageUrl(itemHistoryStateEntity.getImageUrl()) //
+				.setLastChange(itemHistoryStateEntity.getLastChange()) //
+				.setLastChangedBy(itemHistoryStateEntity.getLastChangedBy()) //
+				.setMediaType(itemHistoryStateEntity.getMediaType())//
+				.setPrice(itemHistoryStateEntity.getPrice())//
+				.setStock(itemHistoryStateEntity.getStock())//
+				.setTitle(itemHistoryStateEntity.getTitle())//
 				.build();
 	}
 
-	public static ItemHistoryEntity toEntity(final ItemHistory itemHistory) {
-		final ItemHistoryEntity entity = new ItemHistoryEntity();
+	public static ItemHistoryStateEntity toEntity(final ItemHistoryState itemHistoryState) {
+		final ItemHistoryStateEntity entity = new ItemHistoryStateEntity();
 
-		entity.setAction(itemHistory.getAction());
-		entity.setId(itemHistory.getId());
-		entity.setItemId(itemHistory.getItemId());
-		entity.setImageUrl(itemHistory.getImageUrl());
-		entity.setLastChange(itemHistory.getLastChange());
-		entity.setLastChangedBy(itemHistory.getLastChangedBy());
-		entity.setMediaType(itemHistory.getMediaType());
-		entity.setPrice(itemHistory.getPrice());
-		entity.setStock(itemHistory.getStock());
-		entity.setTitle(itemHistory.getTitle());
+		entity.setAction(itemHistoryState.getAction());
+		entity.setId(itemHistoryState.getId());
+		entity.setItemId(itemHistoryState.getItemId());
+		entity.setImageUrl(itemHistoryState.getImageUrl());
+		entity.setLastChange(itemHistoryState.getLastChange());
+		entity.setLastChangedBy(itemHistoryState.getLastChangedBy());
+		entity.setMediaType(itemHistoryState.getMediaType());
+		entity.setPrice(itemHistoryState.getPrice());
+		entity.setStock(itemHistoryState.getStock());
+		entity.setTitle(itemHistoryState.getTitle());
 
 		return entity;
 	}
