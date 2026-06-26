@@ -1,12 +1,12 @@
 package com.simple_shop.item_service.item.model;
 
 import java.math.BigDecimal;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 
 public final class ItemHistory {
-	private final Integer historyEntryId;
+	private final Long historyEntryId;
 
-	private final Integer id;
+	private final Long id;
 
 	private final String title;
 
@@ -18,9 +18,9 @@ public final class ItemHistory {
 
 	private final String imageUrl;
 
-	private final ZonedDateTime lastChange;
+	private final LocalDateTime lastChange;
 
-	private final Integer lastChangedBy;
+	private final Long lastChangedBy;
 
 	private final ItemAction action;
 
@@ -41,11 +41,11 @@ public final class ItemHistory {
 		this.action = builder.getAction();
 	}
 
-	public Integer getHistoryEntryId() {
+	public Long getHistoryEntryId() {
 		return this.historyEntryId;
 	}
 
-	public Integer getId() {
+	public Long getId() {
 		return this.id;
 	}
 
@@ -69,11 +69,11 @@ public final class ItemHistory {
 		return this.imageUrl;
 	}
 
-	public ZonedDateTime getLastChange() {
+	public LocalDateTime getLastChange() {
 		return this.lastChange;
 	}
 
-	public Integer getLastChangedBy() {
+	public Long getLastChangedBy() {
 		return this.lastChangedBy;
 	}
 
@@ -82,9 +82,9 @@ public final class ItemHistory {
 	}
 
 	public static final class ItemHistoryBuilder {
-		private Integer historyEntryId;
+		private Long historyEntryId;
 
-		private Integer id;
+		private Long id;
 
 		private String title;
 
@@ -96,9 +96,9 @@ public final class ItemHistory {
 
 		private String imageUrl;
 
-		private ZonedDateTime lastChange;
+		private LocalDateTime lastChange;
 
-		private Integer lastChangedBy;
+		private Long lastChangedBy;
 
 		private ItemAction action;
 
@@ -106,21 +106,21 @@ public final class ItemHistory {
 			super();
 		}
 
-		public Integer getHistoryEntryId() {
+		public Long getHistoryEntryId() {
 			return this.historyEntryId;
 		}
 
-		public ItemHistoryBuilder setHistoryEntryId(final Integer historyEntryId) {
+		public ItemHistoryBuilder setHistoryEntryId(final Long historyEntryId) {
 			this.historyEntryId = historyEntryId;
 
 			return this;
 		}
 
-		public Integer getId() {
+		public Long getId() {
 			return this.id;
 		}
 
-		public ItemHistoryBuilder setId(final Integer id) {
+		public ItemHistoryBuilder setId(final Long id) {
 			this.id = id;
 
 			return this;
@@ -176,21 +176,21 @@ public final class ItemHistory {
 			return this;
 		}
 
-		public ZonedDateTime getLastChange() {
+		public LocalDateTime getLastChange() {
 			return this.lastChange;
 		}
 
-		public ItemHistoryBuilder setLastChange(final ZonedDateTime lastChange) {
+		public ItemHistoryBuilder setLastChange(final LocalDateTime lastChange) {
 			this.lastChange = lastChange;
 
 			return this;
 		}
 
-		public Integer getLastChangedBy() {
+		public Long getLastChangedBy() {
 			return this.lastChangedBy;
 		}
 
-		public ItemHistoryBuilder setLastChangedBy(final Integer lastChangedBy) {
+		public ItemHistoryBuilder setLastChangedBy(final Long lastChangedBy) {
 			this.lastChangedBy = lastChangedBy;
 
 			return this;
