@@ -24,6 +24,8 @@ public class ItemDto {
 
 	private Long lastChangedBy;
 
+	private Long version;
+
 	public ItemDto() {
 		super();
 	}
@@ -108,6 +110,16 @@ public class ItemDto {
 		return this;
 	}
 
+	public Long getVersion() {
+		return this.version;
+	}
+
+	public ItemDto setVersion(final Long version) {
+		this.version = version;
+
+		return this;
+	}
+
 	public static enum ItemDtoMember {
 		ID("id"),
 
@@ -124,6 +136,8 @@ public class ItemDto {
 		LAST_CHANGE("lastChange"),
 
 		LAST_CHANGED_BY("lastChangedBy"),
+
+		VERSION("version"),
 
 		;
 

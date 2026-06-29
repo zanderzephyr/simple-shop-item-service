@@ -22,6 +22,7 @@ public final class ItemDtoMapper {
 				.setPrice(itemDto.getPrice())//
 				.setStock(itemDto.getStock())//
 				.setTitle(itemDto.getTitle())//
+				.setVersion(itemDto.getVersion())//
 				.build();
 	}
 
@@ -36,6 +37,7 @@ public final class ItemDtoMapper {
 		itemDto.setPrice(item.getPrice());
 		itemDto.setStock(item.getStock());
 		itemDto.setTitle(item.getTitle());
+		itemDto.setVersion(item.getVersion());
 
 		return itemDto;
 	}

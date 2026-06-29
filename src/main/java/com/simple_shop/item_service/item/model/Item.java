@@ -24,6 +24,8 @@ public final class Item {
 
 	private final Long lastChangedBy;
 
+	private final Long version;
+
 	/**
 	 * @param  builder
 	 *
@@ -42,6 +44,7 @@ public final class Item {
 		this.imageUrl = builder.getImageUrl();
 		this.lastChange = builder.getLastChange();
 		this.lastChangedBy = builder.getLastChangedBy();
+		this.version = builder.getVersion();
 	}
 
 	public Long getId() {
@@ -76,6 +79,10 @@ public final class Item {
 		return this.lastChangedBy;
 	}
 
+	public Long getVersion() {
+		return this.version;
+	}
+
 	public static final class ItemBuilder {
 		private Long id;
 
@@ -95,6 +102,8 @@ public final class Item {
 		private LocalDateTime lastChange;
 
 		private Long lastChangedBy;
+
+		private Long version;
 
 		public ItemBuilder() {
 			super();
@@ -180,6 +189,16 @@ public final class Item {
 			return this;
 		}
 
+		public Long getVersion() {
+			return this.version;
+		}
+
+		public ItemBuilder setVersion(final Long version) {
+			this.version = version;
+
+			return this;
+		}
+
 		/**
 		 * @throws ItemValidationException When a field is not properly set.
 		 */
@@ -230,7 +249,8 @@ public final class Item {
 					.setMediaType(item.getMediaType())//
 					.setPrice(item.getPrice())//
 					.setStock(item.getStock())//
-					.setTitle(item.getTitle());
+					.setTitle(item.getTitle())//
+					.setVersion(item.getVersion());
 		}
 	}
 }

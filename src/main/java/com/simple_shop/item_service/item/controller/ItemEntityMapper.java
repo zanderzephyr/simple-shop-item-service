@@ -22,6 +22,7 @@ public final class ItemEntityMapper {
 				.setPrice(itemEntity.getPrice())//
 				.setStock(itemEntity.getStock())//
 				.setTitle(itemEntity.getTitle())//
+				.setVersion(itemEntity.getVersion())//
 				.build();
 	}
 
@@ -36,6 +37,7 @@ public final class ItemEntityMapper {
 		entity.setPrice(item.getPrice());
 		entity.setStock(item.getStock());
 		entity.setTitle(item.getTitle());
+		entity.setVersion(item.getVersion());
 
 		return entity;
 	}
@@ -52,6 +54,7 @@ public final class ItemEntityMapper {
 				.setPrice(itemHistoryStateEntity.getPrice())//
 				.setStock(itemHistoryStateEntity.getStock())//
 				.setTitle(itemHistoryStateEntity.getTitle())//
+				.setVersion(itemHistoryStateEntity.getVersion())//
 				.build();
 	}
 
@@ -68,6 +71,7 @@ public final class ItemEntityMapper {
 		entity.setPrice(itemHistoryState.getPrice());
 		entity.setStock(itemHistoryState.getStock());
 		entity.setTitle(itemHistoryState.getTitle());
+		entity.setVersion(itemHistoryState.getVersion());
 
 		return entity;
 	}

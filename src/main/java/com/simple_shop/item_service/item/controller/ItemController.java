@@ -13,6 +13,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,13 +40,6 @@ import com.simple_shop.item_service.item.service.ItemService;
  * and difficult to manage. For now, we simply leave the version segment as a
  * last resort if something needs a hard break in handling properly. For that
  * case, another controller with an incremented version could be created.
- *
- * TODO When interacting with the DB,
- *
- * - make sure SQL injection is impossible (prepared statements?).
- *
- * - make sure, the transaction wraps around Item and ItemHistory table
- * (combined)
  */
 @RestController
 @RequestMapping("/api/v1/items")
@@ -101,6 +95,9 @@ public final class ItemController {
 		if (!Long.valueOf(itemId).equals(itemToModify.getId())) {
 			throw new ItemValidationException("Path ID and payload ID mismatch!");
 		}
+		if (itemDto.getVersion() == null) {
+			throw new ItemValidationException("Version must not be null!");
+		}
 
 		// TODO Replace userId by actual session user ID
 		final Item modifiedItem = this.itemService.modifyItem(itemToModify, 42l);
@@ -108,6 +105,10 @@ public final class ItemController {
 		return ResponseEntity.status(HttpStatus.OK).body(modifiedItemDto);
 	}
 
+	/*
+	 * No version checking here for optimistic locking. A delete operation is valid
+	 * even on stale data.
+	 */
 	@DeleteMapping("/{itemId}")
 	public ResponseEntity<Void> deleteItem(@PathVariable final long itemId) {
 		/*
@@ -231,5 +232,16 @@ public final class ItemController {
 		errorBody.put("error", "Internal server error");
 		errorBody.put("message", exception.getMessage());
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorBody);
+	}
+
+	@ExceptionHandler(ObjectOptimisticLockingFailureException.class)
+	public ResponseEntity<Map<String, Object>> handleObjectOptimisticLockingFailureException(
+			final ObjectOptimisticLockingFailureException exception) {
+		final Map<String, Object> errorBody = new HashMap<>();
+		errorBody.put("timestamp", Instant.now());
+		errorBody.put("status", HttpStatus.CONFLICT.value());
+		errorBody.put("error", "Conflict");
+		errorBody.put("message", exception.getMessage());
+		return ResponseEntity.status(HttpStatus.CONFLICT).body(errorBody);
 	}
 }

@@ -23,6 +23,8 @@ public final class ItemHistoryState {
 
 	private final ItemAction action;
 
+	private final Long version;
+
 	private ItemHistoryState(final ItemHistoryStateBuilder builder) {
 		super();
 
@@ -38,6 +40,7 @@ public final class ItemHistoryState {
 		this.lastChange = builder.getLastChange();
 		this.lastChangedBy = builder.getLastChangedBy();
 		this.action = builder.getAction();
+		this.version = builder.getVersion();
 	}
 
 	public Long getId() {
@@ -80,6 +83,10 @@ public final class ItemHistoryState {
 		return this.action;
 	}
 
+	public Long getVersion() {
+		return this.version;
+	}
+
 	public static final class ItemHistoryStateBuilder {
 		private Long id;
 
@@ -100,6 +107,8 @@ public final class ItemHistoryState {
 		private Long lastChangedBy;
 
 		private ItemAction action;
+
+		private Long version;
 
 		public ItemHistoryStateBuilder() {
 			super();
@@ -205,6 +214,16 @@ public final class ItemHistoryState {
 			return this;
 		}
 
+		public Long getVersion() {
+			return this.version;
+		}
+
+		public ItemHistoryStateBuilder setVersion(final Long version) {
+			this.version = version;
+
+			return this;
+		}
+
 		public void validate() {
 			if (this.title == null || this.title.isBlank()) {
 				throw new IllegalArgumentException("Invalid title!");
@@ -246,7 +265,8 @@ public final class ItemHistoryState {
 					.setPrice(itemHistory.getPrice())//
 					.setStock(itemHistory.getStock())//
 					.setTitle(itemHistory.getTitle())//
-					.setAction(itemHistory.getAction());
+					.setAction(itemHistory.getAction())//
+					.setVersion(itemHistory.getVersion());
 		}
 	}
 }

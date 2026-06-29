@@ -12,6 +12,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 
 @Entity
 @Table(name = "Item", schema = "item_shop")
@@ -45,6 +46,10 @@ public class ItemEntity {
 
 	@Column(name = "LastChangedBy", nullable = false)
 	private Long lastChangedBy;
+
+	@Version
+	@Column(name = "Version", nullable = false)
+	private Long version;
 
 	public ItemEntity() {
 		super();
@@ -114,6 +119,18 @@ public class ItemEntity {
 		this.lastChangedBy = lastChangedBy;
 	}
 
+	public Long getVersion() {
+		return this.version;
+	}
+
+	/**
+	 * Never call this without very good reason. It could disturb Hibernate's
+	 * optimistic locking.
+	 */
+	public void setVersion(final Long version) {
+		this.version = version;
+	}
+
 	public static enum ItemEntityMember {
 		ID("id"),
 
@@ -130,6 +147,8 @@ public class ItemEntity {
 		LAST_CHANGE("lastChange"),
 
 		LAST_CHANGED_BY("lastChangedBy"),
+
+		VERSION("version"),
 
 		;
 

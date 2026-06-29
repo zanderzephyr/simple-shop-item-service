@@ -54,6 +54,9 @@ public class ItemHistoryStateEntity {
 	@Column(name = "Action", length = 10, nullable = false)
 	private ItemAction action;
 
+	@Column(name = "Version", nullable = false)
+	private Long version;
+
 	public ItemHistoryStateEntity() {
 		super();
 	}
@@ -136,5 +139,13 @@ public class ItemHistoryStateEntity {
 
 	public void setAction(final ItemAction action) {
 		this.action = action;
+	}
+
+	public Long getVersion() {
+		return this.version;
+	}
+
+	public void setVersion(final Long version) {
+		this.version = version;
 	}
 }
