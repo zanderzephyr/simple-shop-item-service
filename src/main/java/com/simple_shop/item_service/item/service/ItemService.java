@@ -30,8 +30,8 @@ public final class ItemService {
 	}
 
 	public Item createItem(final Item itemToCreate, final long userId) {
-		if (itemToCreate.getId() != null) {
-			throw new ItemValidationException("An item to create must not have an ID!");
+		if (itemToCreate.getId() != -1) {
+			throw new ItemValidationException("An item to create must have ID -1!");
 		}
 		final Item finalizedItem = ItemTransactionHandler.finalizeItem(itemToCreate, userId);
 		final Item createdItem = this.itemTransactionHandler.saveItem(finalizedItem, ItemAction.CREATE);

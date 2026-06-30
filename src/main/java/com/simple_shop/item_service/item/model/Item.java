@@ -202,15 +202,12 @@ public final class Item {
 		/**
 		 * @throws ItemValidationException When a field is not properly set.
 		 */
-		/*
-		 * TODO Implement all necessary data validations, that the project agrees on,
-		 * i.e. the maximal length of the title, so that invalid titles or data in
-		 * general are never passed into the persistence mapping or DB transaction
-		 * layers. Also validate the values are in the correct ranges (for example IDs
-		 * are >=0 and so on).
-		 */
 		public void validate() throws ItemValidationException {
-			if (this.title == null || this.title.isBlank()) {
+			if (this.id == null || this.id < -1) {
+				throw new ItemValidationException("Invalid ID!");
+			}
+
+			if (this.title == null || this.title.isBlank() || this.title.length() > 400) {
 				throw new ItemValidationException("Invalid title!");
 			}
 
@@ -226,7 +223,7 @@ public final class Item {
 				throw new ItemValidationException("Invalid price!");
 			}
 
-			if (this.imageUrl == null || this.imageUrl.isBlank()) {
+			if (this.imageUrl == null || this.imageUrl.isBlank() || this.imageUrl.length() > 2048) {
 				throw new ItemValidationException("Invalid Image URL!");
 			}
 		}
