@@ -1,6 +1,5 @@
 package com.simple_shop.item_service.item.controller;
 
-import java.time.Instant;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -13,9 +12,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,7 +26,6 @@ import com.simple_shop.item_service.item.controller.ItemRequestConstraints.Sorti
 import com.simple_shop.item_service.item.dto.ItemDto;
 import com.simple_shop.item_service.item.dto.ItemDto.ItemDtoMember;
 import com.simple_shop.item_service.item.exceptions.InvalidItemRequestConstraintsException;
-import com.simple_shop.item_service.item.exceptions.ItemNotFoundException;
 import com.simple_shop.item_service.item.exceptions.ItemValidationException;
 import com.simple_shop.item_service.item.model.Item;
 import com.simple_shop.item_service.item.persistence.ItemEntity.ItemEntityMember;
@@ -191,57 +187,5 @@ public final class ItemController {
 		final Item item = this.itemService.getItemById(itemId);
 		final ItemDto itemDto = ItemDtoMapper.toDto(item);
 		return ResponseEntity.status(HttpStatus.OK).body(itemDto);
-	}
-
-	@ExceptionHandler(ItemValidationException.class)
-	public ResponseEntity<Map<String, Object>> handleItemValidationException(final ItemValidationException exception) {
-		final Map<String, Object> errorBody = new HashMap<>();
-		errorBody.put("timestamp", Instant.now());
-		errorBody.put("status", HttpStatus.BAD_REQUEST.value());
-		errorBody.put("error", "Item validation Failed");
-		errorBody.put("message", exception.getMessage());
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorBody);
-	}
-
-	@ExceptionHandler(ItemNotFoundException.class)
-	public ResponseEntity<Map<String, Object>> handleItemNotFoundException(final ItemNotFoundException exception) {
-		final Map<String, Object> errorBody = new HashMap<>();
-		errorBody.put("timestamp", Instant.now());
-		errorBody.put("status", HttpStatus.NOT_FOUND.value());
-		errorBody.put("error", "Item not found");
-		errorBody.put("message", exception.getMessage());
-		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorBody);
-	}
-
-	@ExceptionHandler(InvalidItemRequestConstraintsException.class)
-	public ResponseEntity<Map<String, Object>> handleInvalidItemRequestConstraintsException(
-			final InvalidItemRequestConstraintsException exception) {
-		final Map<String, Object> errorBody = new HashMap<>();
-		errorBody.put("timestamp", Instant.now());
-		errorBody.put("status", HttpStatus.BAD_REQUEST.value());
-		errorBody.put("error", "Page setup is invalid");
-		errorBody.put("message", exception.getMessage());
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorBody);
-	}
-
-	@ExceptionHandler(IllegalStateException.class)
-	public ResponseEntity<Map<String, Object>> handleIllegalStateException(final IllegalStateException exception) {
-		final Map<String, Object> errorBody = new HashMap<>();
-		errorBody.put("timestamp", Instant.now());
-		errorBody.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
-		errorBody.put("error", "Internal server error");
-		errorBody.put("message", exception.getMessage());
-		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorBody);
-	}
-
-	@ExceptionHandler(ObjectOptimisticLockingFailureException.class)
-	public ResponseEntity<Map<String, Object>> handleObjectOptimisticLockingFailureException(
-			final ObjectOptimisticLockingFailureException exception) {
-		final Map<String, Object> errorBody = new HashMap<>();
-		errorBody.put("timestamp", Instant.now());
-		errorBody.put("status", HttpStatus.CONFLICT.value());
-		errorBody.put("error", "Conflict");
-		errorBody.put("message", exception.getMessage());
-		return ResponseEntity.status(HttpStatus.CONFLICT).body(errorBody);
 	}
 }

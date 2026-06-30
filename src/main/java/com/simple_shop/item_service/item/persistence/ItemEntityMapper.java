@@ -1,11 +1,9 @@
-package com.simple_shop.item_service.item.controller;
+package com.simple_shop.item_service.item.persistence;
 
 import com.simple_shop.item_service.item.model.Item;
 import com.simple_shop.item_service.item.model.Item.ItemBuilder;
 import com.simple_shop.item_service.item.model.ItemHistoryState;
 import com.simple_shop.item_service.item.model.ItemHistoryState.ItemHistoryStateBuilder;
-import com.simple_shop.item_service.item.persistence.ItemEntity;
-import com.simple_shop.item_service.item.persistence.ItemHistoryStateEntity;
 
 public final class ItemEntityMapper {
 	private ItemEntityMapper() {

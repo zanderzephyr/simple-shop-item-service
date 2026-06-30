@@ -5,7 +5,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.simple_shop.item_service.item.controller.ItemEntityMapper;
 import com.simple_shop.item_service.item.model.Item;
 import com.simple_shop.item_service.item.model.Item.ItemBuilder;
 import com.simple_shop.item_service.item.model.ItemAction;
