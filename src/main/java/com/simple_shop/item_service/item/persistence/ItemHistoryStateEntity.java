@@ -15,7 +15,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "ItemHistory", schema = "item_shop")
+@Table(name = "ItemHistoryState", schema = "item_shop")
 public class ItemHistoryStateEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
