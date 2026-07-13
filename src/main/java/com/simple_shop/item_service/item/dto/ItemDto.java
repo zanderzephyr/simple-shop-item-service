@@ -1,15 +1,15 @@
 package com.simple_shop.item_service.item.dto;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
-import com.simple_shop.item_service.item.model.MediaType;
+import com.simple_shop.item_service.item.dto.formatter.JsonLocalDateTimeFormatter;
 
 public class ItemDto {
 	private Long id;
 
 	private String title;
 
-	private MediaType mediaType;
+	private String mediaType;
 
 	private Integer stock;
 
@@ -20,7 +20,8 @@ public class ItemDto {
 	/**
 	 * In UTC.
 	 */
-	private Instant lastChange;
+	@JsonLocalDateTimeFormatter
+	private LocalDateTime lastChange;
 
 	private Long lastChangedBy;
 
@@ -50,11 +51,11 @@ public class ItemDto {
 		return this;
 	}
 
-	public MediaType getMediaType() {
+	public String getMediaType() {
 		return this.mediaType;
 	}
 
-	public ItemDto setMediaType(final MediaType mediaType) {
+	public ItemDto setMediaType(final String mediaType) {
 		this.mediaType = mediaType;
 
 		return this;
@@ -90,11 +91,11 @@ public class ItemDto {
 		return this;
 	}
 
-	public Instant getLastChange() {
+	public LocalDateTime getLastChange() {
 		return this.lastChange;
 	}
 
-	public ItemDto setLastChange(final Instant lastChange) {
+	public ItemDto setLastChange(final LocalDateTime lastChange) {
 		this.lastChange = lastChange;
 
 		return this;

@@ -1,10 +1,11 @@
 package com.simple_shop.item_service.item.controller;
 
-import java.time.ZoneOffset;
-
 import com.simple_shop.item_service.item.dto.ItemDto;
+import com.simple_shop.item_service.item.exceptions.ItemValidationException;
 import com.simple_shop.item_service.item.model.Item;
 import com.simple_shop.item_service.item.model.Item.ItemBuilder;
+import com.simple_shop.item_service.item.model.MediaType;
+import com.simple_shop.item_service.utils.DataTypeUtils;
 
 public final class ItemDtoMapper {
 	private ItemDtoMapper() {
@@ -15,10 +16,9 @@ public final class ItemDtoMapper {
 		return new ItemBuilder()//
 				.setId(itemDto.getId())//
 				.setImageUrl(itemDto.getImageUrl())//
-				.setLastChange(itemDto.getLastChange() == null ? null
-						: itemDto.getLastChange().atZone(ZoneOffset.UTC).toLocalDateTime())//
+				.setLastChange(itemDto.getLastChange())//
 				.setLastChangedBy(itemDto.getLastChangedBy())//
-				.setMediaType(itemDto.getMediaType())//
+				.setMediaType(ItemDtoMapper.parseMediaType(itemDto.getMediaType()))//
 				.setPrice(itemDto.getPrice())//
 				.setStock(itemDto.getStock())//
 				.setTitle(itemDto.getTitle())//
@@ -26,14 +26,22 @@ public final class ItemDtoMapper {
 				.build();
 	}
 
+	private static MediaType parseMediaType(final String mediaType) {
+		try {
+			return DataTypeUtils.parseEnum(mediaType, MediaType.class);
+		} catch (final IllegalArgumentException e) {
+			throw new ItemValidationException("Unknown media type: " + mediaType);
+		}
+	}
+
 	public static ItemDto toDto(final Item item) {
 		final ItemDto itemDto = new ItemDto();
 
 		itemDto.setId(item.getId());
 		itemDto.setImageUrl(item.getImageUrl());
-		itemDto.setLastChange(item.getLastChange().toInstant(ZoneOffset.UTC));
+		itemDto.setLastChange(item.getLastChange());
 		itemDto.setLastChangedBy(item.getLastChangedBy());
-		itemDto.setMediaType(item.getMediaType());
+		itemDto.setMediaType(item.getMediaType().name());
 		itemDto.setPrice(item.getPrice());
 		itemDto.setStock(item.getStock());
 		itemDto.setTitle(item.getTitle());
