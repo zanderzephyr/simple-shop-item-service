@@ -15,7 +15,7 @@ import com.simple_shop.item_service.item.repository.ItemHistoryStateEntityReposi
 import com.simple_shop.item_service.utils.ItemServiceUtils;
 
 @Component
-public final class ItemTransactionHandler {
+public class ItemTransactionHandler {
 	private final ItemEntityRepository itemRepository;
 
 	private final ItemHistoryStateEntityRepository itemHistoryStateRepository;
