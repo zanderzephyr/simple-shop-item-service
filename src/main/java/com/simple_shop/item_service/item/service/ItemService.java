@@ -30,12 +30,21 @@ public final class ItemService {
 	}
 
 	public Item createItem(final Item itemToCreate, final long userId) {
-		if (itemToCreate.getId() != -1) {
-			throw new ItemValidationException("An item to create must have ID -1!");
-		}
+		ItemService.validateItemToCreate(itemToCreate);
+
 		final Item finalizedItem = ItemTransactionHandler.finalizeItem(itemToCreate, userId);
 		final Item createdItem = this.itemTransactionHandler.saveItem(finalizedItem, ItemAction.CREATE);
 		return createdItem;
+	}
+
+	private static void validateItemToCreate(final Item itemToCreate) {
+		if (itemToCreate.getId() != -1) {
+			throw new ItemValidationException("An item to create must have ID -1!");
+		}
+
+		if (itemToCreate.getVersion() != null) {
+			throw new ItemValidationException("An item to create must not have a version!");
+		}
 	}
 
 	public Item modifyItem(final Item itemToModify, final long userId) {
