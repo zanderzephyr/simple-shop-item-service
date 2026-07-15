@@ -3,8 +3,10 @@ package com.simple_shop.item_service.item.dto;
 import java.time.LocalDateTime;
 
 import com.simple_shop.item_service.item.dto.formatter.JsonLocalDateTimeFormatter;
+import com.simple_shop.item_service.item.dto.formatter.JsonLongFormatter;
 
 public class ItemDto {
+	@JsonLongFormatter
 	private Long id;
 
 	private String title;
@@ -23,8 +25,10 @@ public class ItemDto {
 	@JsonLocalDateTimeFormatter
 	private LocalDateTime lastChange;
 
+	@JsonLongFormatter
 	private Long lastChangedBy;
 
+	@JsonLongFormatter
 	private Long version;
 
 	public ItemDto() {

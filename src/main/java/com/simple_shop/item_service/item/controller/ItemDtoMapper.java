@@ -34,6 +34,10 @@ public final class ItemDtoMapper {
 		}
 	}
 
+	/*
+	 * This is the location to set the precision of decimals, should we ever have
+	 * them and need precision. Do not solve this using the formatters.
+	 */
 	public static ItemDto toDto(final Item item) {
 		final ItemDto itemDto = new ItemDto();
 
