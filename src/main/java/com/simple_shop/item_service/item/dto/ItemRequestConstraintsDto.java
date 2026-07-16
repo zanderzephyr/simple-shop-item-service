@@ -1,4 +1,4 @@
-package com.simple_shop.item_service.item.controller;
+package com.simple_shop.item_service.item.dto;
 
 import com.simple_shop.item_service.item.dto.ItemDto.ItemDtoMember;
 
@@ -6,7 +6,7 @@ import com.simple_shop.item_service.item.dto.ItemDto.ItemDtoMember;
  * Must never contain sensitive information, as the properties of this object
  * are passed via URL arguments.
  */
-public final class ItemRequestConstraints {
+public final class ItemRequestConstraintsDto {
 	private int pageIndex = 0;
 
 	private int pageSize = 20;
@@ -18,7 +18,7 @@ public final class ItemRequestConstraints {
 
 	private SortingDirection sortingDirection = SortingDirection.ASCENDING;
 
-	public ItemRequestConstraints() {
+	public ItemRequestConstraintsDto() {
 		super();
 	}
 

@@ -22,9 +22,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.simple_shop.item_service.item.controller.ItemRequestConstraints.SortingDirection;
 import com.simple_shop.item_service.item.dto.ItemDto;
+import com.simple_shop.item_service.item.dto.ItemRequestConstraintsDto;
 import com.simple_shop.item_service.item.dto.ItemDto.ItemDtoMember;
+import com.simple_shop.item_service.item.dto.ItemRequestConstraintsDto.SortingDirection;
 import com.simple_shop.item_service.item.exceptions.InvalidItemRequestConstraintsException;
 import com.simple_shop.item_service.item.exceptions.ItemValidationException;
 import com.simple_shop.item_service.item.model.Item;
@@ -124,7 +125,7 @@ public final class ItemController {
 
 	// Using ModelAttribute to prevent GET requests without body causing issues
 	@GetMapping
-	public ResponseEntity<Page<ItemDto>> getAllItems(@ModelAttribute final ItemRequestConstraints constraints) {
+	public ResponseEntity<Page<ItemDto>> getAllItems(@ModelAttribute final ItemRequestConstraintsDto constraints) {
 		/*
 		 * TODO Validate session is ok. If it isn't, answer appropriately with negative
 		 * response.
@@ -137,7 +138,7 @@ public final class ItemController {
 		return ResponseEntity.status(HttpStatus.OK).body(page);
 	}
 
-	private Pageable createPageable(final ItemRequestConstraints constraints) {
+	private Pageable createPageable(final ItemRequestConstraintsDto constraints) {
 		final SortingDirection sortingDirection = constraints.getSortingDirection();
 		final Direction direction;
 		if (SortingDirection.ASCENDING.equals(sortingDirection)) {
@@ -154,7 +155,7 @@ public final class ItemController {
 		return PageRequest.of(constraints.getPageIndex(), constraints.getPageSize(), sort);
 	}
 
-	private void validate(final ItemRequestConstraints constraints) throws InvalidItemRequestConstraintsException {
+	private void validate(final ItemRequestConstraintsDto constraints) throws InvalidItemRequestConstraintsException {
 		if (constraints == null) {
 			throw new InvalidItemRequestConstraintsException("No item search constraints!");
 		}
