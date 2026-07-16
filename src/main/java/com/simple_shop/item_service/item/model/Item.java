@@ -226,6 +226,10 @@ public final class Item {
 			if (this.imageUrl == null || this.imageUrl.isBlank() || this.imageUrl.length() > 2048) {
 				throw new ItemValidationException("Invalid Image URL!");
 			}
+
+			if (this.version == null || this.version < -1) {
+				throw new ItemValidationException("Invalid version!");
+			}
 		}
 
 		/**

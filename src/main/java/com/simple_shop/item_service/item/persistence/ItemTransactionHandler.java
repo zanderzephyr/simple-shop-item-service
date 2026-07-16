@@ -103,8 +103,10 @@ public class ItemTransactionHandler {
 
 	public static Item finalizeItem(final Item item, final long userId) {
 		return ItemBuilder.initFrom(item) //
+				.setId(item.getId() == -1 ? null : item.getId())//
 				.setLastChange(ItemServiceUtils.createNow()) //
 				.setLastChangedBy(userId) //
+				.setVersion(item.getVersion() == -1 ? null : item.getVersion())//
 				.build();
 	}
 }
