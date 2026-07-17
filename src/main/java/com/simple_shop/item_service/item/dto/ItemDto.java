@@ -2,9 +2,11 @@ package com.simple_shop.item_service.item.dto;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.simple_shop.item_service.item.dto.formatter.JsonLocalDateTimeFormatter;
 import com.simple_shop.item_service.item.dto.formatter.JsonLongFormatter;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ItemDto {
 	@JsonLongFormatter
 	private Long id;

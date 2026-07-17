@@ -38,12 +38,12 @@ public final class ItemService {
 	}
 
 	private static void validateItemToCreate(final Item itemToCreate) {
-		if (itemToCreate.getId() != -1) {
-			throw new ItemValidationException("An item to create must have ID -1!");
+		if (itemToCreate.getId() != null) {
+			throw new ItemValidationException("An item to create must not have an ID!");
 		}
 
-		if (itemToCreate.getVersion() != -1) {
-			throw new ItemValidationException("An item to create must have version -1!");
+		if (itemToCreate.getVersion() != null) {
+			throw new ItemValidationException("An item to create must not have a version!");
 		}
 	}
 
