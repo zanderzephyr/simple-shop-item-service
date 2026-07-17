@@ -203,15 +203,15 @@ public final class Item {
 		 * @throws ItemValidationException When a field is not properly set.
 		 */
 		public void validate() throws ItemValidationException {
-			if (this.id < 0) {
+			if (this.id != null & this.id < 0) {
 				throw new ItemValidationException("Invalid ID!");
 			}
 
-			if (this.lastChangedBy < 0) {
+			if (this.lastChangedBy != null && this.lastChangedBy < 0) {
 				throw new ItemValidationException("Invalid last changed by!");
 			}
 
-			if (this.version < 0) {
+			if (this.version != null && this.version < 0) {
 				throw new ItemValidationException("Invalid version!");
 			}
 
