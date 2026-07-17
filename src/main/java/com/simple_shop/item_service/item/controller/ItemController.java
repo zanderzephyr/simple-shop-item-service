@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.domain.Sort.Order;
+import org.springframework.data.web.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -23,8 +24,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.simple_shop.item_service.item.dto.ItemDto;
-import com.simple_shop.item_service.item.dto.ItemRequestConstraintsDto;
 import com.simple_shop.item_service.item.dto.ItemDto.ItemDtoMember;
+import com.simple_shop.item_service.item.dto.ItemRequestConstraintsDto;
 import com.simple_shop.item_service.item.dto.ItemRequestConstraintsDto.SortingDirection;
 import com.simple_shop.item_service.item.exceptions.InvalidItemRequestConstraintsException;
 import com.simple_shop.item_service.item.exceptions.ItemValidationException;
@@ -125,7 +126,7 @@ public final class ItemController {
 
 	// Using ModelAttribute to prevent GET requests without body causing issues
 	@GetMapping
-	public ResponseEntity<Page<ItemDto>> getItems(@ModelAttribute final ItemRequestConstraintsDto constraints) {
+	public ResponseEntity<PagedModel<ItemDto>> getItems(@ModelAttribute final ItemRequestConstraintsDto constraints) {
 		/*
 		 * TODO Validate session is ok. If it isn't, answer appropriately with negative
 		 * response.
@@ -135,7 +136,8 @@ public final class ItemController {
 
 		final Pageable pageable = this.createPageable(constraints);
 		final Page<ItemDto> page = this.itemService.getAllItems(pageable).map(ItemDtoMapper::toDto);
-		return ResponseEntity.status(HttpStatus.OK).body(page);
+		final PagedModel<ItemDto> pagedModel = new PagedModel<>(page);
+		return ResponseEntity.status(HttpStatus.OK).body(pagedModel);
 	}
 
 	private Pageable createPageable(final ItemRequestConstraintsDto constraints) {
