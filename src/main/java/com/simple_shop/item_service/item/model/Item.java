@@ -207,6 +207,14 @@ public final class Item {
 				throw new ItemValidationException("Invalid ID!");
 			}
 
+			if (this.lastChangedBy < 0) {
+				throw new ItemValidationException("Invalid last changed by!");
+			}
+
+			if (this.version < 0) {
+				throw new ItemValidationException("Invalid version!");
+			}
+
 			if (this.title == null || this.title.isBlank() || this.title.length() > 400) {
 				throw new ItemValidationException("Invalid title!");
 			}
