@@ -125,7 +125,7 @@ public final class ItemController {
 
 	// Using ModelAttribute to prevent GET requests without body causing issues
 	@GetMapping
-	public ResponseEntity<Page<ItemDto>> getAllItems(@ModelAttribute final ItemRequestConstraintsDto constraints) {
+	public ResponseEntity<Page<ItemDto>> getItems(@ModelAttribute final ItemRequestConstraintsDto constraints) {
 		/*
 		 * TODO Validate session is ok. If it isn't, answer appropriately with negative
 		 * response.
