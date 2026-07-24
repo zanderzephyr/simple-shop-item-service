@@ -15,7 +15,7 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Version;
 
 @Entity
-@Table(name = "Item", schema = "item_shop")
+@Table(name = "Item")
 public class ItemEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
