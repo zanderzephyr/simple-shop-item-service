@@ -3,9 +3,9 @@ USE master;
 GO
 
 -- Create the database container if it doesn't exist yet
-IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'simple_shop')
+IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'simple_shop_items')
 BEGIN
-    CREATE DATABASE simple_shop;
+    CREATE DATABASE simple_shop_items;
 END
 GO
 
@@ -13,28 +13,27 @@ GO
 -- This creates the credentials that match the environment variables
 CREATE LOGIN simple_shop_item_service_db_admin 
     WITH PASSWORD = 'YourAdminSecurePassword123!', 
-    DEFAULT_DATABASE = simple_shop;
+    DEFAULT_DATABASE = simple_shop_items;
 GO
 
 CREATE LOGIN simple_shop_item_service_db_user 
     WITH PASSWORD = 'YourUserSecurePassword123!', 
-    DEFAULT_DATABASE = simple_shop;
+    DEFAULT_DATABASE = simple_shop_items;
 GO
 
 -- Switch into the shop database context
-USE simple_shop;
+USE simple_shop_items;
 GO
 
 -- Map the logins to DB-level users (Authorization)
 CREATE USER simple_shop_item_service_db_admin 
-    FOR LOGIN simple_shop_item_service_db_admin;
+    FOR LOGIN simple_shop_item_service_db_admin
+    WITH DEFAULT_SCHEMA = simple_shop;
 GO
 
 CREATE USER simple_shop_item_service_db_user 
-    FOR LOGIN simple_shop_item_service_db_user;
-GO
-
-CREATE SCHEMA item_shop;
+    FOR LOGIN simple_shop_item_service_db_user
+    WITH DEFAULT_SCHEMA = simple_shop;
 GO
 
 -- Grant DDL permissions to the Flyway admin user
@@ -43,8 +42,11 @@ GO
 ALTER ROLE db_owner ADD MEMBER simple_shop_item_service_db_admin;
 GO
 
--- Grant DML permissions to the regular user for the 'item_shop' schema ONLY
+CREATE SCHEMA simple_shop AUTHORIZATION simple_shop_item_service_db_admin;
+GO
+
+-- Grant DML permissions to the regular user for the 'simple_shop' schema ONLY
 -- Instead of giving global db_datareader/writer roles, we strictly grant permissions
 -- for the custom schema namespace.
-GRANT SELECT, INSERT, UPDATE, DELETE ON SCHEMA::item_shop TO simple_shop_item_service_db_user;
+GRANT SELECT, INSERT, UPDATE, DELETE ON SCHEMA::simple_shop TO simple_shop_item_service_db_user;
 GO
