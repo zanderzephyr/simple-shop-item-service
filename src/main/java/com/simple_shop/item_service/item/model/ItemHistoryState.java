@@ -2,6 +2,8 @@ package com.simple_shop.item_service.item.model;
 
 import java.time.LocalDateTime;
 
+import com.simple_shop.item_service.item.exceptions.ItemValidationException;
+
 public final class ItemHistoryState {
 	private final Long id;
 
@@ -17,11 +19,11 @@ public final class ItemHistoryState {
 
 	private final String imageUrl;
 
+	private final ItemAction action;
+
 	private final LocalDateTime lastChange;
 
 	private final Long lastChangedBy;
-
-	private final ItemAction action;
 
 	private final Long version;
 
@@ -37,9 +39,9 @@ public final class ItemHistoryState {
 		this.stock = builder.getStock();
 		this.price = builder.getPrice();
 		this.imageUrl = builder.getImageUrl();
+		this.action = builder.getAction();
 		this.lastChange = builder.getLastChange();
 		this.lastChangedBy = builder.getLastChangedBy();
-		this.action = builder.getAction();
 		this.version = builder.getVersion();
 	}
 
@@ -71,16 +73,16 @@ public final class ItemHistoryState {
 		return this.imageUrl;
 	}
 
+	public ItemAction getAction() {
+		return this.action;
+	}
+
 	public LocalDateTime getLastChange() {
 		return this.lastChange;
 	}
 
 	public Long getLastChangedBy() {
 		return this.lastChangedBy;
-	}
-
-	public ItemAction getAction() {
-		return this.action;
 	}
 
 	public Long getVersion() {
@@ -102,11 +104,11 @@ public final class ItemHistoryState {
 
 		private String imageUrl;
 
+		private ItemAction action;
+
 		private LocalDateTime lastChange;
 
 		private Long lastChangedBy;
-
-		private ItemAction action;
 
 		private Long version;
 
@@ -184,6 +186,16 @@ public final class ItemHistoryState {
 			return this;
 		}
 
+		public ItemAction getAction() {
+			return this.action;
+		}
+
+		public ItemHistoryStateBuilder setAction(final ItemAction action) {
+			this.action = action;
+
+			return this;
+		}
+
 		public LocalDateTime getLastChange() {
 			return this.lastChange;
 		}
@@ -204,16 +216,6 @@ public final class ItemHistoryState {
 			return this;
 		}
 
-		public ItemAction getAction() {
-			return this.action;
-		}
-
-		public ItemHistoryStateBuilder setAction(final ItemAction action) {
-			this.action = action;
-
-			return this;
-		}
-
 		public Long getVersion() {
 			return this.version;
 		}
@@ -225,28 +227,44 @@ public final class ItemHistoryState {
 		}
 
 		public void validate() {
-			if (this.title == null || this.title.isBlank()) {
-				throw new IllegalArgumentException("Invalid title!");
+			if (this.id != null && this.id < 0) {
+				throw new ItemValidationException("Invalid ID!");
+			}
+
+			if (this.title == null || this.title.isBlank() || this.title.length() > 400) {
+				throw new ItemValidationException("Invalid title!");
 			}
 
 			if (this.mediaType == null) {
-				throw new IllegalArgumentException("Invalid media type!");
+				throw new ItemValidationException("Invalid media type!");
 			}
 
 			if (this.stock == null || this.stock < 0) {
-				throw new IllegalArgumentException("Invalid stock!");
+				throw new ItemValidationException("Invalid stock!");
 			}
 
 			if (this.price == null || this.price < 0) {
-				throw new IllegalArgumentException("Invalid price!");
+				throw new ItemValidationException("Invalid price!");
 			}
 
-			if (this.imageUrl == null || this.imageUrl.isBlank()) {
-				throw new IllegalArgumentException("Invalid Image URL!");
+			if (this.imageUrl == null || this.imageUrl.isBlank() || this.imageUrl.length() > 2048) {
+				throw new ItemValidationException("Invalid Image URL!");
 			}
 
 			if (this.action == null) {
 				throw new IllegalArgumentException("Invalid action!");
+			}
+
+			if (this.lastChange == null) {
+				throw new IllegalArgumentException("Invalid last change!");
+			}
+
+			if (this.lastChangedBy != null && this.lastChangedBy < 0) {
+				throw new ItemValidationException("Invalid last changed by!");
+			}
+
+			if (this.version != null && this.version < 0) {
+				throw new ItemValidationException("Invalid version!");
 			}
 		}
 
@@ -259,13 +277,13 @@ public final class ItemHistoryState {
 					.setId(itemHistory.getId())//
 					.setItemId(itemHistory.getItemId())//
 					.setImageUrl(itemHistory.getImageUrl())//
-					.setLastChange(itemHistory.getLastChange())//
-					.setLastChangedBy(itemHistory.getLastChangedBy())//
 					.setMediaType(itemHistory.getMediaType())//
 					.setPrice(itemHistory.getPrice())//
 					.setStock(itemHistory.getStock())//
 					.setTitle(itemHistory.getTitle())//
 					.setAction(itemHistory.getAction())//
+					.setLastChange(itemHistory.getLastChange())//
+					.setLastChangedBy(itemHistory.getLastChangedBy())//
 					.setVersion(itemHistory.getVersion());
 		}
 	}

@@ -207,14 +207,6 @@ public final class Item {
 				throw new ItemValidationException("Invalid ID!");
 			}
 
-			if (this.lastChangedBy != null && this.lastChangedBy < 0) {
-				throw new ItemValidationException("Invalid last changed by!");
-			}
-
-			if (this.version != null && this.version < 0) {
-				throw new ItemValidationException("Invalid version!");
-			}
-
 			if (this.title == null || this.title.isBlank() || this.title.length() > 400) {
 				throw new ItemValidationException("Invalid title!");
 			}
@@ -233,6 +225,14 @@ public final class Item {
 
 			if (this.imageUrl == null || this.imageUrl.isBlank() || this.imageUrl.length() > 2048) {
 				throw new ItemValidationException("Invalid Image URL!");
+			}
+
+			if (this.lastChangedBy != null && this.lastChangedBy < 0) {
+				throw new ItemValidationException("Invalid last changed by!");
+			}
+
+			if (this.version != null && this.version < 0) {
+				throw new ItemValidationException("Invalid version!");
 			}
 		}
 

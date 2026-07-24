@@ -16,12 +16,12 @@ public final class ItemDtoMapper {
 		return new ItemBuilder()//
 				.setId(itemDto.getId())//
 				.setImageUrl(itemDto.getImageUrl())//
-				.setLastChange(itemDto.getLastChange())//
-				.setLastChangedBy(itemDto.getLastChangedBy())//
 				.setMediaType(ItemDtoMapper.parseMediaType(itemDto.getMediaType()))//
 				.setPrice(itemDto.getPrice())//
 				.setStock(itemDto.getStock())//
 				.setTitle(itemDto.getTitle())//
+				.setLastChange(itemDto.getLastChange())//
+				.setLastChangedBy(itemDto.getLastChangedBy())//
 				.setVersion(itemDto.getVersion())//
 				.build();
 	}
@@ -43,12 +43,12 @@ public final class ItemDtoMapper {
 
 		itemDto.setId(item.getId());
 		itemDto.setImageUrl(item.getImageUrl());
-		itemDto.setLastChange(item.getLastChange());
-		itemDto.setLastChangedBy(item.getLastChangedBy());
 		itemDto.setMediaType(item.getMediaType().name());
 		itemDto.setPrice(item.getPrice());
 		itemDto.setStock(item.getStock());
 		itemDto.setTitle(item.getTitle());
+		itemDto.setLastChange(item.getLastChange());
+		itemDto.setLastChangedBy(item.getLastChangedBy());
 		itemDto.setVersion(item.getVersion());
 
 		return itemDto;
