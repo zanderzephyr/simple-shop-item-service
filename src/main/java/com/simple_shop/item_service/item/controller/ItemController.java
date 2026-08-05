@@ -74,11 +74,11 @@ public final class ItemController {
 		 * response.
 		 */
 
-		final Item itemToCreate = ItemMapper.toDomain(itemDto);
+		final Item itemToCreate = DtoMapper.toDomain(itemDto);
 
 		// TODO Replace userId by actual session user ID
 		final Item createdItem = this.itemService.createItem(itemToCreate, 42l);
-		final ItemDto createdItemDto = ItemMapper.toDto(createdItem);
+		final ItemDto createdItemDto = DtoMapper.toDto(createdItem);
 		return ResponseEntity.status(HttpStatus.CREATED).body(createdItemDto);
 	}
 
@@ -89,7 +89,7 @@ public final class ItemController {
 		 * response.
 		 */
 
-		final Item itemToModify = ItemMapper.toDomain(itemDto);
+		final Item itemToModify = DtoMapper.toDomain(itemDto);
 		if (!Long.valueOf(itemId).equals(itemToModify.getId())) {
 			throw new ItemValidationException("Path ID and payload ID mismatch!");
 		}
@@ -99,7 +99,7 @@ public final class ItemController {
 
 		// TODO Replace userId by actual session user ID
 		final Item modifiedItem = this.itemService.modifyItem(itemToModify, 42l);
-		final ItemDto modifiedItemDto = ItemMapper.toDto(modifiedItem);
+		final ItemDto modifiedItemDto = DtoMapper.toDto(modifiedItem);
 		return ResponseEntity.status(HttpStatus.OK).body(modifiedItemDto);
 	}
 
@@ -135,7 +135,7 @@ public final class ItemController {
 		this.validate(constraints);
 
 		final Pageable pageable = this.createPageable(constraints);
-		final Page<ItemDto> page = this.itemService.getAllItems(pageable).map(ItemMapper::toDto);
+		final Page<ItemDto> page = this.itemService.getAllItems(pageable).map(DtoMapper::toDto);
 		final PagedModel<ItemDto> pagedModel = new PagedModel<>(page);
 		return ResponseEntity.status(HttpStatus.OK).body(pagedModel);
 	}
@@ -188,7 +188,7 @@ public final class ItemController {
 		 */
 
 		final Item item = this.itemService.getItemById(itemId);
-		final ItemDto itemDto = ItemMapper.toDto(item);
+		final ItemDto itemDto = DtoMapper.toDto(item);
 		return ResponseEntity.status(HttpStatus.OK).body(itemDto);
 	}
 }

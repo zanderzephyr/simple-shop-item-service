@@ -5,8 +5,8 @@ import com.simple_shop.item_service.item.model.Item.ItemBuilder;
 import com.simple_shop.item_service.item.model.ItemHistoryState;
 import com.simple_shop.item_service.item.model.ItemHistoryState.ItemHistoryStateBuilder;
 
-public final class ItemEntityMapper {
-	private ItemEntityMapper() {
+public final class PersistenceMapper {
+	private PersistenceMapper() {
 		throw new UnsupportedOperationException();
 	}
 

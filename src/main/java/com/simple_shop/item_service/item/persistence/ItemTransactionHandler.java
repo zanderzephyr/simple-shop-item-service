@@ -33,18 +33,18 @@ public class ItemTransactionHandler {
 	public Page<Item> findAll(final Pageable pageable) {
 		final Page<ItemEntity> entityPage = this.itemRepository.findAll(pageable);
 
-		return entityPage.map(ItemEntityMapper::toDomain);
+		return entityPage.map(PersistenceMapper::toDomain);
 	}
 
 	@Transactional(readOnly = true)
 	public Item findById(final long id) {
 		final ItemEntity entity = this.itemRepository.findById(id).orElse(null); //
-		return entity == null ? null : ItemEntityMapper.toDomain(entity);
+		return entity == null ? null : PersistenceMapper.toDomain(entity);
 	}
 
 	@Transactional
 	public Item saveItem(final Item item, final ItemAction itemAction) {
-		final ItemEntity itemEntity = ItemEntityMapper.toEntity(item);
+		final ItemEntity itemEntity = PersistenceMapper.toEntity(item);
 
 		/*
 		 * Flushing makes sure, the Id and Version fields are properly created / updated
@@ -52,10 +52,10 @@ public class ItemTransactionHandler {
 		 */
 		final ItemEntity savedItemEntity = this.itemRepository.saveAndFlush(itemEntity);
 
-		final Item savedItem = ItemEntityMapper.toDomain(savedItemEntity);
+		final Item savedItem = PersistenceMapper.toDomain(savedItemEntity);
 
 		final ItemHistoryState itemHistoryState = ItemTransactionHandler.buildItemHistoryState(savedItem, itemAction);
-		final ItemHistoryStateEntity itemHistoryStateEntity = ItemEntityMapper.toEntity(itemHistoryState);
+		final ItemHistoryStateEntity itemHistoryStateEntity = PersistenceMapper.toEntity(itemHistoryState);
 		this.itemHistoryStateRepository.save(itemHistoryStateEntity);
 
 		return savedItem;
@@ -68,7 +68,7 @@ public class ItemTransactionHandler {
 			return null;
 		}
 
-		final Item existingItem = ItemEntityMapper.toDomain(existingItemEntity);
+		final Item existingItem = PersistenceMapper.toDomain(existingItemEntity);
 
 		/*
 		 * The main itemEntity remains unmutated so it can be cleanly deleted via its
@@ -77,7 +77,7 @@ public class ItemTransactionHandler {
 		final Item itemDeletionState = ItemTransactionHandler.finalizeItem(existingItem, userId);
 		final ItemHistoryState itemHistoryState = ItemTransactionHandler.buildItemHistoryState(itemDeletionState,
 				ItemAction.DELETE);
-		final ItemHistoryStateEntity itemHistoryStateEntity = ItemEntityMapper.toEntity(itemHistoryState);
+		final ItemHistoryStateEntity itemHistoryStateEntity = PersistenceMapper.toEntity(itemHistoryState);
 
 		this.itemRepository.delete(existingItemEntity);
 		this.itemHistoryStateRepository.save(itemHistoryStateEntity);
