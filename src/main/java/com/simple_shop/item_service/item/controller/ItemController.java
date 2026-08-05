@@ -40,7 +40,7 @@ import com.simple_shop.item_service.item.service.ItemService;
  * case, another controller with an incremented version could be created.
  */
 @RestController
-@RequestMapping("/api/v1/items")
+@RequestMapping("/api/items/v1")
 public final class ItemController {
 	private static final long MAX_PAGE_SIZE = 100;
 
