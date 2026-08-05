@@ -7,8 +7,8 @@ import com.simple_shop.item_service.item.model.Item.ItemBuilder;
 import com.simple_shop.item_service.item.model.MediaType;
 import com.simple_shop.item_service.utils.DataTypeUtils;
 
-public final class ItemDtoMapper {
-	private ItemDtoMapper() {
+public final class ItemMapper {
+	private ItemMapper() {
 		throw new UnsupportedOperationException();
 	}
 
@@ -16,7 +16,7 @@ public final class ItemDtoMapper {
 		return new ItemBuilder()//
 				.setId(itemDto.getId())//
 				.setImageUrl(itemDto.getImageUrl())//
-				.setMediaType(ItemDtoMapper.parseMediaType(itemDto.getMediaType()))//
+				.setMediaType(ItemMapper.parseMediaType(itemDto.getMediaType()))//
 				.setPrice(itemDto.getPrice())//
 				.setStock(itemDto.getStock())//
 				.setTitle(itemDto.getTitle())//
