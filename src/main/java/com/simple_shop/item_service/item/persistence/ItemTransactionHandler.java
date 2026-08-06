@@ -10,18 +10,18 @@ import com.simple_shop.item_service.item.model.Item.ItemBuilder;
 import com.simple_shop.item_service.item.model.ItemAction;
 import com.simple_shop.item_service.item.model.ItemHistoryState;
 import com.simple_shop.item_service.item.model.ItemHistoryState.ItemHistoryStateBuilder;
-import com.simple_shop.item_service.item.repository.ItemEntityRepository;
-import com.simple_shop.item_service.item.repository.ItemHistoryStateEntityRepository;
+import com.simple_shop.item_service.item.repository.ItemRepository;
+import com.simple_shop.item_service.item.repository.ItemHistoryStateRepository;
 import com.simple_shop.item_service.utils.ItemServiceUtils;
 
 @Component
 public class ItemTransactionHandler {
-	private final ItemEntityRepository itemRepository;
+	private final ItemRepository itemRepository;
 
-	private final ItemHistoryStateEntityRepository itemHistoryStateRepository;
+	private final ItemHistoryStateRepository itemHistoryStateRepository;
 
 	public ItemTransactionHandler(//
-			final ItemEntityRepository itemRepository, final ItemHistoryStateEntityRepository historyRepository) {
+			final ItemRepository itemRepository, final ItemHistoryStateRepository historyRepository) {
 
 		super();
 
