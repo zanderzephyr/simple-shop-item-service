@@ -4,8 +4,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.simple_shop.item_service.item.exceptions.InvalidRequestException;
 import com.simple_shop.item_service.item.exceptions.ItemNotFoundException;
-import com.simple_shop.item_service.item.exceptions.ItemValidationException;
 import com.simple_shop.item_service.item.model.Item;
 import com.simple_shop.item_service.item.model.ItemAction;
 import com.simple_shop.item_service.item.persistence.ItemTransactionHandler;
@@ -20,7 +20,7 @@ public final class ItemService {
 		this.itemTransactionHandler = itemTransactionHandler;
 	}
 
-	public Page<Item> getAllItems(final Pageable pageable) {
+	public Page<Item> getItems(final Pageable pageable) {
 		return this.itemTransactionHandler.findAll(pageable);
 	}
 
@@ -39,11 +39,11 @@ public final class ItemService {
 
 	private static void validateItemToCreate(final Item itemToCreate) {
 		if (itemToCreate.getId() != null) {
-			throw new ItemValidationException("An item to create must not have an ID!");
+			throw new InvalidRequestException("An item to create must not have an ID!");
 		}
 
 		if (itemToCreate.getVersion() != null) {
-			throw new ItemValidationException("An item to create must not have a version!");
+			throw new InvalidRequestException("An item to create must not have a version!");
 		}
 	}
 

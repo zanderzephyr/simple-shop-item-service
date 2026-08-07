@@ -1,8 +1,6 @@
 package com.simple_shop.item_service.item.controller;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,41 +22,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.simple_shop.item_service.item.dto.ItemDto;
-import com.simple_shop.item_service.item.dto.ItemDto.ItemDtoMember;
-import com.simple_shop.item_service.item.dto.ItemRequestConstraintsDto;
-import com.simple_shop.item_service.item.dto.ItemRequestConstraintsDto.SortingDirection;
+import com.simple_shop.item_service.item.dto.RequestConstraintsDto;
 import com.simple_shop.item_service.item.exceptions.InvalidRequestException;
 import com.simple_shop.item_service.item.model.Item;
-import com.simple_shop.item_service.item.persistence.ItemEntity.ItemEntityMember;
+import com.simple_shop.item_service.item.model.RequestConstraints;
+import com.simple_shop.item_service.item.model.SortingDirection;
 import com.simple_shop.item_service.item.service.ItemService;
 
-/*
- * Proper version compatibility between frontend and backend is quite complex
- * and difficult to manage. For now, we simply leave the version segment as a
- * last resort if something needs a hard break in handling properly. For that
- * case, another controller with an incremented version could be created.
- */
 @RestController
 @RequestMapping("/api/items/v1")
 public final class ItemController {
-	private static final long MAX_PAGE_SIZE = 100;
-
-	private static final Map<String, String> SORTABLE_DTO_TO_ENTITY_COLUMNS = ItemController.collectSortableColumns();
-
 	private final ItemService itemService;
-
-	private static Map<String, String> collectSortableColumns() {
-		final Map<String, String> columns = new HashMap<>();
-
-		columns.put(ItemDtoMember.LAST_CHANGE.getDomainName(), ItemEntityMember.LAST_CHANGE.getDomainName());
-		columns.put(ItemDtoMember.LAST_CHANGED_BY.getDomainName(), ItemEntityMember.LAST_CHANGED_BY.getDomainName());
-		columns.put(ItemDtoMember.MEDIA_TYPE.getDomainName(), ItemEntityMember.MEDIA_TYPE.getDomainName());
-		columns.put(ItemDtoMember.PRICE.getDomainName(), ItemEntityMember.PRICE.getDomainName());
-		columns.put(ItemDtoMember.STOCK.getDomainName(), ItemEntityMember.STOCK.getDomainName());
-		columns.put(ItemDtoMember.TITLE.getDomainName(), ItemEntityMember.TITLE.getDomainName());
-
-		return columns;
-	}
 
 	public ItemController(final ItemService itemService) {
 		super();
@@ -72,6 +46,10 @@ public final class ItemController {
 		 * TODO Validate session is ok. If it isn't, answer appropriately with negative
 		 * response.
 		 */
+
+		if (itemDto == null) {
+			throw new InvalidRequestException("No item!");
+		}
 
 		final Item itemToCreate = DtoMapper.toDomain(itemDto);
 
@@ -87,6 +65,10 @@ public final class ItemController {
 		 * TODO Validate session is ok. If it isn't, answer appropriately with negative
 		 * response.
 		 */
+
+		if (itemDto == null) {
+			throw new InvalidRequestException("No item!");
+		}
 
 		final Item itemToModify = DtoMapper.toDomain(itemDto);
 		if (!Long.valueOf(itemId).equals(itemToModify.getId())) {
@@ -125,56 +107,46 @@ public final class ItemController {
 
 	// Using ModelAttribute to prevent GET requests without body causing issues
 	@GetMapping
-	public ResponseEntity<PagedModel<ItemDto>> getItems(@ModelAttribute final ItemRequestConstraintsDto constraints) {
+	public ResponseEntity<PagedModel<ItemDto>> getItems(
+			@ModelAttribute final RequestConstraintsDto requestConstraintsDto) {
 		/*
 		 * TODO Validate session is ok. If it isn't, answer appropriately with negative
 		 * response.
 		 */
 
-		this.validate(constraints);
+		if (requestConstraintsDto == null) {
+			throw new InvalidRequestException("No request constraints!");
+		}
 
-		final Pageable pageable = this.createPageable(constraints);
-		final Page<ItemDto> page = this.itemService.getAllItems(pageable).map(DtoMapper::toDto);
+		final RequestConstraints requestConstraints = DtoMapper.toDomain(requestConstraintsDto);
+
+		final Pageable pageable = this.createPageable(requestConstraints);
+		final Page<ItemDto> page = this.itemService.getItems(pageable).map(DtoMapper::toDto);
 		final PagedModel<ItemDto> pagedModel = new PagedModel<>(page);
 		return ResponseEntity.status(HttpStatus.OK).body(pagedModel);
 	}
 
-	private Pageable createPageable(final ItemRequestConstraintsDto constraints) {
-		final SortingDirection sortingDirection = constraints.getSortingDirection();
+	// TODO Move to common lib
+	private Pageable createPageable(final RequestConstraints constraints) {
+		final Direction direction = ItemController.convert(constraints.getSortingDirection());
+		final String sortingColumnEntity = constraints.getSortingColumn();
+		final Sort sort = Sort.by(Arrays.asList(new Order(direction, sortingColumnEntity)));
+		return PageRequest.of(constraints.getPageIndex(), constraints.getPageSize(), sort);
+	}
+
+	// TODO Move to common lib
+	private static Direction convert(final SortingDirection sortingDirection) {
 		final Direction direction;
+
 		if (SortingDirection.ASCENDING.equals(sortingDirection)) {
 			direction = Direction.ASC;
 		} else if (SortingDirection.DESCENDING.equals(sortingDirection)) {
 			direction = Direction.DESC;
 		} else {
-			throw new IllegalStateException("Unexpected sorting direction: " + sortingDirection);
-		}
-		final String sortingColumnEntity = ItemController.SORTABLE_DTO_TO_ENTITY_COLUMNS
-				.get(constraints.getSortingColumn());
-		final Sort sort = Sort.by(Arrays.asList(new Order(direction, sortingColumnEntity)));
-
-		return PageRequest.of(constraints.getPageIndex(), constraints.getPageSize(), sort);
-	}
-
-	private void validate(final ItemRequestConstraintsDto constraints) throws InvalidRequestException {
-		if (constraints == null) {
-			throw new InvalidRequestException("No item search constraints!");
+			throw new InvalidRequestException("Unexpected sorting direction: " + sortingDirection);
 		}
 
-		final int pageIndex = constraints.getPageIndex();
-		if (pageIndex < 0) {
-			throw new InvalidRequestException("Page index must not be negative, but was " + pageIndex);
-		}
-
-		final int pageSize = constraints.getPageSize();
-		if (pageSize <= 0 || pageSize > ItemController.MAX_PAGE_SIZE) {
-			throw new InvalidRequestException("Page size must be in [1," + ItemController.MAX_PAGE_SIZE + "]!");
-		}
-
-		final String sortingColumn = constraints.getSortingColumn();
-		if (!ItemController.SORTABLE_DTO_TO_ENTITY_COLUMNS.keySet().contains(sortingColumn)) {
-			throw new InvalidRequestException("Columns " + sortingColumn + " is not allowed for sorting!");
-		}
+		return direction;
 	}
 
 	@GetMapping("/{itemId}")

@@ -1,15 +1,39 @@
 package com.simple_shop.item_service.item.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.simple_shop.item_service.item.dto.ItemDto;
+import com.simple_shop.item_service.item.dto.ItemDto.ItemDtoMember;
+import com.simple_shop.item_service.item.dto.RequestConstraintsDto;
 import com.simple_shop.item_service.item.exceptions.InvalidRequestException;
 import com.simple_shop.item_service.item.model.Item;
 import com.simple_shop.item_service.item.model.Item.ItemBuilder;
 import com.simple_shop.item_service.item.model.MediaType;
+import com.simple_shop.item_service.item.model.RequestConstraints;
+import com.simple_shop.item_service.item.model.RequestConstraints.RequestConstraintsBuilder;
+import com.simple_shop.item_service.item.model.SortingDirection;
+import com.simple_shop.item_service.item.persistence.ItemEntity.ItemEntityMember;
 import com.simple_shop.item_service.utils.DataTypeUtils;
 
 public final class DtoMapper {
+	private static final Map<String, String> SORTABLE_DTO_TO_ENTITY_COLUMNS = DtoMapper.collectSortableColumns();
+
 	private DtoMapper() {
 		throw new UnsupportedOperationException();
+	}
+
+	private static Map<String, String> collectSortableColumns() {
+		final Map<String, String> columns = new HashMap<>();
+
+		columns.put(ItemDtoMember.LAST_CHANGE.getDomainName(), ItemEntityMember.LAST_CHANGE.getDomainName());
+		columns.put(ItemDtoMember.LAST_CHANGED_BY.getDomainName(), ItemEntityMember.LAST_CHANGED_BY.getDomainName());
+		columns.put(ItemDtoMember.MEDIA_TYPE.getDomainName(), ItemEntityMember.MEDIA_TYPE.getDomainName());
+		columns.put(ItemDtoMember.PRICE.getDomainName(), ItemEntityMember.PRICE.getDomainName());
+		columns.put(ItemDtoMember.STOCK.getDomainName(), ItemEntityMember.STOCK.getDomainName());
+		columns.put(ItemDtoMember.TITLE.getDomainName(), ItemEntityMember.TITLE.getDomainName());
+
+		return columns;
 	}
 
 	public static Item toDomain(final ItemDto itemDto) {
@@ -48,5 +72,37 @@ public final class DtoMapper {
 		itemDto.setVersion(item.getVersion());
 
 		return itemDto;
+	}
+
+	public static RequestConstraints toDomain(final RequestConstraintsDto requestConstraintsDto) {
+		try {
+			return new RequestConstraintsBuilder()//
+					.setPageIndex(requestConstraintsDto.getPageIndex() != null ? //
+							requestConstraintsDto.getPageIndex() : 0)//
+					.setPageSize(requestConstraintsDto.getPageSize() != null ? //
+							requestConstraintsDto.getPageSize() : 20)//
+					.setSortingColumn(DtoMapper.getSortableColumnValue(requestConstraintsDto.getSortingColumn()))//
+					.setSortingDirection(requestConstraintsDto.getSortingDirection() != null ? //
+							DataTypeUtils.parseEnum(requestConstraintsDto.getSortingDirection(), SortingDirection.class)
+							: SortingDirection.ASCENDING)//
+					.build();
+		} catch (final Exception e) {
+			throw new InvalidRequestException(e);
+		}
+	}
+
+	private static String getSortableColumnValue(final String sortableColumnRequest) {
+		String sortableColumnValue;
+
+		if (sortableColumnRequest == null) {
+			sortableColumnValue = ItemDtoMember.TITLE.getDomainName();
+		} else {
+			sortableColumnValue = DtoMapper.SORTABLE_DTO_TO_ENTITY_COLUMNS.get(sortableColumnRequest);
+			if (sortableColumnValue == null) {
+				sortableColumnValue = ItemDtoMember.TITLE.getDomainName();
+			}
+		}
+
+		return sortableColumnRequest;
 	}
 }
