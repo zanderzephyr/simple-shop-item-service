@@ -11,9 +11,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.simple_shop.item_service.item.dto.ItemServiceErrorResponseDto;
 import com.simple_shop.item_service.item.dto.ItemServiceErrorResponseDto.ItemServiceErrorResponseDtoBuilder;
-import com.simple_shop.item_service.item.exceptions.InvalidItemRequestConstraintsException;
+import com.simple_shop.item_service.item.exceptions.InvalidRequestException;
 import com.simple_shop.item_service.item.exceptions.ItemNotFoundException;
-import com.simple_shop.item_service.item.exceptions.ItemValidationException;
 
 @RestControllerAdvice(assignableTypes = ItemController.class)
 public final class ItemControllerAdvice {
@@ -22,14 +21,14 @@ public final class ItemControllerAdvice {
 		super();
 	}
 
-	@ExceptionHandler(ItemValidationException.class)
-	public ResponseEntity<ItemServiceErrorResponseDto> handleItemValidationException(
-			final ItemValidationException exception) {
+	@ExceptionHandler(InvalidRequestException.class)
+	public ResponseEntity<ItemServiceErrorResponseDto> handleInvalidRequestException(
+			final InvalidRequestException exception) {
 
 		final ItemServiceErrorResponseDto responseDto = new ItemServiceErrorResponseDtoBuilder()//
 				.setDetail(exception.getMessage())//
 				.setHttpState(HttpStatus.BAD_REQUEST.value())//
-				.setMessage("Item validation failed")//
+				.setMessage("Invalid request")//
 				.setTimestamp(Instant.now())//
 				.build();
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDto);
@@ -46,32 +45,6 @@ public final class ItemControllerAdvice {
 				.setTimestamp(Instant.now())//
 				.build();
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseDto);
-	}
-
-	@ExceptionHandler(InvalidItemRequestConstraintsException.class)
-	public ResponseEntity<ItemServiceErrorResponseDto> handleInvalidItemRequestConstraintsException(
-			final InvalidItemRequestConstraintsException exception) {
-
-		final ItemServiceErrorResponseDto responseDto = new ItemServiceErrorResponseDtoBuilder()//
-				.setDetail(exception.getMessage())//
-				.setHttpState(HttpStatus.BAD_REQUEST.value())//
-				.setMessage("Page setup is invalid")//
-				.setTimestamp(Instant.now())//
-				.build();
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDto);
-	}
-
-	@ExceptionHandler(IllegalStateException.class)
-	public ResponseEntity<ItemServiceErrorResponseDto> handleIllegalStateException(
-			final IllegalStateException exception) {
-
-		final ItemServiceErrorResponseDto responseDto = new ItemServiceErrorResponseDtoBuilder()//
-				.setDetail(exception.getMessage())//
-				.setHttpState(HttpStatus.INTERNAL_SERVER_ERROR.value())//
-				.setMessage("Internal server error")//
-				.setTimestamp(Instant.now())//
-				.build();
-		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseDto);
 	}
 
 	@ExceptionHandler(ObjectOptimisticLockingFailureException.class)

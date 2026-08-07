@@ -27,8 +27,7 @@ import com.simple_shop.item_service.item.dto.ItemDto;
 import com.simple_shop.item_service.item.dto.ItemDto.ItemDtoMember;
 import com.simple_shop.item_service.item.dto.ItemRequestConstraintsDto;
 import com.simple_shop.item_service.item.dto.ItemRequestConstraintsDto.SortingDirection;
-import com.simple_shop.item_service.item.exceptions.InvalidItemRequestConstraintsException;
-import com.simple_shop.item_service.item.exceptions.ItemValidationException;
+import com.simple_shop.item_service.item.exceptions.InvalidRequestException;
 import com.simple_shop.item_service.item.model.Item;
 import com.simple_shop.item_service.item.persistence.ItemEntity.ItemEntityMember;
 import com.simple_shop.item_service.item.service.ItemService;
@@ -91,10 +90,10 @@ public final class ItemController {
 
 		final Item itemToModify = DtoMapper.toDomain(itemDto);
 		if (!Long.valueOf(itemId).equals(itemToModify.getId())) {
-			throw new ItemValidationException("Path ID and payload ID mismatch!");
+			throw new InvalidRequestException("Path ID and payload ID mismatch!");
 		}
 		if (itemDto.getVersion() == null) {
-			throw new ItemValidationException("Version must not be null!");
+			throw new InvalidRequestException("Version must not be null!");
 		}
 
 		// TODO Replace userId by actual session user ID
@@ -157,26 +156,24 @@ public final class ItemController {
 		return PageRequest.of(constraints.getPageIndex(), constraints.getPageSize(), sort);
 	}
 
-	private void validate(final ItemRequestConstraintsDto constraints) throws InvalidItemRequestConstraintsException {
+	private void validate(final ItemRequestConstraintsDto constraints) throws InvalidRequestException {
 		if (constraints == null) {
-			throw new InvalidItemRequestConstraintsException("No item search constraints!");
+			throw new InvalidRequestException("No item search constraints!");
 		}
 
 		final int pageIndex = constraints.getPageIndex();
 		if (pageIndex < 0) {
-			throw new InvalidItemRequestConstraintsException("Page index must not be negative, but was " + pageIndex);
+			throw new InvalidRequestException("Page index must not be negative, but was " + pageIndex);
 		}
 
 		final int pageSize = constraints.getPageSize();
 		if (pageSize <= 0 || pageSize > ItemController.MAX_PAGE_SIZE) {
-			throw new InvalidItemRequestConstraintsException(
-					"Page size must be in [1," + ItemController.MAX_PAGE_SIZE + "]!");
+			throw new InvalidRequestException("Page size must be in [1," + ItemController.MAX_PAGE_SIZE + "]!");
 		}
 
 		final String sortingColumn = constraints.getSortingColumn();
 		if (!ItemController.SORTABLE_DTO_TO_ENTITY_COLUMNS.keySet().contains(sortingColumn)) {
-			throw new InvalidItemRequestConstraintsException(
-					"Columns " + sortingColumn + " is not allowed for sorting!");
+			throw new InvalidRequestException("Columns " + sortingColumn + " is not allowed for sorting!");
 		}
 	}
 

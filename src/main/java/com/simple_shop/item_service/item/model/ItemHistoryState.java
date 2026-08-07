@@ -1,8 +1,7 @@
 package com.simple_shop.item_service.item.model;
 
 import java.time.LocalDateTime;
-
-import com.simple_shop.item_service.item.exceptions.ItemValidationException;
+import java.util.Objects;
 
 public final class ItemHistoryState {
 	private final Long id;
@@ -27,8 +26,10 @@ public final class ItemHistoryState {
 
 	private final Long version;
 
-	private ItemHistoryState(final ItemHistoryStateBuilder builder) {
+	private ItemHistoryState(final ItemHistoryStateBuilder builder) throws IllegalStateException {
 		super();
+
+		Objects.requireNonNull(builder);
 
 		builder.validate();
 
@@ -226,49 +227,49 @@ public final class ItemHistoryState {
 			return this;
 		}
 
-		public void validate() {
+		public void validate() throws IllegalStateException {
 			if (this.id != null && this.id < 0) {
-				throw new ItemValidationException("Invalid ID!");
+				throw new IllegalStateException("Invalid ID!");
 			}
 
 			if (this.title == null || this.title.isBlank() || this.title.length() > 400) {
-				throw new ItemValidationException("Invalid title!");
+				throw new IllegalStateException("Invalid title!");
 			}
 
 			if (this.mediaType == null) {
-				throw new ItemValidationException("Invalid media type!");
+				throw new IllegalStateException("Invalid media type!");
 			}
 
 			if (this.stock == null || this.stock < 0) {
-				throw new ItemValidationException("Invalid stock!");
+				throw new IllegalStateException("Invalid stock!");
 			}
 
 			if (this.price == null || this.price < 0) {
-				throw new ItemValidationException("Invalid price!");
+				throw new IllegalStateException("Invalid price!");
 			}
 
 			if (this.imageUrl == null || this.imageUrl.isBlank() || this.imageUrl.length() > 2048) {
-				throw new ItemValidationException("Invalid Image URL!");
+				throw new IllegalStateException("Invalid Image URL!");
 			}
 
 			if (this.action == null) {
-				throw new IllegalArgumentException("Invalid action!");
+				throw new IllegalStateException("Invalid action!");
 			}
 
 			if (this.lastChange == null) {
-				throw new IllegalArgumentException("Invalid last change!");
+				throw new IllegalStateException("Invalid last change!");
 			}
 
 			if (this.lastChangedBy != null && this.lastChangedBy < 0) {
-				throw new ItemValidationException("Invalid last changed by!");
+				throw new IllegalStateException("Invalid last changed by!");
 			}
 
 			if (this.version != null && this.version < 0) {
-				throw new ItemValidationException("Invalid version!");
+				throw new IllegalStateException("Invalid version!");
 			}
 		}
 
-		public ItemHistoryState build() {
+		public ItemHistoryState build() throws IllegalStateException {
 			return new ItemHistoryState(this);
 		}
 

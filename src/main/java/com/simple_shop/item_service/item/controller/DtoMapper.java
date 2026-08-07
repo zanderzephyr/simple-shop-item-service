@@ -1,7 +1,7 @@
 package com.simple_shop.item_service.item.controller;
 
 import com.simple_shop.item_service.item.dto.ItemDto;
-import com.simple_shop.item_service.item.exceptions.ItemValidationException;
+import com.simple_shop.item_service.item.exceptions.InvalidRequestException;
 import com.simple_shop.item_service.item.model.Item;
 import com.simple_shop.item_service.item.model.Item.ItemBuilder;
 import com.simple_shop.item_service.item.model.MediaType;
@@ -13,24 +13,20 @@ public final class DtoMapper {
 	}
 
 	public static Item toDomain(final ItemDto itemDto) {
-		return new ItemBuilder()//
-				.setId(itemDto.getId())//
-				.setImageUrl(itemDto.getImageUrl())//
-				.setMediaType(DtoMapper.parseMediaType(itemDto.getMediaType()))//
-				.setPrice(itemDto.getPrice())//
-				.setStock(itemDto.getStock())//
-				.setTitle(itemDto.getTitle())//
-				.setLastChange(itemDto.getLastChange())//
-				.setLastChangedBy(itemDto.getLastChangedBy())//
-				.setVersion(itemDto.getVersion())//
-				.build();
-	}
-
-	private static MediaType parseMediaType(final String mediaType) {
 		try {
-			return DataTypeUtils.parseEnum(mediaType, MediaType.class);
-		} catch (final IllegalArgumentException e) {
-			throw new ItemValidationException("Unknown media type: " + mediaType);
+			return new ItemBuilder()//
+					.setId(itemDto.getId())//
+					.setImageUrl(itemDto.getImageUrl())//
+					.setMediaType(DataTypeUtils.parseEnum(itemDto.getMediaType(), MediaType.class))//
+					.setPrice(itemDto.getPrice())//
+					.setStock(itemDto.getStock())//
+					.setTitle(itemDto.getTitle())//
+					.setLastChange(itemDto.getLastChange())//
+					.setLastChangedBy(itemDto.getLastChangedBy())//
+					.setVersion(itemDto.getVersion())//
+					.build();
+		} catch (final Exception e) {
+			throw new InvalidRequestException(e);
 		}
 	}
 
