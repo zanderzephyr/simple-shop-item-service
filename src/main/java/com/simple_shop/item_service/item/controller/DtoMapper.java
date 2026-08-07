@@ -16,7 +16,7 @@ import com.simple_shop.item_service.item.model.SortingDirection;
 import com.simple_shop.item_service.item.persistence.ItemEntity.ItemEntityMember;
 import com.simple_shop.item_service.utils.DataTypeUtils;
 
-public final class DtoMapper {
+final class DtoMapper {
 	private static final Map<String, String> SORTABLE_DTO_TO_ENTITY_COLUMNS = DtoMapper.collectSortableColumns();
 
 	private DtoMapper() {
