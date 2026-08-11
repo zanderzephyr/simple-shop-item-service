@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.simple_shop.item_service.item.dto.ItemServiceErrorResponseDto;
 import com.simple_shop.item_service.item.dto.ItemServiceErrorResponseDto.ItemServiceErrorResponseDtoBuilder;
-import com.simple_shop.item_service.item.exceptions.InvalidRequestException;
+import com.simple_shop.item_service.item.exceptions.InvalidMessageException;
 import com.simple_shop.item_service.item.exceptions.ItemNotFoundException;
 
 @RestControllerAdvice(assignableTypes = ItemController.class)
@@ -21,9 +21,9 @@ public final class ItemControllerAdvice {
 		super();
 	}
 
-	@ExceptionHandler(InvalidRequestException.class)
+	@ExceptionHandler(InvalidMessageException.class)
 	public ResponseEntity<ItemServiceErrorResponseDto> handleInvalidRequestException(
-			final InvalidRequestException exception) {
+			final InvalidMessageException exception) {
 
 		final ItemServiceErrorResponseDto responseDto = new ItemServiceErrorResponseDtoBuilder()//
 				.setDetail(exception.getMessage())//

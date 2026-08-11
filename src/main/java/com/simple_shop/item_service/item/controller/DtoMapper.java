@@ -6,7 +6,7 @@ import java.util.Map;
 import com.simple_shop.item_service.item.dto.ItemDto;
 import com.simple_shop.item_service.item.dto.ItemDto.ItemDtoMember;
 import com.simple_shop.item_service.item.dto.RequestConstraintsDto;
-import com.simple_shop.item_service.item.exceptions.InvalidRequestException;
+import com.simple_shop.item_service.item.exceptions.InvalidMessageException;
 import com.simple_shop.item_service.item.model.Item;
 import com.simple_shop.item_service.item.model.Item.ItemBuilder;
 import com.simple_shop.item_service.item.model.MediaType;
@@ -50,7 +50,7 @@ final class DtoMapper {
 					.setVersion(itemDto.getVersion())//
 					.build();
 		} catch (final Exception e) {
-			throw new InvalidRequestException(e);
+			throw new InvalidMessageException(e);
 		}
 	}
 
@@ -87,7 +87,7 @@ final class DtoMapper {
 							: SortingDirection.ASCENDING)//
 					.build();
 		} catch (final Exception e) {
-			throw new InvalidRequestException(e);
+			throw new InvalidMessageException(e);
 		}
 	}
 

@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.simple_shop.item_service.item.dto.ItemDto;
 import com.simple_shop.item_service.item.dto.RequestConstraintsDto;
-import com.simple_shop.item_service.item.exceptions.InvalidRequestException;
+import com.simple_shop.item_service.item.exceptions.InvalidMessageException;
 import com.simple_shop.item_service.item.model.Item;
 import com.simple_shop.item_service.item.model.RequestConstraints;
 import com.simple_shop.item_service.item.model.SortingDirection;
@@ -48,7 +48,7 @@ public final class ItemController {
 		 */
 
 		if (itemDto == null) {
-			throw new InvalidRequestException("No item!");
+			throw new InvalidMessageException("No item!");
 		}
 
 		final Item itemToCreate = DtoMapper.toDomain(itemDto);
@@ -67,15 +67,15 @@ public final class ItemController {
 		 */
 
 		if (itemDto == null) {
-			throw new InvalidRequestException("No item!");
+			throw new InvalidMessageException("No item!");
 		}
 
 		final Item itemToModify = DtoMapper.toDomain(itemDto);
 		if (!Long.valueOf(itemId).equals(itemToModify.getId())) {
-			throw new InvalidRequestException("Path ID and payload ID mismatch!");
+			throw new InvalidMessageException("Path ID and payload ID mismatch!");
 		}
 		if (itemDto.getVersion() == null) {
-			throw new InvalidRequestException("Version must not be null!");
+			throw new InvalidMessageException("Version must not be null!");
 		}
 
 		// TODO Replace userId by actual session user ID
@@ -115,7 +115,7 @@ public final class ItemController {
 		 */
 
 		if (requestConstraintsDto == null) {
-			throw new InvalidRequestException("No request constraints!");
+			throw new InvalidMessageException("No request constraints!");
 		}
 
 		final RequestConstraints requestConstraints = DtoMapper.toDomain(requestConstraintsDto);
@@ -143,7 +143,7 @@ public final class ItemController {
 		} else if (SortingDirection.DESCENDING.equals(sortingDirection)) {
 			direction = Direction.DESC;
 		} else {
-			throw new InvalidRequestException("Unexpected sorting direction: " + sortingDirection);
+			throw new InvalidMessageException("Unexpected sorting direction: " + sortingDirection);
 		}
 
 		return direction;

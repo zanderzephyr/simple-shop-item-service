@@ -4,7 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.simple_shop.item_service.item.exceptions.InvalidRequestException;
+import com.simple_shop.item_service.item.exceptions.InvalidMessageException;
 import com.simple_shop.item_service.item.exceptions.ItemNotFoundException;
 import com.simple_shop.item_service.item.model.Item;
 import com.simple_shop.item_service.item.model.ItemAction;
@@ -39,11 +39,11 @@ public final class ItemService {
 
 	private static void validateItemToCreate(final Item itemToCreate) {
 		if (itemToCreate.getId() != null) {
-			throw new InvalidRequestException("An item to create must not have an ID!");
+			throw new InvalidMessageException("An item to create must not have an ID!");
 		}
 
 		if (itemToCreate.getVersion() != null) {
-			throw new InvalidRequestException("An item to create must not have a version!");
+			throw new InvalidMessageException("An item to create must not have a version!");
 		}
 	}
 
