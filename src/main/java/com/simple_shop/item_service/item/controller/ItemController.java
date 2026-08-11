@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -41,11 +42,9 @@ public final class ItemController {
 	}
 
 	@PostMapping
-	public ResponseEntity<ItemDto> createItem(@RequestBody final ItemDto itemDto) {
-		/*
-		 * TODO Validate session is ok. If it isn't, answer appropriately with negative
-		 * response.
-		 */
+	public ResponseEntity<ItemDto> createItem(//
+			@RequestHeader(name = "X-User-Id") final long executingUserId, //
+			@RequestBody final ItemDto itemDto) {
 
 		if (itemDto == null) {
 			throw new InvalidMessageException("No item!");
@@ -53,18 +52,16 @@ public final class ItemController {
 
 		final Item itemToCreate = DtoMapper.toDomain(itemDto);
 
-		// TODO Replace userId by actual session user ID
-		final Item createdItem = this.itemService.createItem(itemToCreate, 42l);
+		final Item createdItem = this.itemService.createItem(itemToCreate, executingUserId);
 		final ItemDto createdItemDto = DtoMapper.toDto(createdItem);
 		return ResponseEntity.status(HttpStatus.CREATED).body(createdItemDto);
 	}
 
 	@PutMapping("/{itemId}")
-	public ResponseEntity<ItemDto> modifyItem(@PathVariable final long itemId, @RequestBody final ItemDto itemDto) {
-		/*
-		 * TODO Validate session is ok. If it isn't, answer appropriately with negative
-		 * response.
-		 */
+	public ResponseEntity<ItemDto> modifyItem(//
+			@RequestHeader(name = "X-User-Id") final long executingUserId, //
+			@PathVariable final long itemId, //
+			@RequestBody final ItemDto itemDto) {
 
 		if (itemDto == null) {
 			throw new InvalidMessageException("No item!");
@@ -78,8 +75,7 @@ public final class ItemController {
 			throw new InvalidMessageException("Version must not be null!");
 		}
 
-		// TODO Replace userId by actual session user ID
-		final Item modifiedItem = this.itemService.modifyItem(itemToModify, 42l);
+		final Item modifiedItem = this.itemService.modifyItem(itemToModify, executingUserId);
 		final ItemDto modifiedItemDto = DtoMapper.toDto(modifiedItem);
 		return ResponseEntity.status(HttpStatus.OK).body(modifiedItemDto);
 	}
@@ -89,14 +85,11 @@ public final class ItemController {
 	 * even on stale data.
 	 */
 	@DeleteMapping("/{itemId}")
-	public ResponseEntity<Void> deleteItem(@PathVariable final long itemId) {
-		/*
-		 * TODO Validate session is ok. If it isn't, answer appropriately with negative
-		 * response.
-		 */
+	public ResponseEntity<Void> deleteItem(//
+			@RequestHeader(name = "X-User-Id") final long executingUserId, //
+			@PathVariable final long itemId) {
 
-		// TODO Replace userId by actual session user ID
-		this.itemService.deleteItem(itemId, 42l);
+		this.itemService.deleteItem(itemId, executingUserId);
 
 		/*
 		 * NO_CONTENT (204) means no response body. If we return OK (200), there would
@@ -109,10 +102,6 @@ public final class ItemController {
 	@GetMapping
 	public ResponseEntity<PagedModel<ItemDto>> getItems(
 			@ModelAttribute final RequestConstraintsDto requestConstraintsDto) {
-		/*
-		 * TODO Validate session is ok. If it isn't, answer appropriately with negative
-		 * response.
-		 */
 
 		if (requestConstraintsDto == null) {
 			throw new InvalidMessageException("No request constraints!");
@@ -151,11 +140,6 @@ public final class ItemController {
 
 	@GetMapping("/{itemId}")
 	public ResponseEntity<ItemDto> getItem(@PathVariable final long itemId) {
-		/*
-		 * TODO Validate session is ok. If it isn't, answer appropriately with negative
-		 * response.
-		 */
-
 		final Item item = this.itemService.getItemById(itemId);
 		final ItemDto itemDto = DtoMapper.toDto(item);
 		return ResponseEntity.status(HttpStatus.OK).body(itemDto);
