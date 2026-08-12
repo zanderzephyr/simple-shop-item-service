@@ -41,7 +41,7 @@ public final class ItemController {
 		this.itemService = itemService;
 	}
 
-	@PostMapping
+	@PostMapping("/create-item")
 	public ResponseEntity<ItemDto> createItem(//
 			@RequestHeader(name = "X-User-Id") final long executingUserId, //
 			@RequestBody final ItemDto itemDto) {
@@ -57,7 +57,7 @@ public final class ItemController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(createdItemDto);
 	}
 
-	@PutMapping("/{itemId}")
+	@PutMapping("/modify-item/{itemId}")
 	public ResponseEntity<ItemDto> modifyItem(//
 			@RequestHeader(name = "X-User-Id") final long executingUserId, //
 			@PathVariable final long itemId, //
@@ -84,7 +84,7 @@ public final class ItemController {
 	 * No version checking here for optimistic locking. A delete operation is valid
 	 * even on stale data.
 	 */
-	@DeleteMapping("/{itemId}")
+	@DeleteMapping("/delete-item/{itemId}")
 	public ResponseEntity<Void> deleteItem(//
 			@RequestHeader(name = "X-User-Id") final long executingUserId, //
 			@PathVariable final long itemId) {
@@ -99,7 +99,7 @@ public final class ItemController {
 	}
 
 	// Using ModelAttribute to prevent GET requests without body causing issues
-	@GetMapping
+	@GetMapping("/get-items")
 	public ResponseEntity<PagedModel<ItemDto>> getItems(
 			@ModelAttribute final RequestConstraintsDto requestConstraintsDto) {
 
@@ -138,7 +138,7 @@ public final class ItemController {
 		return direction;
 	}
 
-	@GetMapping("/{itemId}")
+	@GetMapping("/get-item/{itemId}")
 	public ResponseEntity<ItemDto> getItem(@PathVariable final long itemId) {
 		final Item item = this.itemService.getItemById(itemId);
 		final ItemDto itemDto = DtoMapper.toDto(item);
