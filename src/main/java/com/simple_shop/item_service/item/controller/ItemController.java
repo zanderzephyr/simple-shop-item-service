@@ -31,7 +31,7 @@ import com.simple_shop.item_service.item.model.SortingDirection;
 import com.simple_shop.item_service.item.service.ItemService;
 
 @RestController
-@RequestMapping("/api/items/v1")
+@RequestMapping("/api/items/v1/regular")
 public final class ItemController {
 	private final ItemService itemService;
 
