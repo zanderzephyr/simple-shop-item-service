@@ -30,6 +30,10 @@ import com.simple_shop.item_service.item.model.RequestConstraints;
 import com.simple_shop.item_service.item.model.SortingDirection;
 import com.simple_shop.item_service.item.service.ItemService;
 
+/*
+ * TODO Make items unique? Otherwise, we can have items with completely
+ * identical attributes (even title).
+ */
 @RestController
 @RequestMapping("/api/items/v1/regular")
 public final class ItemController {
