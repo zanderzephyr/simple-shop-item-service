@@ -22,13 +22,13 @@ public final class ItemControllerAdvice {
 	}
 
 	@ExceptionHandler(InvalidMessageException.class)
-	public ResponseEntity<ItemServiceErrorResponseDto> handleInvalidRequestException(
+	public ResponseEntity<ItemServiceErrorResponseDto> handleInvalidMessageException(
 			final InvalidMessageException exception) {
 
 		final ItemServiceErrorResponseDto responseDto = new ItemServiceErrorResponseDtoBuilder()//
 				.setDetail(exception.getMessage())//
 				.setHttpState(HttpStatus.BAD_REQUEST.value())//
-				.setMessage("Invalid request")//
+				.setMessage("Invalid message!")//
 				.setTimestamp(Instant.now())//
 				.build();
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDto);
