@@ -1,0 +1,13 @@
+services:
+  image-storage:
+    image: dhi.io/seaweedfs:4.47-debian13
+    container_name: item-service-image-storage
+    ports:
+      - "8333:8333" # S3 API Port
+      - "9333:9333" # Web admin dashboard console
+    command: "server -s3 -dir=/data"
+    volumes:
+      - item_image_data:/data
+
+volumes:
+  item_image_data:
