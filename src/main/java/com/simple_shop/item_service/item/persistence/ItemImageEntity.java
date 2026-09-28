@@ -90,30 +90,4 @@ public class ItemImageEntity {
 	public void setCreatedAt(final LocalDateTime createdAt) {
 		this.createdAt = createdAt;
 	}
-
-	public static enum ItemImageMember {
-		ID("id"),
-
-		ITEM_ID("itemId"),
-
-		STORAGE_KEY("storageKey"),
-
-		IMAGE_TYPE("imageType"),
-
-		IMAGE_STATE("imageState"),
-
-		CREATED_AT("createdAt"),
-
-		;
-
-		private final String domainName;
-
-		private ItemImageMember(final String domainName) {
-			this.domainName = domainName;
-		}
-
-		public String getDomainName() {
-			return this.domainName;
-		}
-	}
 }
