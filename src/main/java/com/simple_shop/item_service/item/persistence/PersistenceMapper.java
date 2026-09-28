@@ -13,7 +13,7 @@ public final class PersistenceMapper {
 	public static Item toDomain(final ItemEntity itemEntity) {
 		return new ItemBuilder()//
 				.setId(itemEntity.getId()) //
-				.setImageUrl(itemEntity.getImageUrl()) //
+				.setDescription(itemEntity.getDescription()) //
 				.setLastChange(itemEntity.getLastChange()) //
 				.setLastChangedBy(itemEntity.getLastChangedBy()) //
 				.setMediaType(itemEntity.getMediaType())//
@@ -28,7 +28,7 @@ public final class PersistenceMapper {
 		final ItemEntity entity = new ItemEntity();
 
 		entity.setId(item.getId());
-		entity.setImageUrl(item.getImageUrl());
+		entity.setDescription(item.getDescription());
 		entity.setLastChange(item.getLastChange());
 		entity.setLastChangedBy(item.getLastChangedBy());
 		entity.setMediaType(item.getMediaType());
@@ -45,7 +45,7 @@ public final class PersistenceMapper {
 				.setAction(itemHistoryStateEntity.getAction())//
 				.setId(itemHistoryStateEntity.getId()) //
 				.setItemId(itemHistoryStateEntity.getItemId()) //
-				.setImageUrl(itemHistoryStateEntity.getImageUrl()) //
+				.setDescription(itemHistoryStateEntity.getDescription()) //
 				.setLastChange(itemHistoryStateEntity.getLastChange()) //
 				.setLastChangedBy(itemHistoryStateEntity.getLastChangedBy()) //
 				.setMediaType(itemHistoryStateEntity.getMediaType())//
@@ -62,7 +62,7 @@ public final class PersistenceMapper {
 		entity.setAction(itemHistoryState.getAction());
 		entity.setId(itemHistoryState.getId());
 		entity.setItemId(itemHistoryState.getItemId());
-		entity.setImageUrl(itemHistoryState.getImageUrl());
+		entity.setDescription(itemHistoryState.getDescription());
 		entity.setLastChange(itemHistoryState.getLastChange());
 		entity.setLastChangedBy(itemHistoryState.getLastChangedBy());
 		entity.setMediaType(itemHistoryState.getMediaType());

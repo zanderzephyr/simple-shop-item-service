@@ -40,7 +40,7 @@ final class DtoMapper {
 		try {
 			return new ItemBuilder()//
 					.setId(itemDto.getId())//
-					.setImageUrl(itemDto.getImageUrl())//
+					.setDescription(itemDto.getDescription())//
 					.setMediaType(DataTypeUtils.parseEnum(itemDto.getMediaType(), MediaType.class))//
 					.setPrice(itemDto.getPrice())//
 					.setStock(itemDto.getStock())//
@@ -62,7 +62,7 @@ final class DtoMapper {
 		final ItemDto itemDto = new ItemDto();
 
 		itemDto.setId(item.getId());
-		itemDto.setImageUrl(item.getImageUrl());
+		itemDto.setDescription(item.getDescription());
 		itemDto.setMediaType(item.getMediaType().name());
 		itemDto.setPrice(item.getPrice());
 		itemDto.setStock(item.getStock());

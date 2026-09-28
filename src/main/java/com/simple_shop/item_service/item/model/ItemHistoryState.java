@@ -16,7 +16,7 @@ public final class ItemHistoryState {
 
 	private final int price;
 
-	private final String imageUrl;
+	private final String description;
 
 	private final ItemAction action;
 
@@ -39,7 +39,7 @@ public final class ItemHistoryState {
 		this.mediaType = builder.getMediaType();
 		this.stock = builder.getStock();
 		this.price = builder.getPrice();
-		this.imageUrl = builder.getImageUrl();
+		this.description = builder.getDescription();
 		this.action = builder.getAction();
 		this.lastChange = builder.getLastChange();
 		this.lastChangedBy = builder.getLastChangedBy();
@@ -70,8 +70,8 @@ public final class ItemHistoryState {
 		return this.price;
 	}
 
-	public String getImageUrl() {
-		return this.imageUrl;
+	public String getDescription() {
+		return this.description;
 	}
 
 	public ItemAction getAction() {
@@ -103,7 +103,7 @@ public final class ItemHistoryState {
 
 		private Integer price;
 
-		private String imageUrl;
+		private String description;
 
 		private ItemAction action;
 
@@ -177,12 +177,12 @@ public final class ItemHistoryState {
 			return this;
 		}
 
-		public String getImageUrl() {
-			return this.imageUrl;
+		public String getDescription() {
+			return this.description;
 		}
 
-		public ItemHistoryStateBuilder setImageUrl(final String imageUrl) {
-			this.imageUrl = imageUrl;
+		public ItemHistoryStateBuilder setDescription(final String description) {
+			this.description = description;
 
 			return this;
 		}
@@ -248,8 +248,8 @@ public final class ItemHistoryState {
 				throw new IllegalStateException("Invalid price!");
 			}
 
-			if (this.imageUrl == null || this.imageUrl.isBlank() || this.imageUrl.length() > 2048) {
-				throw new IllegalStateException("Invalid Image URL!");
+			if (this.description == null || this.description.isBlank() || this.description.length() > 10000) {
+				throw new IllegalStateException("Invalid description!");
 			}
 
 			if (this.action == null) {
@@ -277,7 +277,7 @@ public final class ItemHistoryState {
 			return new ItemHistoryStateBuilder()//
 					.setId(itemHistory.getId())//
 					.setItemId(itemHistory.getItemId())//
-					.setImageUrl(itemHistory.getImageUrl())//
+					.setDescription(itemHistory.getDescription())//
 					.setMediaType(itemHistory.getMediaType())//
 					.setPrice(itemHistory.getPrice())//
 					.setStock(itemHistory.getStock())//

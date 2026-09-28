@@ -14,7 +14,7 @@ public final class Item {
 
 	private final int price;
 
-	private final String imageUrl;
+	private final String description;
 
 	/**
 	 * In UTC.
@@ -37,7 +37,7 @@ public final class Item {
 		this.mediaType = builder.getMediaType();
 		this.stock = builder.getStock();
 		this.price = builder.getPrice();
-		this.imageUrl = builder.getImageUrl();
+		this.description = builder.getDescription();
 		this.lastChange = builder.getLastChange();
 		this.lastChangedBy = builder.getLastChangedBy();
 		this.version = builder.getVersion();
@@ -63,8 +63,8 @@ public final class Item {
 		return this.price;
 	}
 
-	public String getImageUrl() {
-		return this.imageUrl;
+	public String getDescription() {
+		return this.description;
 	}
 
 	public LocalDateTime getLastChange() {
@@ -90,7 +90,7 @@ public final class Item {
 
 		private Integer price;
 
-		private String imageUrl;
+		private String description;
 
 		/**
 		 * In UTC.
@@ -155,12 +155,12 @@ public final class Item {
 			return this;
 		}
 
-		public String getImageUrl() {
-			return this.imageUrl;
+		public String getDescription() {
+			return this.description;
 		}
 
-		public ItemBuilder setImageUrl(final String imageUrl) {
-			this.imageUrl = imageUrl;
+		public ItemBuilder setDescription(final String description) {
+			this.description = description;
 
 			return this;
 		}
@@ -216,8 +216,8 @@ public final class Item {
 				throw new IllegalStateException("Invalid price!");
 			}
 
-			if (this.imageUrl == null || this.imageUrl.isBlank() || this.imageUrl.length() > 2048) {
-				throw new IllegalStateException("Invalid Image URL!");
+			if (this.description == null || this.description.isBlank() || this.description.length() > 10000) {
+				throw new IllegalStateException("Invalid description!");
 			}
 
 			if (this.lastChangedBy != null && this.lastChangedBy < 0) {
@@ -236,7 +236,7 @@ public final class Item {
 		public static ItemBuilder initFrom(final Item item) {
 			return new ItemBuilder()//
 					.setId(item.getId())//
-					.setImageUrl(item.getImageUrl())//
+					.setDescription(item.getDescription())//
 					.setLastChange(item.getLastChange())//
 					.setLastChangedBy(item.getLastChangedBy())//
 					.setMediaType(item.getMediaType())//

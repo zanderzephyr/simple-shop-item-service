@@ -19,7 +19,7 @@ public class ItemDto {
 
 	private Integer price;
 
-	private String imageUrl;
+	private String description;
 
 	/**
 	 * In UTC.
@@ -87,12 +87,12 @@ public class ItemDto {
 		return this;
 	}
 
-	public String getImageUrl() {
-		return this.imageUrl;
+	public String getDescription() {
+		return this.description;
 	}
 
-	public ItemDto setImageUrl(final String imageUrl) {
-		this.imageUrl = imageUrl;
+	public ItemDto setDescription(final String description) {
+		this.description = description;
 
 		return this;
 	}
@@ -138,7 +138,7 @@ public class ItemDto {
 
 		PRICE("price"),
 
-		IMAGE_URL("imageUrl"),
+		DESCRIPTION("description"),
 
 		LAST_CHANGE("lastChange"),
 

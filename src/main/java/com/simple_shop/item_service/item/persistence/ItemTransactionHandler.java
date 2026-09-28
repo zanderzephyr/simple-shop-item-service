@@ -10,8 +10,8 @@ import com.simple_shop.item_service.item.model.Item.ItemBuilder;
 import com.simple_shop.item_service.item.model.ItemAction;
 import com.simple_shop.item_service.item.model.ItemHistoryState;
 import com.simple_shop.item_service.item.model.ItemHistoryState.ItemHistoryStateBuilder;
-import com.simple_shop.item_service.item.repository.ItemRepository;
 import com.simple_shop.item_service.item.repository.ItemHistoryStateRepository;
+import com.simple_shop.item_service.item.repository.ItemRepository;
 import com.simple_shop.item_service.utils.ItemServiceUtils;
 
 @Component
@@ -93,7 +93,7 @@ public class ItemTransactionHandler {
 				.setMediaType(item.getMediaType()) //
 				.setStock(item.getStock()) //
 				.setPrice(item.getPrice()) //
-				.setImageUrl(item.getImageUrl()) //
+				.setDescription(item.getDescription()) //
 				.setLastChange(item.getLastChange()) //
 				.setLastChangedBy(item.getLastChangedBy()) //
 				.setAction(action) //

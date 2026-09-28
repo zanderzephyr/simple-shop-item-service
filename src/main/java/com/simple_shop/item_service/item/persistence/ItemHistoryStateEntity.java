@@ -38,8 +38,8 @@ public class ItemHistoryStateEntity {
 	@Column(name = "Price", nullable = false)
 	private Integer price;
 
-	@Column(name = "ImageUrl", length = 2048, nullable = false)
-	private String imageUrl;
+	@Column(name = "Description", length = 10000, nullable = false)
+	private String description;
 
 	/**
 	 * In UTC.
@@ -109,12 +109,12 @@ public class ItemHistoryStateEntity {
 		this.price = price;
 	}
 
-	public String getImageUrl() {
-		return this.imageUrl;
+	public String getDescription() {
+		return this.description;
 	}
 
-	public void setImageUrl(final String imageUrl) {
-		this.imageUrl = imageUrl;
+	public void setDescription(final String description) {
+		this.description = description;
 	}
 
 	public LocalDateTime getLastChange() {
