@@ -14,4 +14,6 @@ public interface ItemImageRepository extends JpaRepository<ItemImageEntity, Long
 	 * this access fast. No need to use item ID and image state index.
 	 */
 	Optional<ItemImageEntity> findByStorageKey(final String storageKey);
+
+	void deleteByStorageKey(final String storageKey);
 }

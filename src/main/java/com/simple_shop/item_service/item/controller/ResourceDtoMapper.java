@@ -1,11 +1,14 @@
 package com.simple_shop.item_service.item.controller;
 
 import com.simple_shop.item_service.item.dto.ConfirmUploadRequestDto;
+import com.simple_shop.item_service.item.dto.DeleteResourceRequestDto;
 import com.simple_shop.item_service.item.dto.RequestUploadUrlRequestDto;
 import com.simple_shop.item_service.item.dto.RequestUploadUrlResponseDto;
 import com.simple_shop.item_service.item.exceptions.InvalidMessageException;
 import com.simple_shop.item_service.item.model.ConfirmUploadRequest;
 import com.simple_shop.item_service.item.model.ConfirmUploadRequest.ConfirmUploadRequestBuilder;
+import com.simple_shop.item_service.item.model.DeleteResourceRequest;
+import com.simple_shop.item_service.item.model.DeleteResourceRequest.DeleteResourceRequestBuilder;
 import com.simple_shop.item_service.item.model.ImageFileType;
 import com.simple_shop.item_service.item.model.ImageType;
 import com.simple_shop.item_service.item.model.RequestUploadUrlRequest;
@@ -45,6 +48,16 @@ final class ResourceDtoMapper {
 		try {
 			return new ConfirmUploadRequestBuilder()//
 					.setStorageKey(confirmUploadRequest.getStorageKey())//
+					.build();
+		} catch (final Exception e) {
+			throw new InvalidMessageException(e);
+		}
+	}
+
+	public static DeleteResourceRequest toDomain(final DeleteResourceRequestDto deleteResourceRequest) {
+		try {
+			return new DeleteResourceRequestBuilder()//
+					.setStorageKey(deleteResourceRequest.getStorageKey())//
 					.build();
 		} catch (final Exception e) {
 			throw new InvalidMessageException(e);

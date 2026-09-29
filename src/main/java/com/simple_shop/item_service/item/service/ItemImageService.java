@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.simple_shop.item_service.item.exceptions.InvalidMessageException;
 import com.simple_shop.item_service.item.model.ConfirmUploadRequest;
+import com.simple_shop.item_service.item.model.DeleteResourceRequest;
 import com.simple_shop.item_service.item.model.ImageState;
 import com.simple_shop.item_service.item.model.ItemImage;
 import com.simple_shop.item_service.item.model.ItemImage.ItemImageBuilder;
@@ -91,5 +92,9 @@ public class ItemImageService {
 				.setStorageKey(newStorageKey)//
 				.build();
 		this.itemImageTransactionHandler.saveItemImage(updatedItemImage);
+	}
+
+	public void deleteImage(final long itemId, final DeleteResourceRequest request) {
+
 	}
 }
