@@ -1,4 +1,4 @@
-package com.simple_shop.item_service.utils;
+package com.simple_shop.item_service.shared.utils;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;

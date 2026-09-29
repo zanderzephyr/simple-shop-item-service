@@ -23,12 +23,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.simple_shop.item_service.item.dto.ItemDto;
-import com.simple_shop.item_service.item.dto.RequestConstraintsDto;
-import com.simple_shop.item_service.item.exceptions.InvalidMessageException;
 import com.simple_shop.item_service.item.model.Item;
-import com.simple_shop.item_service.item.model.RequestConstraints;
-import com.simple_shop.item_service.item.model.SortingDirection;
 import com.simple_shop.item_service.item.service.ItemService;
+import com.simple_shop.item_service.shared.dto.RequestConstraintsDto;
+import com.simple_shop.item_service.shared.exceptions.InvalidMessageException;
+import com.simple_shop.item_service.shared.model.RequestConstraints;
+import com.simple_shop.item_service.shared.model.SortingDirection;
 
 /*
  * TODO Make items unique? Otherwise, we can have items with completely

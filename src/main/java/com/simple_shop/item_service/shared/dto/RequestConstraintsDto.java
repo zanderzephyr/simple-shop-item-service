@@ -1,4 +1,4 @@
-package com.simple_shop.item_service.item.dto;
+package com.simple_shop.item_service.shared.dto;
 
 // TODO Move to common lib
 /**

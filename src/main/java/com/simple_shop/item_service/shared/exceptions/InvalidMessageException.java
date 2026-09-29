@@ -1,4 +1,4 @@
-package com.simple_shop.item_service.item.exceptions;
+package com.simple_shop.item_service.shared.exceptions;
 
 // TODO Move to common lib
 public final class InvalidMessageException extends IllegalArgumentException {

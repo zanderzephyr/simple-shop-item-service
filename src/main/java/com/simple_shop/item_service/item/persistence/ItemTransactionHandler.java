@@ -12,7 +12,7 @@ import com.simple_shop.item_service.item.model.ItemHistoryState;
 import com.simple_shop.item_service.item.model.ItemHistoryState.ItemHistoryStateBuilder;
 import com.simple_shop.item_service.item.repository.ItemHistoryStateRepository;
 import com.simple_shop.item_service.item.repository.ItemRepository;
-import com.simple_shop.item_service.utils.ItemServiceUtils;
+import com.simple_shop.item_service.shared.utils.ItemServiceUtils;
 
 @Component
 public class ItemTransactionHandler {

@@ -5,16 +5,16 @@ import java.util.Map;
 
 import com.simple_shop.item_service.item.dto.ItemDto;
 import com.simple_shop.item_service.item.dto.ItemDto.ItemDtoMember;
-import com.simple_shop.item_service.item.dto.RequestConstraintsDto;
-import com.simple_shop.item_service.item.exceptions.InvalidMessageException;
 import com.simple_shop.item_service.item.model.Item;
 import com.simple_shop.item_service.item.model.Item.ItemBuilder;
 import com.simple_shop.item_service.item.model.MediaType;
-import com.simple_shop.item_service.item.model.RequestConstraints;
-import com.simple_shop.item_service.item.model.RequestConstraints.RequestConstraintsBuilder;
-import com.simple_shop.item_service.item.model.SortingDirection;
 import com.simple_shop.item_service.item.persistence.ItemEntity.ItemEntityMember;
-import com.simple_shop.item_service.utils.DataTypeUtils;
+import com.simple_shop.item_service.shared.dto.RequestConstraintsDto;
+import com.simple_shop.item_service.shared.exceptions.InvalidMessageException;
+import com.simple_shop.item_service.shared.model.RequestConstraints;
+import com.simple_shop.item_service.shared.model.SortingDirection;
+import com.simple_shop.item_service.shared.model.RequestConstraints.RequestConstraintsBuilder;
+import com.simple_shop.item_service.shared.utils.DataTypeUtils;
 
 final class DtoMapper {
 	private static final Map<String, String> SORTABLE_DTO_TO_ENTITY_COLUMNS = DtoMapper.collectSortableColumns();

@@ -4,11 +4,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.simple_shop.item_service.item.exceptions.InvalidMessageException;
 import com.simple_shop.item_service.item.exceptions.ItemNotFoundException;
 import com.simple_shop.item_service.item.model.Item;
 import com.simple_shop.item_service.item.model.ItemAction;
 import com.simple_shop.item_service.item.persistence.ItemTransactionHandler;
+import com.simple_shop.item_service.shared.exceptions.InvalidMessageException;
 
 @Service
 public final class ItemService {
