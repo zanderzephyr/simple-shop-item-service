@@ -82,6 +82,7 @@ public final class PersistenceMapper {
 				.setId(itemImageEntity.getId()) //
 				.setImageState(itemImageEntity.getImageState()) //
 				.setImageType(itemImageEntity.getImageType()) //
+				.setImageFileType(itemImageEntity.getImageFileType()) //
 				.setItemId(itemImageEntity.getItemId()) //
 				.setStorageKey(itemImageEntity.getStorageKey()) //
 				.build();
@@ -94,6 +95,7 @@ public final class PersistenceMapper {
 		entity.setId(itemImage.getId());
 		entity.setImageState(itemImage.getImageState());
 		entity.setImageType(itemImage.getImageType());
+		entity.setImageFileType(itemImage.getImageFileType());
 		entity.setItemId(itemImage.getItemId());
 		entity.setStorageKey(itemImage.getStorageKey());
 

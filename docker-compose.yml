@@ -5,7 +5,7 @@ services:
     ports:
       - "8333:8333" # S3 API Port
       - "9333:9333" # Web admin dashboard console
-    command: "server -s3 -dir=/data"
+    command: "server -s3 -s3.allowCors=true -dir=/data"
     volumes:
       - item_image_data:/data
 

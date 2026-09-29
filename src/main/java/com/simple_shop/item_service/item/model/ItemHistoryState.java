@@ -285,7 +285,8 @@ public final class ItemHistoryState {
 					.setAction(itemHistory.getAction())//
 					.setLastChange(itemHistory.getLastChange())//
 					.setLastChangedBy(itemHistory.getLastChangedBy())//
-					.setVersion(itemHistory.getVersion());
+					.setVersion(itemHistory.getVersion())//
+			;
 		}
 	}
 }

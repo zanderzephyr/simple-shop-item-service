@@ -22,4 +22,10 @@ public class ItemImageTransactionHandler {
 		final ItemImageEntity savedItemImageEntity = this.itemImageRepository.save(itemImageEntity);
 		return PersistenceMapper.toDomain(savedItemImageEntity);
 	}
+
+	@Transactional(readOnly = true)
+	public ItemImage findByStorageKey(final String storageKey) {
+		final ItemImageEntity entity = this.itemImageRepository.findByStorageKey(storageKey).orElse(null);
+		return entity == null ? null : PersistenceMapper.toDomain(entity);
+	}
 }

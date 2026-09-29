@@ -2,6 +2,7 @@ package com.simple_shop.item_service.item.persistence;
 
 import java.time.LocalDateTime;
 
+import com.simple_shop.item_service.item.model.ImageFileType;
 import com.simple_shop.item_service.item.model.ImageState;
 import com.simple_shop.item_service.item.model.ImageType;
 
@@ -31,6 +32,10 @@ public class ItemImageEntity {
 	@Enumerated(EnumType.STRING)
 	@Column(name = "ImageType", length = 20, nullable = false)
 	private ImageType imageType;
+
+	@Enumerated(EnumType.STRING)
+	@Column(name = "ImageFileType", length = 10, nullable = false)
+	private ImageFileType imageFileType;
 
 	@Enumerated(EnumType.STRING)
 	@Column(name = "ImageState", length = 20, nullable = false)
@@ -73,6 +78,14 @@ public class ItemImageEntity {
 
 	public void setImageType(final ImageType imageType) {
 		this.imageType = imageType;
+	}
+
+	public ImageFileType getImageFileType() {
+		return this.imageFileType;
+	}
+
+	public void setImageFileType(final ImageFileType imageFileType) {
+		this.imageFileType = imageFileType;
 	}
 
 	public ImageState getImageState() {

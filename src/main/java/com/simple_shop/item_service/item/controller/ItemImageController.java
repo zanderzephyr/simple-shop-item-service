@@ -4,10 +4,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.simple_shop.item_service.item.dto.ConfirmUploadRequestDto;
+import com.simple_shop.item_service.item.dto.RequestUploadUrlRequestDto;
 import com.simple_shop.item_service.item.dto.RequestUploadUrlResponseDto;
+import com.simple_shop.item_service.item.model.ConfirmUploadRequest;
+import com.simple_shop.item_service.item.model.RequestUploadUrlRequest;
 import com.simple_shop.item_service.item.model.RequestUploadUrlResponse;
 import com.simple_shop.item_service.item.service.ItemImageService;
 
@@ -23,13 +28,26 @@ public class ItemImageController {
 	}
 
 	@PostMapping("/{itemId}/request-image-url")
-	public ResponseEntity<RequestUploadUrlResponseDto> requestImageUrl(@PathVariable final long itemId) {
-		final RequestUploadUrlResponse modelOut = this.itemImageService.requestUploadUrl(itemId);
+	public ResponseEntity<RequestUploadUrlResponseDto> requestImageUrl(//
+			@PathVariable final long itemId, //
+			@RequestBody final RequestUploadUrlRequestDto dtoIn) {
+
+		final RequestUploadUrlRequest modelIn = ResourceDtoMapper.toDomain(dtoIn);
+		final RequestUploadUrlResponse modelOut = this.itemImageService.requestUploadUrl(itemId, modelIn);
 		final RequestUploadUrlResponseDto dtoOut = ResourceDtoMapper.toDto(modelOut);
 		return ResponseEntity.status(HttpStatus.CREATED).body(dtoOut);
 	}
 
-	// TODO Confirm resource upload
+	@PostMapping("/{itemId}/confirm-upload")
+	public ResponseEntity<Void> confirmUpload(//
+			@PathVariable final long itemId, //
+			@RequestBody final ConfirmUploadRequestDto dtoIn) {
+
+		final ConfirmUploadRequest modelIn = ResourceDtoMapper.toDomain(dtoIn);
+		this.itemImageService.confirmUpload(itemId, modelIn);
+		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+	}
+
 	// TODO Delete resource
 	// TODO Get resources
 }

@@ -12,6 +12,8 @@ public final class ItemImage {
 
 	private final ImageType imageType;
 
+	private final ImageFileType imageFileType;
+
 	private final ImageState imageState;
 
 	private final LocalDateTime createdAt;
@@ -27,6 +29,7 @@ public final class ItemImage {
 		this.itemId = builder.getItemId();
 		this.storageKey = builder.getStorageKey();
 		this.imageType = builder.getImageType();
+		this.imageFileType = builder.getImageFileType();
 		this.imageState = builder.getImageState();
 		this.createdAt = builder.getCreatedAt();
 	}
@@ -47,6 +50,10 @@ public final class ItemImage {
 		return this.imageType;
 	}
 
+	public ImageFileType getImageFileType() {
+		return this.imageFileType;
+	}
+
 	public ImageState getImageState() {
 		return this.imageState;
 	}
@@ -63,6 +70,8 @@ public final class ItemImage {
 		private String storageKey;
 
 		private ImageType imageType;
+
+		private ImageFileType imageFileType;
 
 		private ImageState imageState;
 
@@ -112,6 +121,16 @@ public final class ItemImage {
 			return this;
 		}
 
+		public ImageFileType getImageFileType() {
+			return this.imageFileType;
+		}
+
+		public ItemImageBuilder setImageFileType(final ImageFileType imageFileType) {
+			this.imageFileType = imageFileType;
+
+			return this;
+		}
+
 		public ImageState getImageState() {
 			return this.imageState;
 		}
@@ -149,6 +168,10 @@ public final class ItemImage {
 				throw new IllegalStateException("Invalid image type!");
 			}
 
+			if (this.imageFileType == null) {
+				throw new IllegalStateException("Invalid image file type!");
+			}
+
 			if (this.imageState == null) {
 				throw new IllegalStateException("Invalid image state!");
 			}
@@ -160,6 +183,18 @@ public final class ItemImage {
 
 		public ItemImage build() throws IllegalStateException {
 			return new ItemImage(this);
+		}
+
+		public static ItemImageBuilder initFrom(final ItemImage itemImage) {
+			return new ItemImageBuilder()//
+					.setCreatedAt(itemImage.getCreatedAt())//
+					.setId(itemImage.getId())//
+					.setImageState(itemImage.getImageState())//
+					.setImageType(itemImage.getImageType())//
+					.setImageFileType(itemImage.getImageFileType())//
+					.setItemId(itemImage.getItemId())//
+					.setStorageKey(itemImage.getStorageKey())//
+			;
 		}
 	}
 }
