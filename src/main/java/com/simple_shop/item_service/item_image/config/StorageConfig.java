@@ -13,6 +13,7 @@ import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.S3Configuration;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 
+// TODO move to common lib
 @Configuration
 public class StorageConfig {
 	@Value("${app.storage.endpoint}")

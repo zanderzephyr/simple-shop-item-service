@@ -16,7 +16,7 @@ import com.simple_shop.item_service.item_image.model.RequestUploadUrlResponse;
 import com.simple_shop.item_service.shared.exceptions.InvalidMessageException;
 import com.simple_shop.item_service.shared.utils.DataTypeUtils;
 
-// TODO Move to common lib
+// TODO Move to common lib (but careful with the item service specifics)
 final class ResourceDtoMapper {
 
 	private ResourceDtoMapper() {

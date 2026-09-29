@@ -2,7 +2,7 @@ package com.simple_shop.item_service.item_image.model;
 
 import java.util.Objects;
 
-// TODO Move to common lib
+// TODO Move to common lib (but careful with the item service specifics)
 public class RequestUploadUrlRequest {
 	private final ImageFileType imageFileType;
 

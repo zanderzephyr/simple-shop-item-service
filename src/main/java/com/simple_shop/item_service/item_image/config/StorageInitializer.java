@@ -13,6 +13,7 @@ import software.amazon.awssdk.services.s3.model.CreateBucketRequest;
 import software.amazon.awssdk.services.s3.model.HeadBucketRequest;
 import software.amazon.awssdk.services.s3.model.S3Exception;
 
+// TODO move to common lib
 @Component
 public class StorageInitializer implements ApplicationRunner {
 	private static final Logger LOGGER = LoggerFactory.getLogger(StorageInitializer.class);
