@@ -1,4 +1,4 @@
-package com.simple_shop.item_service.item.config;
+package com.simple_shop.item_service.item_image.config;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

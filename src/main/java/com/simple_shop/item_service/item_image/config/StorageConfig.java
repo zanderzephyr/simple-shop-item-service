@@ -1,4 +1,4 @@
-package com.simple_shop.item_service.item.config;
+package com.simple_shop.item_service.item_image.config;
 
 import java.net.URI;
 

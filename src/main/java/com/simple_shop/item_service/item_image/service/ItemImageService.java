@@ -1,4 +1,4 @@
-package com.simple_shop.item_service.item.service;
+package com.simple_shop.item_service.item_image.service;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -7,16 +7,16 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 import com.simple_shop.item_service.item.exceptions.InvalidMessageException;
-import com.simple_shop.item_service.item.model.ConfirmUploadRequest;
-import com.simple_shop.item_service.item.model.DeleteResourceRequest;
-import com.simple_shop.item_service.item.model.ImageState;
-import com.simple_shop.item_service.item.model.ItemImage;
-import com.simple_shop.item_service.item.model.ItemImage.ItemImageBuilder;
-import com.simple_shop.item_service.item.model.RequestUploadUrlRequest;
-import com.simple_shop.item_service.item.model.RequestUploadUrlResponse;
-import com.simple_shop.item_service.item.model.RequestUploadUrlResponse.RequestUploadUrlResponseBuilder;
-import com.simple_shop.item_service.item.persistence.ItemImageTransactionHandler;
-import com.simple_shop.item_service.item.storage.StorageClient;
+import com.simple_shop.item_service.item_image.model.ConfirmUploadRequest;
+import com.simple_shop.item_service.item_image.model.DeleteResourceRequest;
+import com.simple_shop.item_service.item_image.model.ImageState;
+import com.simple_shop.item_service.item_image.model.ItemImage;
+import com.simple_shop.item_service.item_image.model.RequestUploadUrlRequest;
+import com.simple_shop.item_service.item_image.model.RequestUploadUrlResponse;
+import com.simple_shop.item_service.item_image.model.ItemImage.ItemImageBuilder;
+import com.simple_shop.item_service.item_image.model.RequestUploadUrlResponse.RequestUploadUrlResponseBuilder;
+import com.simple_shop.item_service.item_image.persistence.ItemImageTransactionHandler;
+import com.simple_shop.item_service.item_image.storage.StorageClient;
 
 @Service
 public class ItemImageService {

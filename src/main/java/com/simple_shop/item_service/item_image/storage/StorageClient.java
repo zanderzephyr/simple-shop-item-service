@@ -1,4 +1,4 @@
-package com.simple_shop.item_service.item.storage;
+package com.simple_shop.item_service.item_image.storage;
 
 // TODO Move to common lib
 // TODO For more secure downloads, presigned download urls could be used.

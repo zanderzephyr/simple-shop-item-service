@@ -1,4 +1,4 @@
-package com.simple_shop.item_service.item.controller;
+package com.simple_shop.item_service.item_image.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,15 +9,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.simple_shop.item_service.item.dto.ConfirmUploadRequestDto;
-import com.simple_shop.item_service.item.dto.DeleteResourceRequestDto;
-import com.simple_shop.item_service.item.dto.RequestUploadUrlRequestDto;
-import com.simple_shop.item_service.item.dto.RequestUploadUrlResponseDto;
-import com.simple_shop.item_service.item.model.ConfirmUploadRequest;
-import com.simple_shop.item_service.item.model.DeleteResourceRequest;
-import com.simple_shop.item_service.item.model.RequestUploadUrlRequest;
-import com.simple_shop.item_service.item.model.RequestUploadUrlResponse;
-import com.simple_shop.item_service.item.service.ItemImageService;
+import com.simple_shop.item_service.item_image.dto.ConfirmUploadRequestDto;
+import com.simple_shop.item_service.item_image.dto.DeleteResourceRequestDto;
+import com.simple_shop.item_service.item_image.dto.RequestUploadUrlRequestDto;
+import com.simple_shop.item_service.item_image.dto.RequestUploadUrlResponseDto;
+import com.simple_shop.item_service.item_image.model.ConfirmUploadRequest;
+import com.simple_shop.item_service.item_image.model.DeleteResourceRequest;
+import com.simple_shop.item_service.item_image.model.RequestUploadUrlRequest;
+import com.simple_shop.item_service.item_image.model.RequestUploadUrlResponse;
+import com.simple_shop.item_service.item_image.service.ItemImageService;
 
 @RestController
 @RequestMapping("/api/items/v1/images")

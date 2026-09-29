@@ -1,19 +1,19 @@
-package com.simple_shop.item_service.item.controller;
+package com.simple_shop.item_service.item_image.controller;
 
-import com.simple_shop.item_service.item.dto.ConfirmUploadRequestDto;
-import com.simple_shop.item_service.item.dto.DeleteResourceRequestDto;
-import com.simple_shop.item_service.item.dto.RequestUploadUrlRequestDto;
-import com.simple_shop.item_service.item.dto.RequestUploadUrlResponseDto;
 import com.simple_shop.item_service.item.exceptions.InvalidMessageException;
-import com.simple_shop.item_service.item.model.ConfirmUploadRequest;
-import com.simple_shop.item_service.item.model.ConfirmUploadRequest.ConfirmUploadRequestBuilder;
-import com.simple_shop.item_service.item.model.DeleteResourceRequest;
-import com.simple_shop.item_service.item.model.DeleteResourceRequest.DeleteResourceRequestBuilder;
-import com.simple_shop.item_service.item.model.ImageFileType;
-import com.simple_shop.item_service.item.model.ImageType;
-import com.simple_shop.item_service.item.model.RequestUploadUrlRequest;
-import com.simple_shop.item_service.item.model.RequestUploadUrlRequest.RequestUploadUrlRequestBuilder;
-import com.simple_shop.item_service.item.model.RequestUploadUrlResponse;
+import com.simple_shop.item_service.item_image.dto.ConfirmUploadRequestDto;
+import com.simple_shop.item_service.item_image.dto.DeleteResourceRequestDto;
+import com.simple_shop.item_service.item_image.dto.RequestUploadUrlRequestDto;
+import com.simple_shop.item_service.item_image.dto.RequestUploadUrlResponseDto;
+import com.simple_shop.item_service.item_image.model.ConfirmUploadRequest;
+import com.simple_shop.item_service.item_image.model.DeleteResourceRequest;
+import com.simple_shop.item_service.item_image.model.ImageFileType;
+import com.simple_shop.item_service.item_image.model.ImageType;
+import com.simple_shop.item_service.item_image.model.RequestUploadUrlRequest;
+import com.simple_shop.item_service.item_image.model.RequestUploadUrlResponse;
+import com.simple_shop.item_service.item_image.model.ConfirmUploadRequest.ConfirmUploadRequestBuilder;
+import com.simple_shop.item_service.item_image.model.DeleteResourceRequest.DeleteResourceRequestBuilder;
+import com.simple_shop.item_service.item_image.model.RequestUploadUrlRequest.RequestUploadUrlRequestBuilder;
 import com.simple_shop.item_service.utils.DataTypeUtils;
 
 // TODO Move to common lib

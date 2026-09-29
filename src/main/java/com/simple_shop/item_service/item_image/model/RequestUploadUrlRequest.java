@@ -1,4 +1,4 @@
-package com.simple_shop.item_service.item.model;
+package com.simple_shop.item_service.item_image.model;
 
 import java.util.Objects;
 

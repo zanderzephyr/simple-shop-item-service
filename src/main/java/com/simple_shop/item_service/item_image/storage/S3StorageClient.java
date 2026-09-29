@@ -1,4 +1,4 @@
-package com.simple_shop.item_service.item.storage;
+package com.simple_shop.item_service.item_image.storage;
 
 import java.time.Duration;
 import java.util.Objects;

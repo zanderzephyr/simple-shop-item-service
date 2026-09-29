@@ -1,12 +1,12 @@
-package com.simple_shop.item_service.item.model;
+package com.simple_shop.item_service.item_image.model;
 
 import java.util.Objects;
 
 // TODO Move to common lib
-public class ConfirmUploadRequest {
+public class DeleteResourceRequest {
 	private final String storageKey;
 
-	private ConfirmUploadRequest(final ConfirmUploadRequestBuilder builder) {
+	private DeleteResourceRequest(final DeleteResourceRequestBuilder builder) {
 		super();
 
 		Objects.requireNonNull(builder);
@@ -20,10 +20,10 @@ public class ConfirmUploadRequest {
 		return this.storageKey;
 	}
 
-	public static final class ConfirmUploadRequestBuilder {
+	public static final class DeleteResourceRequestBuilder {
 		private String storageKey;
 
-		public ConfirmUploadRequestBuilder() {
+		public DeleteResourceRequestBuilder() {
 			super();
 		}
 
@@ -31,7 +31,7 @@ public class ConfirmUploadRequest {
 			return this.storageKey;
 		}
 
-		public ConfirmUploadRequestBuilder setStorageKey(final String storageKey) {
+		public DeleteResourceRequestBuilder setStorageKey(final String storageKey) {
 			this.storageKey = storageKey;
 
 			return this;
@@ -43,8 +43,8 @@ public class ConfirmUploadRequest {
 			}
 		}
 
-		public ConfirmUploadRequest build() {
-			return new ConfirmUploadRequest(this);
+		public DeleteResourceRequest build() {
+			return new DeleteResourceRequest(this);
 		}
 	}
 }

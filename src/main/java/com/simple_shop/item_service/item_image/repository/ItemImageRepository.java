@@ -1,11 +1,11 @@
-package com.simple_shop.item_service.item.repository;
+package com.simple_shop.item_service.item_image.repository;
 
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.simple_shop.item_service.item.persistence.ItemImageEntity;
+import com.simple_shop.item_service.item_image.persistence.ItemImageEntity;
 
 @Repository
 public interface ItemImageRepository extends JpaRepository<ItemImageEntity, Long> {

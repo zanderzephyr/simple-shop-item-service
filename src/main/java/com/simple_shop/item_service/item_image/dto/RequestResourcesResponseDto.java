@@ -1,4 +1,4 @@
-package com.simple_shop.item_service.item.dto;
+package com.simple_shop.item_service.item_image.dto;
 
 import java.util.ArrayList;
 import java.util.List;

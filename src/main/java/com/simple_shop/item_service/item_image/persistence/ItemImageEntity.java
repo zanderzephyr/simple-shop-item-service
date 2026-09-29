@@ -1,10 +1,10 @@
-package com.simple_shop.item_service.item.persistence;
+package com.simple_shop.item_service.item_image.persistence;
 
 import java.time.LocalDateTime;
 
-import com.simple_shop.item_service.item.model.ImageFileType;
-import com.simple_shop.item_service.item.model.ImageState;
-import com.simple_shop.item_service.item.model.ImageType;
+import com.simple_shop.item_service.item_image.model.ImageFileType;
+import com.simple_shop.item_service.item_image.model.ImageState;
+import com.simple_shop.item_service.item_image.model.ImageType;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
