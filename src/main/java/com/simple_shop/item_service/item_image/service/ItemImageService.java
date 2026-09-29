@@ -74,7 +74,7 @@ public class ItemImageService {
 				&& ImageState.PENDING.equals(itemImage.getImageState()) && itemImage.getItemId() == itemId;
 
 		if (!requestIsValid) {
-			throw new InvalidMessageException("The confirmation message is invalid!");
+			throw new InvalidMessageException("The confirmation request is invalid!");
 		}
 
 		final String newStorageKey = new StringBuilder()//
@@ -94,6 +94,18 @@ public class ItemImageService {
 	}
 
 	public void deleteImage(final long itemId, final DeleteResourceRequest request) {
+		final String requestStorageKey = request.getStorageKey();
 
+		final boolean bucketObjectExists = this.storageClient.doesObjectExist(requestStorageKey);
+		final ItemImage itemImage = this.itemImageTransactionHandler.findByStorageKey(requestStorageKey);
+		final boolean requestIsValid = bucketObjectExists && itemImage != null
+				&& ImageState.ACTIVE.equals(itemImage.getImageState()) && itemImage.getItemId() == itemId;
+
+		if (!requestIsValid) {
+			throw new InvalidMessageException("The deletion request is invalid!");
+		}
+
+		this.itemImageTransactionHandler.deleteByStorageKey(requestStorageKey);
+		this.storageClient.deleteObject(requestStorageKey);
 	}
 }

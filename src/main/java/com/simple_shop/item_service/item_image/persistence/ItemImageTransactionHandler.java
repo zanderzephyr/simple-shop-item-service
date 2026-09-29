@@ -28,4 +28,9 @@ public class ItemImageTransactionHandler {
 		final ItemImageEntity entity = this.itemImageRepository.findByStorageKey(storageKey).orElse(null);
 		return entity == null ? null : ItemImagePersistenceMapper.toDomain(entity);
 	}
+
+	@Transactional
+	public void deleteByStorageKey(final String storageKey) {
+		this.itemImageRepository.deleteByStorageKey(storageKey);
+	}
 }
