@@ -30,7 +30,7 @@ public class ItemImageController {
 		this.itemImageService = itemImageService;
 	}
 
-	@PostMapping("/{itemId}/request-image-url")
+	@PostMapping("/request-image-url/{itemId}")
 	public ResponseEntity<RequestUploadUrlResponseDto> requestImageUrl(//
 			@PathVariable final long itemId, //
 			@RequestBody final RequestUploadUrlRequestDto dtoIn) {
@@ -41,7 +41,7 @@ public class ItemImageController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(dtoOut);
 	}
 
-	@PostMapping("/{itemId}/confirm-upload")
+	@PostMapping("/confirm-upload/{itemId}")
 	public ResponseEntity<Void> confirmUpload(//
 			@PathVariable final long itemId, //
 			@RequestBody final ConfirmUploadRequestDto dtoIn) {
@@ -51,7 +51,7 @@ public class ItemImageController {
 		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 	}
 
-	@DeleteMapping("/{itemId}/delete-image")
+	@DeleteMapping("/delete-image/{itemId}")
 	public ResponseEntity<Void> deleteImage(//
 			@PathVariable final long itemId, //
 			@RequestBody final DeleteResourceRequestDto dtoIn) {
