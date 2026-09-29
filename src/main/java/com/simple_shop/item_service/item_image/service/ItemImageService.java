@@ -1,5 +1,6 @@
 package com.simple_shop.item_service.item_image.service;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -9,6 +10,8 @@ import com.simple_shop.item_service.item_image.model.DeleteResourceRequest;
 import com.simple_shop.item_service.item_image.model.ImageState;
 import com.simple_shop.item_service.item_image.model.ItemImage;
 import com.simple_shop.item_service.item_image.model.ItemImage.ItemImageBuilder;
+import com.simple_shop.item_service.item_image.model.RequestResourcesResponse;
+import com.simple_shop.item_service.item_image.model.RequestResourcesResponse.RequestResourcesResponseBuilder;
 import com.simple_shop.item_service.item_image.model.RequestUploadUrlRequest;
 import com.simple_shop.item_service.item_image.model.RequestUploadUrlResponse;
 import com.simple_shop.item_service.item_image.model.RequestUploadUrlResponse.RequestUploadUrlResponseBuilder;
@@ -107,5 +110,16 @@ public class ItemImageService {
 
 		this.itemImageTransactionHandler.deleteByStorageKey(requestStorageKey);
 		this.storageClient.deleteObject(requestStorageKey);
+	}
+
+	public RequestResourcesResponse getImages(final long itemId) {
+		final List<ItemImage> itemImages = this.itemImageTransactionHandler.findByItemIdAndImageState(itemId,
+				ImageState.ACTIVE);
+
+		return new RequestResourcesResponseBuilder()//
+				.setStorageKeys(itemImages.stream()//
+						.map(ItemImage::getStorageKey)//
+						.toList())//
+				.build();
 	}
 }

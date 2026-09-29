@@ -3,6 +3,7 @@ package com.simple_shop.item_service.item_image.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,10 +12,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.simple_shop.item_service.item_image.dto.ConfirmUploadRequestDto;
 import com.simple_shop.item_service.item_image.dto.DeleteResourceRequestDto;
+import com.simple_shop.item_service.item_image.dto.RequestResourcesResponseDto;
 import com.simple_shop.item_service.item_image.dto.RequestUploadUrlRequestDto;
 import com.simple_shop.item_service.item_image.dto.RequestUploadUrlResponseDto;
 import com.simple_shop.item_service.item_image.model.ConfirmUploadRequest;
 import com.simple_shop.item_service.item_image.model.DeleteResourceRequest;
+import com.simple_shop.item_service.item_image.model.RequestResourcesResponse;
 import com.simple_shop.item_service.item_image.model.RequestUploadUrlRequest;
 import com.simple_shop.item_service.item_image.model.RequestUploadUrlResponse;
 import com.simple_shop.item_service.item_image.service.ItemImageService;
@@ -61,5 +64,10 @@ public class ItemImageController {
 		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 	}
 
-	// TODO Get resources
+	@GetMapping("/get-images/{itemId}")
+	public ResponseEntity<RequestResourcesResponseDto> getImages(@PathVariable final long itemId) {
+		final RequestResourcesResponse modelOut = this.itemImageService.getImages(itemId);
+		final RequestResourcesResponseDto dtoOut = ResourceDtoMapper.toDto(modelOut);
+		return ResponseEntity.status(HttpStatus.OK).body(dtoOut);
+	}
 }

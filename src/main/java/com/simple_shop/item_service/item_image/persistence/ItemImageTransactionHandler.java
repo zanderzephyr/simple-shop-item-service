@@ -1,8 +1,11 @@
 package com.simple_shop.item_service.item_image.persistence;
 
+import java.util.List;
+
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.simple_shop.item_service.item_image.model.ImageState;
 import com.simple_shop.item_service.item_image.model.ItemImage;
 import com.simple_shop.item_service.item_image.repository.ItemImageRepository;
 
@@ -32,5 +35,12 @@ public class ItemImageTransactionHandler {
 	@Transactional
 	public void deleteByStorageKey(final String storageKey) {
 		this.itemImageRepository.deleteByStorageKey(storageKey);
+	}
+
+	@Transactional(readOnly = true)
+	public List<ItemImage> findByItemIdAndImageState(final long itemId, final ImageState imageState) {
+		return this.itemImageRepository.findByItemIdAndImageState(itemId, imageState).stream()//
+				.map(ItemImagePersistenceMapper::toDomain)//
+				.toList();
 	}
 }

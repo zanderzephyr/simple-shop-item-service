@@ -1,10 +1,12 @@
 package com.simple_shop.item_service.item_image.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import com.simple_shop.item_service.item_image.model.ImageState;
 import com.simple_shop.item_service.item_image.persistence.ItemImageEntity;
 
 @Repository
@@ -16,4 +18,9 @@ public interface ItemImageRepository extends JpaRepository<ItemImageEntity, Long
 	Optional<ItemImageEntity> findByStorageKey(final String storageKey);
 
 	void deleteByStorageKey(final String storageKey);
+
+	/*
+	 * Leverages the the SQL index INDEX_ItemImage_ItemId_ImageState to be quick.
+	 */
+	List<ItemImageEntity> findByItemIdAndImageState(final long itemId, final ImageState imageState);
 }
