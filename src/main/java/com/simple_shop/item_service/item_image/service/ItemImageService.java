@@ -1,6 +1,8 @@
 package com.simple_shop.item_service.item_image.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -136,5 +138,17 @@ public class ItemImageService {
 						.map(ItemImage::getStorageKey)//
 						.toList())//
 				.build();
+	}
+
+	public void cleanExpiredPendingImages(final LocalDateTime threshold) {
+		Objects.requireNonNull(threshold);
+
+		final List<String> itemImageStorageKeys = this.itemImageTransactionHandler
+				.findByImageStateAndCreatedAtBefore(ImageState.PENDING, threshold).stream()//
+				.map(ItemImage::getStorageKey)//
+				.toList();
+
+		this.itemImageTransactionHandler.deleteByStorageKeyIn(itemImageStorageKeys);
+		this.storageClient.deleteObjects(itemImageStorageKeys);
 	}
 }

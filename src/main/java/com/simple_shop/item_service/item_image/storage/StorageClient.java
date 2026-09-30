@@ -1,5 +1,7 @@
 package com.simple_shop.item_service.item_image.storage;
 
+import java.util.List;
+
 // TODO Move to common lib
 // TODO For more secure downloads, presigned download urls could be used.
 public interface StorageClient {
@@ -30,4 +32,11 @@ public interface StorageClient {
 	 * Deletes an object at the storage key path.
 	 */
 	void deleteObject(final String storageKey);
+
+	/**
+	 * Deletes a bulk of objects at the storage key paths via bulk request.
+	 *
+	 * @param storageKeys The storage key paths.
+	 */
+	void deleteObjects(final List<String> storageKeys);
 }

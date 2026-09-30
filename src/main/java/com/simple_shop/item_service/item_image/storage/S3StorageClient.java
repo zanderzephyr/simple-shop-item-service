@@ -1,6 +1,7 @@
 package com.simple_shop.item_service.item_image.storage;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -8,9 +9,12 @@ import org.springframework.stereotype.Component;
 
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.CopyObjectRequest;
+import software.amazon.awssdk.services.s3.model.Delete;
 import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
+import software.amazon.awssdk.services.s3.model.DeleteObjectsRequest;
 import software.amazon.awssdk.services.s3.model.HeadObjectRequest;
 import software.amazon.awssdk.services.s3.model.NoSuchKeyException;
+import software.amazon.awssdk.services.s3.model.ObjectIdentifier;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignRequest;
@@ -65,6 +69,32 @@ public class S3StorageClient implements StorageClient {
 				.build();
 
 		this.s3Client.deleteObject(deleteObjectRequest);
+	}
+
+	@Override
+	public void deleteObjects(final List<String> storageKeys) {
+		Objects.requireNonNull(storageKeys);
+		if (storageKeys.isEmpty()) {
+			return;
+		}
+
+		final List<ObjectIdentifier> objectsToDelete = storageKeys.stream()//
+				.map(sk -> ObjectIdentifier.builder()//
+						.key(sk)//
+						.build())//
+				.toList();
+
+		final Delete deletePayload = Delete.builder()//
+				.objects(objectsToDelete)//
+				.build();
+
+		final DeleteObjectsRequest deleteObjectsRequest = DeleteObjectsRequest.builder()//
+				.bucket(this.bucketName)//
+				.delete(deletePayload)//
+				.build();
+
+		this.s3Client.deleteObjects(deleteObjectsRequest);
+
 	}
 
 	/*

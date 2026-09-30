@@ -1,5 +1,6 @@
 package com.simple_shop.item_service.item_image.persistence;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
@@ -37,9 +38,23 @@ public class ItemImageTransactionHandler {
 		this.itemImageRepository.deleteByStorageKey(storageKey);
 	}
 
+	@Transactional
+	public void deleteByStorageKeyIn(final List<String> storageKeys) {
+		this.itemImageRepository.deleteByStorageKeyIn(storageKeys);
+	}
+
 	@Transactional(readOnly = true)
 	public List<ItemImage> findByItemIdAndImageState(final long itemId, final ImageState imageState) {
 		return this.itemImageRepository.findByItemIdAndImageState(itemId, imageState).stream()//
+				.map(ItemImagePersistenceMapper::toDomain)//
+				.toList();
+	}
+
+	@Transactional(readOnly = true)
+	public List<ItemImage> findByImageStateAndCreatedAtBefore(//
+			final ImageState imageState, final LocalDateTime threshold) {
+
+		return this.itemImageRepository.findByImageStateAndCreatedAtBefore(imageState, threshold).stream()//
 				.map(ItemImagePersistenceMapper::toDomain)//
 				.toList();
 	}

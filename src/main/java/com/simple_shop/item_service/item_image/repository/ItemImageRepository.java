@@ -1,5 +1,6 @@
 package com.simple_shop.item_service.item_image.repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,8 +20,13 @@ public interface ItemImageRepository extends JpaRepository<ItemImageEntity, Long
 
 	void deleteByStorageKey(final String storageKey);
 
+	void deleteByStorageKeyIn(final List<String> storageKeys);
+
 	/*
 	 * Leverages the the SQL index INDEX_ItemImage_ItemId_ImageState to be quick.
 	 */
 	List<ItemImageEntity> findByItemIdAndImageState(final long itemId, final ImageState imageState);
+
+	List<ItemImageEntity> findByImageStateAndCreatedAtBefore(//
+			final ImageState imageState, final LocalDateTime threshold);
 }
