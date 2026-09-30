@@ -9,7 +9,6 @@ import com.simple_shop.item_service.item_image.model.ConfirmUploadRequest;
 import com.simple_shop.item_service.item_image.model.ConfirmUploadRequest.ConfirmUploadRequestBuilder;
 import com.simple_shop.item_service.item_image.model.DeleteResourceRequest;
 import com.simple_shop.item_service.item_image.model.DeleteResourceRequest.DeleteResourceRequestBuilder;
-import com.simple_shop.item_service.item_image.model.ImageFileType;
 import com.simple_shop.item_service.item_image.model.ImageType;
 import com.simple_shop.item_service.item_image.model.RequestResourcesResponse;
 import com.simple_shop.item_service.item_image.model.RequestUploadUrlRequest;
@@ -28,9 +27,9 @@ final class ResourceDtoMapper {
 	public static RequestUploadUrlRequest toDomain(final RequestUploadUrlRequestDto requestUploadUrlRequest) {
 		try {
 			return new RequestUploadUrlRequestBuilder()//
-					.setImageFileType(
-							DataTypeUtils.parseEnum(requestUploadUrlRequest.getImageFileType(), ImageFileType.class))//
+					.setFileType(requestUploadUrlRequest.getFileType())//
 					.setImageType(DataTypeUtils.parseEnum(requestUploadUrlRequest.getImageType(), ImageType.class))//
+					.setFileSizeInBytes(requestUploadUrlRequest.getFileSizeInBytes())//
 					.build();
 		} catch (final Exception e) {
 			throw new InvalidMessageException(e);

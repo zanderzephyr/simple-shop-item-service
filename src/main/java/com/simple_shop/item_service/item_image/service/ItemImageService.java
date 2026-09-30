@@ -47,21 +47,22 @@ public class ItemImageService {
 		final String storageKey = new StringBuilder()//
 				.append("uploads/item-images/")//
 				.append(itemId).append("/")//
-				.append(uniqueId).append(".").append(request.getImageFileType().name().toLowerCase())//
+				.append(uniqueId).append(".").append(request.getFileType().toLowerCase())//
 				.toString();
 
 		final ItemImage pendingImage = new ItemImageBuilder()//
 				.setItemId(itemId)//
 				.setStorageKey(storageKey)//
 				.setImageType(request.getImageType())//
-				.setImageFileType(request.getImageFileType())//
+				.setFileType(request.getFileType())//
 				.setImageState(ImageState.PENDING)//
 				.setCreatedAt(ItemServiceUtils.createNow())//
 				.build();
 
 		final ItemImage savedImage = this.itemImageTransactionHandler.saveItemImage(pendingImage);
 
-		final String uploadUrl = this.storageClient.generatePreSignedUploadUrl(savedImage.getStorageKey());
+		final String uploadUrl = this.storageClient.generatePreSignedUploadUrl(//
+				savedImage.getStorageKey(), request.getFileSizeInBytes());
 		return new RequestUploadUrlResponseBuilder()//
 				.setUploadUrl(uploadUrl)//
 				.setStorageKey(savedImage.getStorageKey())//
@@ -84,7 +85,7 @@ public class ItemImageService {
 				.append("item-images/")//
 				.append(itemId).append("/")//
 				.append(itemImage.getId()).append(".")//
-				.append(itemImage.getImageFileType().name().toLowerCase())//
+				.append(itemImage.getFileType().toLowerCase())//
 				.toString();
 		this.storageClient.copyObject(requestStorageKey, newStorageKey);
 		this.storageClient.deleteObject(requestStorageKey);

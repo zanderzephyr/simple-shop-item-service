@@ -7,12 +7,14 @@ public interface StorageClient {
 	 * Generates a temporary cryptographic pre-signed URL for direct HTTP PUT
 	 * uploads.
 	 *
-	 * @param  storageKey The relative storage path within the bucket.
+	 * @param  storageKey      The relative storage path within the bucket.
+	 * @param  fileSizeInBytes The exact content length in bytes to lock into the
+	 *                         signature.
 	 *
-	 * @return            The absolute pre-signed URL string for direct client
-	 *                    uploads.
+	 * @return                 The absolute pre-signed URL string for direct client
+	 *                         uploads.
 	 */
-	String generatePreSignedUploadUrl(final String storageKey);
+	String generatePreSignedUploadUrl(final String storageKey, final long fileSizeInBytes);
 
 	/**
 	 * Checks if an object exists at the storage key path.

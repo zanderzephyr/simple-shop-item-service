@@ -12,7 +12,7 @@ public final class ItemImage {
 
 	private final ImageType imageType;
 
-	private final ImageFileType imageFileType;
+	private final String fileType;
 
 	private final ImageState imageState;
 
@@ -29,7 +29,7 @@ public final class ItemImage {
 		this.itemId = builder.getItemId();
 		this.storageKey = builder.getStorageKey();
 		this.imageType = builder.getImageType();
-		this.imageFileType = builder.getImageFileType();
+		this.fileType = builder.getFileType();
 		this.imageState = builder.getImageState();
 		this.createdAt = builder.getCreatedAt();
 	}
@@ -50,8 +50,8 @@ public final class ItemImage {
 		return this.imageType;
 	}
 
-	public ImageFileType getImageFileType() {
-		return this.imageFileType;
+	public String getFileType() {
+		return this.fileType;
 	}
 
 	public ImageState getImageState() {
@@ -71,7 +71,7 @@ public final class ItemImage {
 
 		private ImageType imageType;
 
-		private ImageFileType imageFileType;
+		private String fileType;
 
 		private ImageState imageState;
 
@@ -121,12 +121,12 @@ public final class ItemImage {
 			return this;
 		}
 
-		public ImageFileType getImageFileType() {
-			return this.imageFileType;
+		public String getFileType() {
+			return this.fileType;
 		}
 
-		public ItemImageBuilder setImageFileType(final ImageFileType imageFileType) {
-			this.imageFileType = imageFileType;
+		public ItemImageBuilder setFileType(final String fileType) {
+			this.fileType = fileType;
 
 			return this;
 		}
@@ -168,8 +168,8 @@ public final class ItemImage {
 				throw new IllegalStateException("Invalid image type!");
 			}
 
-			if (this.imageFileType == null) {
-				throw new IllegalStateException("Invalid image file type!");
+			if (this.fileType == null || this.fileType.isBlank()) {
+				throw new IllegalStateException("Invalid file type!");
 			}
 
 			if (this.imageState == null) {
@@ -191,7 +191,7 @@ public final class ItemImage {
 					.setId(itemImage.getId())//
 					.setImageState(itemImage.getImageState())//
 					.setImageType(itemImage.getImageType())//
-					.setImageFileType(itemImage.getImageFileType())//
+					.setFileType(itemImage.getFileType())//
 					.setItemId(itemImage.getItemId())//
 					.setStorageKey(itemImage.getStorageKey())//
 			;

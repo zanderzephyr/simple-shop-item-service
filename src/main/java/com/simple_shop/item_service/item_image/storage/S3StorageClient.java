@@ -26,6 +26,7 @@ public class S3StorageClient implements StorageClient {
 			final S3Presigner s3Presigner, //
 			final S3Client s3Client, //
 			@Value("${app.storage.bucket-name}") final String bucketName) {
+
 		super();
 
 		this.s3Client = s3Client;
@@ -34,12 +35,16 @@ public class S3StorageClient implements StorageClient {
 	}
 
 	@Override
-	public String generatePreSignedUploadUrl(final String storageKey) {
+	public String generatePreSignedUploadUrl(final String storageKey, final long fileSizeInBytes) {
 		Objects.requireNonNull(storageKey);
+		if (fileSizeInBytes < 0) {
+			throw new IllegalArgumentException("File size in bytes must not be negative!");
+		}
 
 		final PutObjectRequest putObjectRequest = PutObjectRequest.builder()//
 				.bucket(this.bucketName)//
 				.key(storageKey)//
+				.contentLength(fileSizeInBytes)//
 				.build();
 
 		final PutObjectPresignRequest presignRequest = PutObjectPresignRequest.builder()//

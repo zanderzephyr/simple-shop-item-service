@@ -14,7 +14,7 @@ public final class ItemImagePersistenceMapper {
 				.setId(itemImageEntity.getId()) //
 				.setImageState(itemImageEntity.getImageState()) //
 				.setImageType(itemImageEntity.getImageType()) //
-				.setImageFileType(itemImageEntity.getImageFileType()) //
+				.setFileType(itemImageEntity.getFileType()) //
 				.setItemId(itemImageEntity.getItemId()) //
 				.setStorageKey(itemImageEntity.getStorageKey()) //
 				.build();
@@ -27,7 +27,7 @@ public final class ItemImagePersistenceMapper {
 		entity.setId(itemImage.getId());
 		entity.setImageState(itemImage.getImageState());
 		entity.setImageType(itemImage.getImageType());
-		entity.setImageFileType(itemImage.getImageFileType());
+		entity.setFileType(itemImage.getFileType());
 		entity.setItemId(itemImage.getItemId());
 		entity.setStorageKey(itemImage.getStorageKey());
 
