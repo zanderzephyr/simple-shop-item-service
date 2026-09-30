@@ -8,16 +8,24 @@ import com.simple_shop.item_service.item.exceptions.ItemNotFoundException;
 import com.simple_shop.item_service.item.model.Item;
 import com.simple_shop.item_service.item.model.ItemAction;
 import com.simple_shop.item_service.item.persistence.ItemTransactionHandler;
+import com.simple_shop.item_service.item_image.model.RequestResourcesResponse;
+import com.simple_shop.item_service.item_image.service.ItemImageService;
 import com.simple_shop.item_service.shared.exceptions.InvalidMessageException;
 
 @Service
 public final class ItemService {
 	private final ItemTransactionHandler itemTransactionHandler;
 
-	public ItemService(final ItemTransactionHandler itemTransactionHandler) {
+	private final ItemImageService itemImageService;
+
+	public ItemService(//
+			final ItemTransactionHandler itemTransactionHandler, //
+			final ItemImageService itemImageService) {
+
 		super();
 
 		this.itemTransactionHandler = itemTransactionHandler;
+		this.itemImageService = itemImageService;
 	}
 
 	public Page<Item> getItems(final Pageable pageable) {
@@ -58,7 +66,18 @@ public final class ItemService {
 		return modifiedItem;
 	}
 
+	/*
+	 * The order of item and image deletion is important. Careful when working here.
+	 */
 	public void deleteItem(final long itemId, final long userId) {
+		final RequestResourcesResponse itemImageResponse = this.itemImageService.getImages(itemId);
+
+		this.deleteItemFromDb(itemId, userId);
+
+		this.itemImageService.deleteImagesOnly(itemImageResponse.getStorageKeys());
+	}
+
+	private void deleteItemFromDb(final long itemId, final long userId) {
 		final Item item = this.itemTransactionHandler.deleteItem(itemId, userId);
 		if (item == null) {
 			throw new ItemNotFoundException(ItemService.createItemNotFoundMessage(itemId));

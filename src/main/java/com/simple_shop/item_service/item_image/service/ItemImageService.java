@@ -112,6 +112,20 @@ public class ItemImageService {
 		this.storageClient.deleteObject(requestStorageKey);
 	}
 
+	/**
+	 * This is a method provided solely for inter-service activities. When e.g. the
+	 * item service wants to delete an item, there's no need to remove all item
+	 * image instances one by one from the database, as there's an on delete cascade
+	 * approach, which is more efficient.
+	 *
+	 * @param storageKeys The storage keys
+	 */
+	public void deleteImagesOnly(final List<String> storageKeys) {
+		for (final String storageKey : storageKeys) {
+			this.storageClient.deleteObject(storageKey);
+		}
+	}
+
 	public RequestResourcesResponse getImages(final long itemId) {
 		final List<ItemImage> itemImages = this.itemImageTransactionHandler.findByItemIdAndImageState(itemId,
 				ImageState.ACTIVE);
