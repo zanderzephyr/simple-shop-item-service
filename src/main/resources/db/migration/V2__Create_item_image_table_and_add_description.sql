@@ -1,8 +1,12 @@
 ALTER TABLE Item DROP COLUMN ImageUrl;
-ALTER TABLE Item ADD Description NVARCHAR(10000) NOT NULL;
+
+ALTER TABLE Item ADD Description NVARCHAR(10000) NOT NULL CONSTRAINT Temp_Item_Description_Constraint DEFAULT 'No description provided!';
+ALTER TABLE Item DROP CONSTRAINT Temp_Item_Description_Constraint;
 
 ALTER TABLE ItemHistoryState DROP COLUMN ImageUrl;
-ALTER TABLE ItemHistoryState ADD Description NVARCHAR(10000) NOT NULL;
+
+ALTER TABLE ItemHistoryState ADD Description NVARCHAR(10000) NOT NULL CONSTRAINT Temp_ItemHistory_Description_Constraint DEFAULT 'No description provided!';
+ALTER TABLE ItemHistoryState DROP CONSTRAINT Temp_ItemHistory_Description_Constraint;
  
 CREATE TABLE ItemImage(
  	Id BIGINT IDENTITY(1,1) PRIMARY KEY,
