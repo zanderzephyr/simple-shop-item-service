@@ -1,5 +1,3 @@
--- See https://learn.microsoft.com/de-de/sql/relational-databases/system-stored-procedures/sp-rename-transact-sql
-
 -- Rename constraints for Item table
 EXEC sp_rename 'simple_shop.CHECK_ITEM_STOCK', 'CHECK_Item_Stock', 'OBJECT';
 EXEC sp_rename 'simple_shop.CHECK_ITEM_PRICE', 'CHECK_Item_Price', 'OBJECT';
