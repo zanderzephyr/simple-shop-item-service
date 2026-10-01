@@ -35,7 +35,7 @@ public class ItemEntity {
 	@Column(name = "Price", nullable = false)
 	private Integer price;
 
-	@Column(name = "Description", length = 10000, nullable = false)
+	@Column(name = "Description", length = 4000, nullable = false)
 	private String description;
 
 	/**
