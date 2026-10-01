@@ -1,11 +1,13 @@
 ALTER TABLE Item DROP COLUMN ImageUrl;
 
-ALTER TABLE Item ADD Description NVARCHAR(10000) NOT NULL CONSTRAINT Temp_Item_Description_Constraint DEFAULT 'No description provided!';
+-- 4000: this is the character count in unicode. each character uses 2 byte.
+-- the maximally valid number of bytes is 8000 per nvarchar.
+ALTER TABLE Item ADD Description NVARCHAR(4000) NOT NULL CONSTRAINT Temp_Item_Description_Constraint DEFAULT 'No description provided!';
 ALTER TABLE Item DROP CONSTRAINT Temp_Item_Description_Constraint;
 
 ALTER TABLE ItemHistoryState DROP COLUMN ImageUrl;
 
-ALTER TABLE ItemHistoryState ADD Description NVARCHAR(10000) NOT NULL CONSTRAINT Temp_ItemHistory_Description_Constraint DEFAULT 'No description provided!';
+ALTER TABLE ItemHistoryState ADD Description NVARCHAR(4000) NOT NULL CONSTRAINT Temp_ItemHistory_Description_Constraint DEFAULT 'No description provided!';
 ALTER TABLE ItemHistoryState DROP CONSTRAINT Temp_ItemHistory_Description_Constraint;
  
 CREATE TABLE ItemImage(
