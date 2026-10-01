@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.simple_shop.item_service.item_image.model.ConfirmUploadRequest;
 import com.simple_shop.item_service.item_image.model.DeleteResourceRequest;
 import com.simple_shop.item_service.item_image.model.ImageState;
+import com.simple_shop.item_service.item_image.model.ImageType;
 import com.simple_shop.item_service.item_image.model.ItemImage;
 import com.simple_shop.item_service.item_image.model.ItemImage.ItemImageBuilder;
 import com.simple_shop.item_service.item_image.model.RequestResourcesResponse;
@@ -24,7 +25,7 @@ import com.simple_shop.item_service.shared.utils.ItemServiceUtils;
 
 @Service
 public class ItemImageService {
-	private final ItemImageTransactionHandler itemImageTransactionHandler;
+	private final ItemImageTransactionHandler dbTransactionHandler;
 
 	private final StorageClient storageClient;
 
@@ -34,11 +35,13 @@ public class ItemImageService {
 
 		super();
 
-		this.itemImageTransactionHandler = itemImageTransactionHandler;
+		this.dbTransactionHandler = itemImageTransactionHandler;
 		this.storageClient = storageClient;
 	}
 
 	public RequestUploadUrlResponse requestUploadUrl(final long itemId, final RequestUploadUrlRequest request) {
+		this.ensureOnlyOneThumbnailExists(itemId, request);
+
 		/*
 		 * TODO Make sure there are no collisions. This request could result in multiple
 		 * item services from picking the same ID for the same item, even though it
@@ -61,7 +64,7 @@ public class ItemImageService {
 				.setCreatedAt(ItemServiceUtils.createNow())//
 				.build();
 
-		final ItemImage savedImage = this.itemImageTransactionHandler.saveItemImage(pendingImage);
+		final ItemImage savedImage = this.dbTransactionHandler.saveItemImage(pendingImage);
 
 		final String uploadUrl = this.storageClient.generatePreSignedUploadUrl(//
 				savedImage.getStorageKey(), request.getFileSizeInBytes());
@@ -71,11 +74,22 @@ public class ItemImageService {
 				.build();
 	}
 
+	private void ensureOnlyOneThumbnailExists(final long itemId, final RequestUploadUrlRequest request) {
+		if (ImageType.THUMBNAIL.equals(request.getImageType())) {
+			final List<ItemImage> thumbnails = this.dbTransactionHandler.findByItemIdAndImageType(itemId,
+					ImageType.THUMBNAIL);
+			if (thumbnails.size() > 1) {
+				throw new InvalidMessageException(
+						"There can only be one thumbnail! Remove the existing one to add a new one.");
+			}
+		}
+	}
+
 	public void confirmUpload(final long itemId, final ConfirmUploadRequest request) {
 		final String requestStorageKey = request.getStorageKey();
 
 		final boolean bucketObjectExists = this.storageClient.doesObjectExist(requestStorageKey);
-		final ItemImage itemImage = this.itemImageTransactionHandler.findByStorageKey(requestStorageKey);
+		final ItemImage itemImage = this.dbTransactionHandler.findByStorageKey(requestStorageKey);
 		final boolean requestIsValid = bucketObjectExists && itemImage != null
 				&& ImageState.PENDING.equals(itemImage.getImageState()) && itemImage.getItemId() == itemId;
 
@@ -96,14 +110,14 @@ public class ItemImageService {
 				.setImageState(ImageState.ACTIVE)//
 				.setStorageKey(newStorageKey)//
 				.build();
-		this.itemImageTransactionHandler.saveItemImage(updatedItemImage);
+		this.dbTransactionHandler.saveItemImage(updatedItemImage);
 	}
 
 	public void deleteImage(final long itemId, final DeleteResourceRequest request) {
 		final String requestStorageKey = request.getStorageKey();
 
 		final boolean bucketObjectExists = this.storageClient.doesObjectExist(requestStorageKey);
-		final ItemImage itemImage = this.itemImageTransactionHandler.findByStorageKey(requestStorageKey);
+		final ItemImage itemImage = this.dbTransactionHandler.findByStorageKey(requestStorageKey);
 		final boolean requestIsValid = bucketObjectExists && itemImage != null
 				&& ImageState.ACTIVE.equals(itemImage.getImageState()) && itemImage.getItemId() == itemId;
 
@@ -111,7 +125,7 @@ public class ItemImageService {
 			throw new InvalidMessageException("The deletion request is invalid!");
 		}
 
-		this.itemImageTransactionHandler.deleteByStorageKey(requestStorageKey);
+		this.dbTransactionHandler.deleteByStorageKey(requestStorageKey);
 		this.storageClient.deleteObject(requestStorageKey);
 	}
 
@@ -130,25 +144,38 @@ public class ItemImageService {
 	}
 
 	public RequestResourcesResponse getImages(final long itemId) {
-		final List<ItemImage> itemImages = this.itemImageTransactionHandler.findByItemIdAndImageState(itemId,
+		final List<ItemImage> itemImages = this.dbTransactionHandler.findByItemIdAndImageState(itemId,
 				ImageState.ACTIVE);
 
-		return new RequestResourcesResponseBuilder()//
-				.setStorageKeys(itemImages.stream()//
-						.map(ItemImage::getStorageKey)//
-						.toList())//
-				.build();
+		final RequestResourcesResponseBuilder builder = new RequestResourcesResponseBuilder();
+
+		final List<String> galleryImageStorageKeys = itemImages.stream()//
+				.filter(i -> ImageType.GALLERY.equals(i.getImageType()))//
+				.map(ItemImage::getStorageKey)//
+				.toList();
+		builder.setGalleryImageStorageKeys(galleryImageStorageKeys);
+
+		final List<String> thumbnailImageStorageKeys = itemImages.stream()//
+				.filter(i -> ImageType.THUMBNAIL.equals(i.getImageType()))//
+				.map(ItemImage::getStorageKey)//
+				.toList();
+		if (!thumbnailImageStorageKeys.isEmpty()) {
+			// Simply pick the first one. So far there should only be one at max.
+			builder.setThumbnailImageStorageKey(thumbnailImageStorageKeys.get(0));
+		}
+
+		return builder.build();
 	}
 
 	public void cleanExpiredPendingImages(final LocalDateTime threshold) {
 		Objects.requireNonNull(threshold);
 
-		final List<String> itemImageStorageKeys = this.itemImageTransactionHandler
+		final List<String> itemImageStorageKeys = this.dbTransactionHandler
 				.findByImageStateAndCreatedAtBefore(ImageState.PENDING, threshold).stream()//
 				.map(ItemImage::getStorageKey)//
 				.toList();
 
-		this.itemImageTransactionHandler.deleteByStorageKeyIn(itemImageStorageKeys);
+		this.dbTransactionHandler.deleteByStorageKeyIn(itemImageStorageKeys);
 		this.storageClient.deleteObjects(itemImageStorageKeys);
 	}
 }

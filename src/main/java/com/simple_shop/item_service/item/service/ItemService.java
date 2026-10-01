@@ -74,7 +74,7 @@ public final class ItemService {
 
 		this.deleteItemFromDb(itemId, userId);
 
-		this.itemImageService.deleteImagesOnly(itemImageResponse.getStorageKeys());
+		this.itemImageService.deleteImagesOnly(itemImageResponse.getGalleryImageStorageKeys());
 	}
 
 	private void deleteItemFromDb(final long itemId, final long userId) {

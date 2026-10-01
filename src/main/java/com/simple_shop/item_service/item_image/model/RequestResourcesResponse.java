@@ -7,7 +7,9 @@ import java.util.Objects;
 
 // TODO Move to common lib
 public class RequestResourcesResponse {
-	private final List<String> storageKeys;
+	private final String thumbnailImageStorageKey;
+
+	private final List<String> galleryImageStorageKeys;
 
 	private RequestResourcesResponse(final RequestResourcesResponseBuilder builder) {
 		super();
@@ -16,26 +18,44 @@ public class RequestResourcesResponse {
 
 		builder.validate();
 
-		this.storageKeys = new ArrayList<>(builder.getStorageKeys());
+		this.thumbnailImageStorageKey = builder.getThumbnailImageStorageKey();
+		this.galleryImageStorageKeys = new ArrayList<>(builder.getGalleryImageStorageKeys());
 	}
 
-	public List<String> getStorageKeys() {
-		return Collections.unmodifiableList(this.storageKeys);
+	public String getThumbnailImageStorageKey() {
+		return this.thumbnailImageStorageKey;
+	}
+
+	public List<String> getGalleryImageStorageKeys() {
+		return Collections.unmodifiableList(this.galleryImageStorageKeys);
 	}
 
 	public static final class RequestResourcesResponseBuilder {
-		private List<String> storageKeys = new ArrayList<>();
+		private String thumbnailImageStorageKey;
+
+		private List<String> galleryImageStorageKeys = new ArrayList<>();
 
 		public RequestResourcesResponseBuilder() {
 			super();
 		}
 
-		public List<String> getStorageKeys() {
-			return this.storageKeys;
+		public String getThumbnailImageStorageKey() {
+			return this.thumbnailImageStorageKey;
 		}
 
-		public RequestResourcesResponseBuilder setStorageKeys(final List<String> storageKeys) {
-			this.storageKeys = storageKeys == null ? new ArrayList<>() : new ArrayList<>(storageKeys);
+		public RequestResourcesResponseBuilder setThumbnailImageStorageKey(final String thumbnailImageStorageKey) {
+			this.thumbnailImageStorageKey = thumbnailImageStorageKey;
+
+			return this;
+		}
+
+		public List<String> getGalleryImageStorageKeys() {
+			return this.galleryImageStorageKeys;
+		}
+
+		public RequestResourcesResponseBuilder setGalleryImageStorageKeys(final List<String> galleryImageStorageKeys) {
+			this.galleryImageStorageKeys = galleryImageStorageKeys == null ? new ArrayList<>()
+					: new ArrayList<>(galleryImageStorageKeys);
 
 			return this;
 		}

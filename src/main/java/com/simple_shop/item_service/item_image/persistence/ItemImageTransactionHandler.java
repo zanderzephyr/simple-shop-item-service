@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.simple_shop.item_service.item_image.model.ImageState;
+import com.simple_shop.item_service.item_image.model.ImageType;
 import com.simple_shop.item_service.item_image.model.ItemImage;
 import com.simple_shop.item_service.item_image.repository.ItemImageRepository;
 
@@ -55,6 +56,14 @@ public class ItemImageTransactionHandler {
 			final ImageState imageState, final LocalDateTime threshold) {
 
 		return this.itemImageRepository.findByImageStateAndCreatedAtBefore(imageState, threshold).stream()//
+				.map(ItemImagePersistenceMapper::toDomain)//
+				.toList();
+	}
+
+	@Transactional(readOnly = true)
+	public List<ItemImage> findByItemIdAndImageType(final long itemId, final ImageType imageType) {
+
+		return this.itemImageRepository.findByItemIdAndImageType(itemId, imageType).stream()//
 				.map(ItemImagePersistenceMapper::toDomain)//
 				.toList();
 	}

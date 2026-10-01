@@ -68,7 +68,8 @@ final class ResourceDtoMapper {
 	public static RequestResourcesResponseDto toDto(final RequestResourcesResponse requestResourcesResponse) {
 		final RequestResourcesResponseDto requestResourcesResponseDto = new RequestResourcesResponseDto();
 
-		requestResourcesResponseDto.setStorageKeys(requestResourcesResponse.getStorageKeys());
+		requestResourcesResponseDto.setGalleryImageStorageKeys(requestResourcesResponse.getGalleryImageStorageKeys());
+		requestResourcesResponseDto.setThumbnailImageStorageKey(requestResourcesResponse.getThumbnailImageStorageKey());
 
 		return requestResourcesResponseDto;
 	}
