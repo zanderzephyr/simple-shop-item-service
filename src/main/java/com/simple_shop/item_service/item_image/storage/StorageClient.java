@@ -10,13 +10,14 @@ public interface StorageClient {
 	 * uploads.
 	 *
 	 * @param  storageKey      The relative storage path within the bucket.
+	 * @param  contentType     The type of the content to be uploaded.
 	 * @param  fileSizeInBytes The exact content length in bytes to lock into the
 	 *                         signature.
 	 *
 	 * @return                 The absolute pre-signed URL string for direct client
 	 *                         uploads.
 	 */
-	String generatePreSignedUploadUrl(final String storageKey, final long fileSizeInBytes);
+	String generatePreSignedUploadUrl(final String storageKey, final String contentType, final long fileSizeInBytes);
 
 	/**
 	 * Checks if an object exists at the storage key path.

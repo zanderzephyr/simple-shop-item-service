@@ -67,11 +67,29 @@ public class ItemImageService {
 		final ItemImage savedImage = this.dbTransactionHandler.saveItemImage(pendingImage);
 
 		final String uploadUrl = this.storageClient.generatePreSignedUploadUrl(//
-				savedImage.getStorageKey(), request.getFileSizeInBytes());
+				savedImage.getStorageKey(), //
+				this.determineMimeType(request.getFileType()), //
+				request.getFileSizeInBytes());
+
 		return new RequestUploadUrlResponseBuilder()//
 				.setUploadUrl(uploadUrl)//
 				.setStorageKey(savedImage.getStorageKey())//
 				.build();
+	}
+
+	private String determineMimeType(final String fileType) {
+		final String mimeType;
+
+		final String lowerCaseFileType = fileType.toLowerCase();
+		if (lowerCaseFileType.equals("jpg") || lowerCaseFileType.equals("jpeg")) {
+			mimeType = "image/jpeg";
+		} else if (lowerCaseFileType.equals("webp")) {
+			mimeType = "image/webp";
+		} else {
+			throw new IllegalArgumentException("Unsupported file type: " + fileType);
+		}
+
+		return mimeType;
 	}
 
 	private void ensureOnlyOneThumbnailExists(final long itemId, final RequestUploadUrlRequest request) {
