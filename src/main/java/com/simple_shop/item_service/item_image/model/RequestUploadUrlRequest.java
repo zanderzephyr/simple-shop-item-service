@@ -34,6 +34,8 @@ public class RequestUploadUrlRequest {
 		final Set<String> allowedFileTypes = new HashSet<>();
 
 		allowedFileTypes.add("jpg");
+		allowedFileTypes.add("jpeg");
+
 		allowedFileTypes.add("webp");
 
 		return allowedFileTypes;
@@ -94,7 +96,7 @@ public class RequestUploadUrlRequest {
 
 		public void validate() throws IllegalStateException {
 			if (this.fileType == null || this.fileType.isBlank()
-					|| !RequestUploadUrlRequest.ALLOWED_FILE_TYPES.contains(this.fileType)) {
+					|| !RequestUploadUrlRequest.ALLOWED_FILE_TYPES.contains(this.fileType.toLowerCase())) {
 				throw new IllegalStateException("Invalid file type!");
 			}
 
