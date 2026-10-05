@@ -2,7 +2,6 @@ package com.simple_shop.item_service.item_image.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -54,7 +53,8 @@ public class ItemImageController {
 		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 	}
 
-	@DeleteMapping("/delete-image/{itemId}")
+	// POST instead of DELETE: DELETE usually has no body, POST does.
+	@PostMapping("/delete-image/{itemId}")
 	public ResponseEntity<Void> deleteImage(//
 			@PathVariable final long itemId, //
 			@RequestBody final DeleteResourceRequestDto dtoIn) {
