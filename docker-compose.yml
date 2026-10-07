@@ -1,4 +1,5 @@
 services:
+  # in dev, images are stored by an s3 compatible seaweedfs container
   image-storage:
     image: dhi.io/seaweedfs:4.47-debian13
     container_name: item-service-image-storage
@@ -8,6 +9,22 @@ services:
     command: "server -s3 -dir=/data"
     volumes:
       - item_image_data:/data
+  
+  # in dev, imgproxy requests images from s3 and resizes / converts them on the fly. 
+  image-resizer:
+    image: darthsim/imgproxy:v4.0.17
+    container_name: item-service-image-resizer
+    ports:
+      - "8334:8080"
+    environment:
+      - IMGPROXY_USE_S3=true
+      - IMGPROXY_S3_ENDPOINT=http://image-storage:8333 # Points to SeaweedFS S3 inside the docker network
+      - IMGPROXY_S3_FORCE_PATH_STYLE=true
+      - AWS_ACCESS_KEY_ID=dev_access_key
+      - AWS_SECRET_ACCESS_KEY=dev_secret_key
+      - AWS_REGION=us-east-1
+    depends_on:
+      - image-storage
 
 volumes:
   item_image_data:
