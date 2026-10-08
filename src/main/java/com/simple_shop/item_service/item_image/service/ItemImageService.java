@@ -8,6 +8,8 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 import com.simple_shop.item_service.item_image.model.ConfirmUploadRequest;
+import com.simple_shop.item_service.item_image.model.ConfirmUploadResponse;
+import com.simple_shop.item_service.item_image.model.ConfirmUploadResponse.ConfirmUploadResponseBuilder;
 import com.simple_shop.item_service.item_image.model.DeleteResourceRequest;
 import com.simple_shop.item_service.item_image.model.ImageState;
 import com.simple_shop.item_service.item_image.model.ImageType;
@@ -103,7 +105,7 @@ public class ItemImageService {
 		}
 	}
 
-	public void confirmUpload(final long itemId, final ConfirmUploadRequest request) {
+	public ConfirmUploadResponse confirmUpload(final long itemId, final ConfirmUploadRequest request) {
 		final String requestStorageKey = request.getStorageKey();
 
 		final boolean bucketObjectExists = this.storageClient.doesObjectExist(requestStorageKey);
@@ -129,6 +131,10 @@ public class ItemImageService {
 				.setStorageKey(newStorageKey)//
 				.build();
 		this.dbTransactionHandler.saveItemImage(updatedItemImage);
+
+		return new ConfirmUploadResponseBuilder()//
+				.setStorageKey(newStorageKey)//
+				.build();
 	}
 
 	public void deleteImage(final long itemId, final DeleteResourceRequest request) {

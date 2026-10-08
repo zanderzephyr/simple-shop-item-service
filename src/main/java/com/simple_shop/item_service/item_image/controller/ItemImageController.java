@@ -10,11 +10,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.simple_shop.item_service.item_image.dto.ConfirmUploadRequestDto;
+import com.simple_shop.item_service.item_image.dto.ConfirmUploadResponseDto;
 import com.simple_shop.item_service.item_image.dto.DeleteResourceRequestDto;
 import com.simple_shop.item_service.item_image.dto.RequestResourcesResponseDto;
 import com.simple_shop.item_service.item_image.dto.RequestUploadUrlRequestDto;
 import com.simple_shop.item_service.item_image.dto.RequestUploadUrlResponseDto;
 import com.simple_shop.item_service.item_image.model.ConfirmUploadRequest;
+import com.simple_shop.item_service.item_image.model.ConfirmUploadResponse;
 import com.simple_shop.item_service.item_image.model.DeleteResourceRequest;
 import com.simple_shop.item_service.item_image.model.RequestResourcesResponse;
 import com.simple_shop.item_service.item_image.model.RequestUploadUrlRequest;
@@ -44,13 +46,15 @@ public class ItemImageController {
 	}
 
 	@PostMapping("/confirm-upload/{itemId}")
-	public ResponseEntity<Void> confirmUpload(//
+	public ResponseEntity<ConfirmUploadResponseDto> confirmUpload(//
 			@PathVariable final long itemId, //
 			@RequestBody final ConfirmUploadRequestDto dtoIn) {
 
 		final ConfirmUploadRequest modelIn = ResourceDtoMapper.toDomain(dtoIn);
-		this.itemImageService.confirmUpload(itemId, modelIn);
-		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+		final ConfirmUploadResponse modelOut = this.itemImageService.confirmUpload(itemId, modelIn);
+		final ConfirmUploadResponseDto dtoOut = ResourceDtoMapper.toDto(modelOut);
+
+		return ResponseEntity.status(HttpStatus.CREATED).body(dtoOut);
 	}
 
 	// POST instead of DELETE: DELETE usually has no body, POST does.
