@@ -1,5 +1,8 @@
 services:
   # in dev, images are stored by an s3 compatible seaweedfs container
+  #
+  # docker exec -it item-service-image-storage weed shell -master=localhost:9333
+  # fs.ls /buckets/item-images
   image-storage:
     image: dhi.io/seaweedfs:4.47-debian13
     container_name: item-service-image-storage
