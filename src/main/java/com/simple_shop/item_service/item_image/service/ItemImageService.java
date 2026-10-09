@@ -52,7 +52,7 @@ public class ItemImageService {
 		final String uniqueId = UUID.randomUUID().toString();
 
 		final String storageKey = new StringBuilder()//
-				.append("uploads/item-images/")//
+				.append("uploads/")//
 				.append(itemId).append("/")//
 				.append(uniqueId).append(".").append(request.getFileType().toLowerCase())//
 				.toString();
@@ -118,7 +118,6 @@ public class ItemImageService {
 		}
 
 		final String newStorageKey = new StringBuilder()//
-				.append("item-images/")//
 				.append(itemId).append("/")//
 				.append(itemImage.getId()).append(".")//
 				.append(itemImage.getFileType().toLowerCase())//
