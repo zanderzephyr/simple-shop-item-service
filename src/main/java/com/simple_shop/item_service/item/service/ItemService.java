@@ -1,5 +1,8 @@
 package com.simple_shop.item_service.item.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -74,7 +77,10 @@ public final class ItemService {
 
 		this.deleteItemFromDb(itemId, userId);
 
-		this.itemImageService.deleteImagesOnly(itemImageResponse.getGalleryImageStorageKeys());
+		final List<String> storageKeys = new ArrayList<>();
+		storageKeys.addAll(itemImageResponse.getGalleryImageStorageKeys());
+		storageKeys.add(itemImageResponse.getThumbnailImageStorageKey());
+		this.itemImageService.deleteImagesOnly(storageKeys);
 	}
 
 	private void deleteItemFromDb(final long itemId, final long userId) {
