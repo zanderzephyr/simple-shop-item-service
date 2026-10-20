@@ -1,7 +1,5 @@
 package com.simple_shop.item_service.item.service;
 
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,14 +19,13 @@ import org.springframework.data.domain.Pageable;
 
 import com.simple_shop.item_service.item.exceptions.ItemNotFoundException;
 import com.simple_shop.item_service.item.model.Item;
-import com.simple_shop.item_service.item.model.Item.ItemBuilder;
 import com.simple_shop.item_service.item.model.ItemAction;
-import com.simple_shop.item_service.item.model.MediaType;
 import com.simple_shop.item_service.item.persistence.ItemTransactionHandler;
 import com.simple_shop.item_service.item_image.model.RequestResourcesResponse;
 import com.simple_shop.item_service.item_image.model.RequestResourcesResponse.RequestResourcesResponseBuilder;
 import com.simple_shop.item_service.item_image.service.ItemImageService;
 import com.simple_shop.item_service.shared.exceptions.InvalidMessageException;
+import com.simple_shop.item_service.utils.ItemUtils;
 
 @ExtendWith(MockitoExtension.class)
 public final class ItemServiceTests {
@@ -47,7 +44,7 @@ public final class ItemServiceTests {
 
 	@Test
 	public void testGetItemById_ReturnsExistingItem() {
-		final Item expectedItem = this.createItem(42l, 10l);
+		final Item expectedItem = ItemUtils.createItem(42l, 10l);
 
 		Mockito.when(this.itemTransactionHandler.findById(expectedItem.getId())).thenReturn(expectedItem);
 
@@ -86,9 +83,9 @@ public final class ItemServiceTests {
 
 	@Test
 	public void testCreateItem_Valid() {
-		final Item item1 = this.createItem(null, null);
-		final Item item2 = this.createItem(2l, null);
-		final Item item3 = this.createItem(3l, 10l);
+		final Item item1 = ItemUtils.createItem(null, null);
+		final Item item2 = ItemUtils.createItem(2l, null);
+		final Item item3 = ItemUtils.createItem(3l, 10l);
 		final long userId = 42;
 
 		try (final MockedStatic<ItemTransactionHandler> handler = Mockito.mockStatic(ItemTransactionHandler.class)) {
@@ -104,8 +101,8 @@ public final class ItemServiceTests {
 
 	@Test
 	public void testCreateItem_Invalid() {
-		final Item itemWithId = this.createItem(1l, null);
-		final Item itemWithVersion = this.createItem(null, 1l);
+		final Item itemWithId = ItemUtils.createItem(1l, null);
+		final Item itemWithVersion = ItemUtils.createItem(null, 1l);
 
 		final long userId = 42;
 
@@ -119,9 +116,9 @@ public final class ItemServiceTests {
 
 	@Test
 	public void testModifyItem_ReturnsModifiedItem() {
-		final Item item1 = this.createItem(1l, 11l);
-		final Item item2 = this.createItem(2l, 12l);
-		final Item item3 = this.createItem(13l, 13l);
+		final Item item1 = ItemUtils.createItem(1l, 11l);
+		final Item item2 = ItemUtils.createItem(2l, 12l);
+		final Item item3 = ItemUtils.createItem(13l, 13l);
 		final long userId = 42;
 
 		try (final MockedStatic<ItemTransactionHandler> handler = Mockito.mockStatic(ItemTransactionHandler.class)) {
@@ -139,7 +136,7 @@ public final class ItemServiceTests {
 
 	@Test
 	public void testModifyItem_ThrowsWhenItemDoesntExist() {
-		final Item item = this.createItem(1l, 11l);
+		final Item item = ItemUtils.createItem(1l, 11l);
 		final long userId = 42;
 
 		Mockito.when(this.itemTransactionHandler.findById(item.getId())).thenReturn(null);
@@ -149,8 +146,8 @@ public final class ItemServiceTests {
 
 	@Test
 	public void testDeleteItem() {
-		final Item item1 = this.createItem(1l, 11l);
-		final Item item2 = this.createItem(2l, 12l);
+		final Item item1 = ItemUtils.createItem(1l, 11l);
+		final Item item2 = ItemUtils.createItem(2l, 12l);
 		final long userId = 42;
 
 		final RequestResourcesResponse requestResourcesResponse = new RequestResourcesResponseBuilder()//
@@ -173,19 +170,5 @@ public final class ItemServiceTests {
 		inOrder.verify(this.itemImageService).deleteImagesOnly(storageKeys);
 
 		inOrder.verifyNoMoreInteractions();
-	}
-
-	private Item createItem(final Long itemId, final Long version) {
-		return new ItemBuilder()//
-				.setDescription("an item")//
-				.setId(itemId)//
-				.setLastChange(LocalDateTime.now().minus(3, ChronoUnit.DAYS))//
-				.setLastChangedBy(1l)//
-				.setMediaType(MediaType.BOOK)//
-				.setPrice(999)//
-				.setStock(99)//
-				.setTitle("A cool book")//
-				.setVersion(version)//
-				.build();
 	}
 }
