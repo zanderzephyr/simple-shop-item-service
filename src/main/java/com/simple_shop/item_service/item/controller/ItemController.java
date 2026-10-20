@@ -102,7 +102,7 @@ public final class ItemController {
 		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 	}
 
-	// Using ModelAttribute to prevent GET requests without body causing issues
+	// ModelAttribute: Different URL parameters are collected into this dto object.
 	@GetMapping("/get-items")
 	public ResponseEntity<PagedModel<ItemDto>> getItems(
 			@ModelAttribute final RequestConstraintsDto requestConstraintsDto) {
