@@ -7,6 +7,8 @@ import org.assertj.core.api.Assertions;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatcher;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -164,10 +166,14 @@ public final class ItemServiceTests {
 		inOrder.verify(this.itemImageService).getImages(item1.getId());
 		inOrder.verify(this.itemTransactionHandler).deleteItem(item1.getId(), userId);
 
+		// Verify order-independent, all storage keys are used.
 		final List<String> storageKeys = new ArrayList<>();
 		storageKeys.addAll(requestResourcesResponse.getGalleryImageStorageKeys());
 		storageKeys.add(requestResourcesResponse.getThumbnailImageStorageKey());
-		inOrder.verify(this.itemImageService).deleteImagesOnly(storageKeys);
+		final ArgumentMatcher<List<String>> storageKeyMatcher = keys -> keys != null
+				&& keys.size() == storageKeys.size() && keys.containsAll(storageKeys);
+		// argThat is Mockito magic. It has to be inline or it breaks.
+		inOrder.verify(this.itemImageService).deleteImagesOnly(ArgumentMatchers.argThat(storageKeyMatcher));
 
 		inOrder.verifyNoMoreInteractions();
 	}
