@@ -9,7 +9,7 @@ public final class ServiceErrorResponseDto {
 
 	private String detail;
 
-	private int httpState;
+	private Integer httpState;
 
 	public ServiceErrorResponseDto() {
 		super();
@@ -19,15 +19,39 @@ public final class ServiceErrorResponseDto {
 		return this.timestamp;
 	}
 
+	public ServiceErrorResponseDto setTimestamp(final Instant timestamp) {
+		this.timestamp = timestamp;
+
+		return this;
+	}
+
 	public String getMessage() {
 		return this.message;
+	}
+
+	public ServiceErrorResponseDto setMessage(final String message) {
+		this.message = message;
+
+		return this;
 	}
 
 	public String getDetail() {
 		return this.detail;
 	}
 
-	public int getHttpState() {
+	public ServiceErrorResponseDto setDetail(final String detail) {
+		this.detail = detail;
+
+		return this;
+	}
+
+	public Integer getHttpState() {
 		return this.httpState;
+	}
+
+	public ServiceErrorResponseDto setHttpState(final Integer httpState) {
+		this.httpState = httpState;
+
+		return this;
 	}
 }

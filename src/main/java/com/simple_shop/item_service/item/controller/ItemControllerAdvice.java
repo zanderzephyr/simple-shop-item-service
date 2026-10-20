@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.simple_shop.item_service.item.exceptions.ItemNotFoundException;
 import com.simple_shop.item_service.shared.dto.ServiceErrorResponseDto;
-import com.simple_shop.item_service.shared.dto.ServiceErrorResponseDto.ServiceErrorResponseDtoBuilder;
 
 @RestControllerAdvice(assignableTypes = ItemController.class)
 public final class ItemControllerAdvice {
@@ -19,15 +18,13 @@ public final class ItemControllerAdvice {
 	}
 
 	@ExceptionHandler(ItemNotFoundException.class)
-	public ResponseEntity<ServiceErrorResponseDto> handleItemNotFoundException(
-			final ItemNotFoundException exception) {
+	public ResponseEntity<ServiceErrorResponseDto> handleItemNotFoundException(final ItemNotFoundException exception) {
 
-		final ServiceErrorResponseDto responseDto = new ServiceErrorResponseDtoBuilder()//
+		final ServiceErrorResponseDto responseDto = new ServiceErrorResponseDto()//
 				.setDetail(exception.getMessage())//
 				.setHttpState(HttpStatus.NOT_FOUND.value())//
 				.setMessage("Item not found")//
-				.setTimestamp(Instant.now())//
-				.build();
+				.setTimestamp(Instant.now());
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseDto);
 	}
 }
