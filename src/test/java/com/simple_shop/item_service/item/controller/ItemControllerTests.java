@@ -1,12 +1,17 @@
 package com.simple_shop.item_service.item.controller;
 
 import java.time.Instant;
+import java.util.List;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -18,6 +23,7 @@ import com.simple_shop.item_service.item.exceptions.ItemNotFoundException;
 import com.simple_shop.item_service.item.model.Item;
 import com.simple_shop.item_service.item.service.ItemService;
 import com.simple_shop.item_service.shared.dto.ServiceErrorResponseDto;
+import com.simple_shop.item_service.shared.model.SortingDirection;
 import com.simple_shop.item_service.utils.ItemUtils;
 
 import tools.jackson.databind.ObjectMapper;
@@ -59,9 +65,7 @@ public class ItemControllerTests {
 		final ItemNotFoundException exception = new ItemNotFoundException("Didn't find item with ID " + itemId + "!");
 		Mockito.when(this.itemService.getItemById(itemId)).thenThrow(exception);
 
-		final Instant beforeTest = Instant.now();
-
-		final String jsonResponse = this.mockMvc.perform(//
+		this.executeInvalidTestWithTimestamp(() -> this.mockMvc.perform(//
 				MockMvcRequestBuilders.get(ItemControllerTests.BASE_URL + "get-item/{itemId}", itemId)//
 						.accept(MediaType.APPLICATION_JSON))
 				.andExpect(MockMvcResultMatchers.status().isNotFound())//
@@ -70,7 +74,51 @@ public class ItemControllerTests {
 				.andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Item not found"))//
 				.andReturn()//
 				.getResponse()//
-				.getContentAsString();
+				.getContentAsString());
+	}
+
+	@Test
+	public void testGetItems_Success() throws Exception {
+		final Item item = ItemUtils.createItem(1l, 11l);
+		final Page<Item> page = new PageImpl<>(List.of(item));
+		Mockito.when(this.itemService.getItems(ArgumentMatchers.any(Pageable.class))).thenReturn(page);
+
+		for (final SortingDirection sortingDirection : SortingDirection.values()) {
+			this.mockMvc.perform(MockMvcRequestBuilders.get(ItemControllerTests.BASE_URL + "get-items")//
+					.param("pageIndex", "0")//
+					.param("pageSize", "10")//
+					.param("sortingColumn", "Id")//
+					.param("sortingDirection", sortingDirection.name())//
+					.accept(MediaType.APPLICATION_JSON))//
+					.andExpect(MockMvcResultMatchers.status().isOk())//
+					.andExpect(MockMvcResultMatchers.jsonPath("$.content").isArray())//
+					.andExpect(MockMvcResultMatchers.jsonPath("$.content[0].id").value(item.getId().toString()));
+		}
+	}
+
+	@Test
+	public void testGetItems_InvalidRequest() throws Exception {
+		this.executeInvalidTestWithTimestamp(() -> this.mockMvc.perform(//
+				MockMvcRequestBuilders.get(ItemControllerTests.BASE_URL + "get-items")//
+						.param("pageIndex", "0")//
+						.param("pageSize", "10")//
+						.param("sortingColumn", "Id")//
+						.param("sortingDirection", "iAmNotASortingDirection")//
+						.accept(MediaType.APPLICATION_JSON))
+				.andExpect(MockMvcResultMatchers.status().isBadRequest())//
+				// Not testing the detail field, as it this is not controller or advice content.
+				.andExpect(MockMvcResultMatchers.jsonPath("$.httpState").value(HttpStatus.BAD_REQUEST.value()))//
+				.andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Invalid message!"))//
+				.andReturn()//
+				.getResponse()//
+				.getContentAsString());
+	}
+
+	private <THROWABLE extends Throwable> void executeInvalidTestWithTimestamp(
+			final ThrowingSupplier<String, THROWABLE> jsonResponseSupplier) throws THROWABLE {
+		final Instant beforeTest = Instant.now();
+
+		final String jsonResponse = jsonResponseSupplier.get();
 
 		final Instant afterTest = Instant.now();
 
@@ -79,5 +127,11 @@ public class ItemControllerTests {
 		Assertions.assertThat(errorResponse.getTimestamp())//
 				.isNotNull()//
 				.isBetween(beforeTest, afterTest);
+	}
+
+	// TODO Move to some lib
+	@FunctionalInterface
+	private static interface ThrowingSupplier<TYPE, THROWABLE extends Throwable> {
+		TYPE get() throws THROWABLE;
 	}
 }
