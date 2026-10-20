@@ -107,10 +107,6 @@ public final class ItemController {
 	public ResponseEntity<PagedModel<ItemDto>> getItems(
 			@ModelAttribute final RequestConstraintsDto requestConstraintsDto) {
 
-		if (requestConstraintsDto == null) {
-			throw new InvalidMessageException("No request constraints!");
-		}
-
 		final RequestConstraints requestConstraints = DtoMapper.toDomain(requestConstraintsDto);
 
 		final Pageable pageable = this.createPageable(requestConstraints);
