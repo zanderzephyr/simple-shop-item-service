@@ -50,10 +50,6 @@ public final class ItemController {
 			@RequestHeader(name = "X-User-Id") final long executingUserId, //
 			@RequestBody final ItemDto itemDto) {
 
-		if (itemDto == null) {
-			throw new InvalidMessageException("No item!");
-		}
-
 		final Item itemToCreate = DtoMapper.toDomain(itemDto);
 
 		final Item createdItem = this.itemService.createItem(itemToCreate, executingUserId);
@@ -66,10 +62,6 @@ public final class ItemController {
 			@RequestHeader(name = "X-User-Id") final long executingUserId, //
 			@PathVariable final long itemId, //
 			@RequestBody final ItemDto itemDto) {
-
-		if (itemDto == null) {
-			throw new InvalidMessageException("No item!");
-		}
 
 		final Item itemToModify = DtoMapper.toDomain(itemDto);
 		if (!Long.valueOf(itemId).equals(itemToModify.getId())) {
