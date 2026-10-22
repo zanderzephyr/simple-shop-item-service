@@ -36,7 +36,7 @@ public class ItemImageController {
 
 	@PostMapping("/request-image-url/{itemId}")
 	public ResponseEntity<RequestUploadUrlResponseDto> requestImageUrl(//
-			@PathVariable final long itemId, //
+			@PathVariable("itemId") final long itemId, //
 			@RequestBody final RequestUploadUrlRequestDto dtoIn) {
 
 		final RequestUploadUrlRequest modelIn = ResourceDtoMapper.toDomain(dtoIn);
@@ -47,7 +47,7 @@ public class ItemImageController {
 
 	@PostMapping("/confirm-upload/{itemId}")
 	public ResponseEntity<ConfirmUploadResponseDto> confirmUpload(//
-			@PathVariable final long itemId, //
+			@PathVariable("itemId") final long itemId, //
 			@RequestBody final ConfirmUploadRequestDto dtoIn) {
 
 		final ConfirmUploadRequest modelIn = ResourceDtoMapper.toDomain(dtoIn);
@@ -60,7 +60,7 @@ public class ItemImageController {
 	// POST instead of DELETE: DELETE usually has no body, POST does.
 	@PostMapping("/delete-image/{itemId}")
 	public ResponseEntity<Void> deleteImage(//
-			@PathVariable final long itemId, //
+			@PathVariable("itemId") final long itemId, //
 			@RequestBody final DeleteResourceRequestDto dtoIn) {
 
 		final DeleteResourceRequest modelIn = ResourceDtoMapper.toDomain(dtoIn);
@@ -69,7 +69,7 @@ public class ItemImageController {
 	}
 
 	@GetMapping("/get-images/{itemId}")
-	public ResponseEntity<RequestResourcesResponseDto> getImages(@PathVariable final long itemId) {
+	public ResponseEntity<RequestResourcesResponseDto> getImages(@PathVariable("itemId") final long itemId) {
 		final RequestResourcesResponse modelOut = this.itemImageService.getImages(itemId);
 		final RequestResourcesResponseDto dtoOut = ResourceDtoMapper.toDto(modelOut);
 		return ResponseEntity.status(HttpStatus.OK).body(dtoOut);

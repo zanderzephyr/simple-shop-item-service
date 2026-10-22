@@ -60,7 +60,7 @@ public final class ItemController {
 	@PutMapping("/modify-item/{itemId}")
 	public ResponseEntity<ItemDto> modifyItem(//
 			@RequestHeader(name = "X-User-Id") final long executingUserId, //
-			@PathVariable final long itemId, //
+			@PathVariable("itemId") final long itemId, //
 			@RequestBody final ItemDto itemDto) {
 
 		final Item itemToModify = DtoMapper.toDomain(itemDto);
@@ -83,7 +83,7 @@ public final class ItemController {
 	@DeleteMapping("/delete-item/{itemId}")
 	public ResponseEntity<Void> deleteItem(//
 			@RequestHeader(name = "X-User-Id") final long executingUserId, //
-			@PathVariable final long itemId) {
+			@PathVariable("itemId") final long itemId) {
 
 		this.itemService.deleteItem(itemId, executingUserId);
 
@@ -131,7 +131,7 @@ public final class ItemController {
 	}
 
 	@GetMapping("/get-item/{itemId}")
-	public ResponseEntity<ItemDto> getItem(@PathVariable final long itemId) {
+	public ResponseEntity<ItemDto> getItem(@PathVariable("itemId") final long itemId) {
 		final Item item = this.itemService.getItemById(itemId);
 		final ItemDto itemDto = DtoMapper.toDto(item);
 		return ResponseEntity.status(HttpStatus.OK).body(itemDto);
