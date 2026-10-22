@@ -1,6 +1,7 @@
 package com.simple_shop.item_service.item.controller;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import org.assertj.core.api.Assertions;
@@ -19,6 +20,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import com.simple_shop.item_service.item.dto.ItemDto;
 import com.simple_shop.item_service.item.exceptions.ItemNotFoundException;
 import com.simple_shop.item_service.item.model.Item;
 import com.simple_shop.item_service.item.service.ItemService;
@@ -112,6 +114,43 @@ public class ItemControllerTests {
 				.andReturn()//
 				.getResponse()//
 				.getContentAsString());
+	}
+
+	@Test
+	public void testCreateItem_Success() throws Exception {
+		final ItemDto incomingDto = new ItemDto()//
+				.setDescription("A book about a little dude with hairy feet")//
+				.setId(null)// must be null for items to create
+				.setLastChange(null)//
+				.setLastChangedBy(null)//
+				.setMediaType(com.simple_shop.item_service.item.model.MediaType.BOOK.name())//
+				.setPrice(999)//
+				.setStock(3)//
+				.setTitle("The Hobbit")//
+				.setVersion(null)// must be null for items to create
+		;
+		final long executingUserId = 99;
+		final Item incomingItem = DtoMapper.toDomain(incomingDto);
+		final Item outgoingItem = ItemUtils.createItem(1l, 11l);
+		final ItemDto outgoingDto = DtoMapper.toDto(outgoingItem);
+		// The service serializes timestamps with ms precision. We compare this dto
+		// later to the serialized object, therefore we simulate the serialization here.
+		outgoingDto.setLastChange(outgoingDto.getLastChange().truncatedTo(ChronoUnit.MILLIS));
+
+		Mockito.when(this.itemService.createItem(incomingItem, executingUserId)).thenReturn(outgoingItem);
+
+		final String jsonResponse = this.mockMvc
+				.perform(MockMvcRequestBuilders.post(ItemControllerTests.BASE_URL + "create-item")//
+						.header("X-User-Id", Long.toString(executingUserId))//
+						.contentType(MediaType.APPLICATION_JSON)//
+						.content(this.objectMapper.writeValueAsString(incomingDto))//
+						.accept(MediaType.APPLICATION_JSON))//
+				.andExpect(MockMvcResultMatchers.status().isCreated())//
+				.andReturn().getResponse()//
+				.getContentAsString();
+
+		final ItemDto actualOutgoingDto = this.objectMapper.readValue(jsonResponse, ItemDto.class);
+		Assertions.assertThat(actualOutgoingDto).isEqualTo(outgoingDto);
 	}
 
 	private <THROWABLE extends Throwable> void executeInvalidTestWithTimestamp(
