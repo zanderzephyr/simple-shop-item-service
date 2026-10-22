@@ -1,6 +1,7 @@
 package com.simple_shop.item_service.item.controller;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
@@ -118,6 +119,7 @@ public class ItemControllerTests {
 
 	@Test
 	public void testCreateItem_Success() throws Exception {
+		final long executingUserId = 99;
 		final ItemDto incomingDto = new ItemDto()//
 				.setDescription("A book about a little dude with hairy feet")//
 				.setId(null)// must be null for items to create
@@ -129,13 +131,11 @@ public class ItemControllerTests {
 				.setTitle("The Hobbit")//
 				.setVersion(null)// must be null for items to create
 		;
-		final long executingUserId = 99;
+		ItemControllerTests.adaptToSerialization(incomingDto);
 		final Item incomingItem = DtoMapper.toDomain(incomingDto);
 		final Item outgoingItem = ItemUtils.createItem(1l, 11l);
 		final ItemDto outgoingDto = DtoMapper.toDto(outgoingItem);
-		// The service serializes timestamps with ms precision. We compare this dto
-		// later to the serialized object, therefore we simulate the serialization here.
-		outgoingDto.setLastChange(outgoingDto.getLastChange().truncatedTo(ChronoUnit.MILLIS));
+		ItemControllerTests.adaptToSerialization(outgoingDto);
 
 		Mockito.when(this.itemService.createItem(incomingItem, executingUserId)).thenReturn(outgoingItem);
 
@@ -146,11 +146,61 @@ public class ItemControllerTests {
 						.content(this.objectMapper.writeValueAsString(incomingDto))//
 						.accept(MediaType.APPLICATION_JSON))//
 				.andExpect(MockMvcResultMatchers.status().isCreated())//
-				.andReturn().getResponse()//
+				.andReturn()//
+				.getResponse()//
 				.getContentAsString();
 
 		final ItemDto actualOutgoingDto = this.objectMapper.readValue(jsonResponse, ItemDto.class);
 		Assertions.assertThat(actualOutgoingDto).isEqualTo(outgoingDto);
+	}
+
+	@Test
+	public void testModifyItem_Success() throws Exception {
+		final long executingUserId = 99;
+		final long itemId = 1;
+		final ItemDto incomingDto = new ItemDto()//
+				.setDescription("A book about a little dude with hairy feet")//
+				.setId(itemId)//
+				.setLastChange(LocalDateTime.now().minusHours(3))//
+				.setLastChangedBy(40l)//
+				.setMediaType(com.simple_shop.item_service.item.model.MediaType.BOOK.name())//
+				.setPrice(999)//
+				.setStock(3)//
+				.setTitle("The Hobbit")//
+				.setVersion(10l)//
+		;
+		ItemControllerTests.adaptToSerialization(incomingDto);
+		final Item incomingItem = DtoMapper.toDomain(incomingDto);
+		final Item outgoingItem = ItemUtils.createItem(itemId, incomingDto.getVersion() + 1);
+		final ItemDto outgoingDto = DtoMapper.toDto(outgoingItem);
+		ItemControllerTests.adaptToSerialization(outgoingDto);
+
+		Mockito.when(this.itemService.modifyItem(incomingItem, executingUserId)).thenReturn(outgoingItem);
+
+		final String jsonResponse = this.mockMvc
+				.perform(MockMvcRequestBuilders.put(ItemControllerTests.BASE_URL + "modify-item/{itemId}", itemId)//
+						.header("X-User-Id", Long.toString(executingUserId))//
+						.contentType(MediaType.APPLICATION_JSON)//
+						.content(this.objectMapper.writeValueAsString(incomingDto))//
+						.accept(MediaType.APPLICATION_JSON))//
+				.andExpect(MockMvcResultMatchers.status().isOk())//
+				.andReturn()//
+				.getResponse()//
+				.getContentAsString();
+
+		final ItemDto actualOutgoingDto = this.objectMapper.readValue(jsonResponse, ItemDto.class);
+		Assertions.assertThat(actualOutgoingDto).isEqualTo(outgoingDto);
+	}
+
+	private static ItemDto adaptToSerialization(final ItemDto itemDto) {
+		// The service serializes timestamps with ms precision. We compare this dto
+		// later to the serialized object, therefore we simulate the serialization here.
+		final LocalDateTime lastChange = itemDto.getLastChange();
+		if (lastChange != null) {
+			itemDto.setLastChange(lastChange.truncatedTo(ChronoUnit.MILLIS));
+		}
+
+		return itemDto;
 	}
 
 	private <THROWABLE extends Throwable> void executeInvalidTestWithTimestamp(
