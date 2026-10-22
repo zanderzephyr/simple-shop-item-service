@@ -192,6 +192,19 @@ public class ItemControllerTests {
 		Assertions.assertThat(actualOutgoingDto).isEqualTo(outgoingDto);
 	}
 
+	@Test
+	public void testDeleteItem_Success() throws Exception {
+		final long executingUserId = 99;
+		final long itemId = 1;
+
+		this.mockMvc
+				.perform(MockMvcRequestBuilders.delete(ItemControllerTests.BASE_URL + "delete-item/{itemId}", itemId)//
+						.header("X-User-Id", Long.toString(executingUserId)))//
+				.andExpect(MockMvcResultMatchers.status().isNoContent());
+
+		Mockito.verify(this.itemService).deleteItem(itemId, executingUserId);
+	}
+
 	private static ItemDto adaptToSerialization(final ItemDto itemDto) {
 		// The service serializes timestamps with ms precision. We compare this dto
 		// later to the serialized object, therefore we simulate the serialization here.
