@@ -103,14 +103,14 @@ public final class ItemServiceTests {
 
 	@Test
 	public void testCreateItem_Invalid() {
-		final Item itemWithId = ItemUtils.createItem(1l, null);
-		final Item itemWithVersion = ItemUtils.createItem(null, 1l);
-
 		final long userId = 42;
 
+		final Item itemWithId = ItemUtils.createItem(1l, null);
 		Assertions.assertThatThrownBy(() -> this.itemService.createItem(itemWithId, userId))//
 				.isInstanceOf(InvalidMessageException.class)//
 				.hasMessage("An item to create must not have an ID!");
+
+		final Item itemWithVersion = ItemUtils.createItem(null, 1l);
 		Assertions.assertThatThrownBy(() -> this.itemService.createItem(itemWithVersion, userId))//
 				.isInstanceOf(InvalidMessageException.class)//
 				.hasMessage("An item to create must not have a version!");
