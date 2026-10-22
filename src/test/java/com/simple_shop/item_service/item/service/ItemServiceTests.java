@@ -193,6 +193,18 @@ public final class ItemServiceTests {
 		inOrder.verifyNoMoreInteractions();
 	}
 
+	@Test
+	public void testDeleteItem_ThrowsWhenItemDoesntExist() {
+		final long itemId = 1;
+		final long userId = 42;
+
+		final RequestResourcesResponse requestResourcesResponse = new RequestResourcesResponseBuilder().build();
+
+		Mockito.when(this.itemImageService.getImages(itemId)).thenReturn(requestResourcesResponse);
+
+		ItemServiceTests.assertThrowsWhenItemDoesntExist(() -> this.itemService.deleteItem(itemId, userId), itemId);
+	}
+
 	private static void assertThrowsWhenItemDoesntExist(final ThrowingCallable callable, final long itemId) {
 		Assertions.assertThatThrownBy(callable)//
 				.isInstanceOf(ItemNotFoundException.class)//
