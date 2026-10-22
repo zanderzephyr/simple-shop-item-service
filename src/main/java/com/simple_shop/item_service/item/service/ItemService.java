@@ -2,6 +2,7 @@ package com.simple_shop.item_service.item.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -58,15 +59,27 @@ public final class ItemService {
 		}
 	}
 
-	public Item modifyItem(final Item itemToModify, final long userId) {
-		// Ensure the item exists
-		this.findItemById(itemToModify.getId());
+	public Item modifyItem(final long itemId, final Item itemToModify, final long userId) {
+		this.validateItemToModify(itemId, itemToModify);
 
 		final Item finalizedItem = ItemTransactionHandler.finalizeItem(itemToModify, userId);
 
 		final Item modifiedItem = this.itemTransactionHandler.saveItem(finalizedItem, ItemAction.MODIFY);
 
 		return modifiedItem;
+	}
+
+	private void validateItemToModify(final long itemId, final Item itemToModify) {
+		if (!Objects.equals(itemId, itemToModify.getId())) {
+			throw new InvalidMessageException("Path ID and payload ID mismatch!");
+		}
+
+		if (itemToModify.getVersion() == null) {
+			throw new InvalidMessageException("Version must not be null!");
+		}
+
+		// Ensure the item exists
+		this.findItemById(itemToModify.getId());
 	}
 
 	/*

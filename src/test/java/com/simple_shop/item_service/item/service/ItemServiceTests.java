@@ -65,12 +65,6 @@ public final class ItemServiceTests {
 		ItemServiceTests.assertThrowsWhenItemDoesntExist(() -> this.itemService.getItemById(itemId), itemId);
 	}
 
-	private static void assertThrowsWhenItemDoesntExist(final ThrowingCallable callable, final long itemId) {
-		Assertions.assertThatThrownBy(callable)//
-				.isInstanceOf(ItemNotFoundException.class)//
-				.hasMessage("Didn't find item with ID " + itemId + "!");
-	}
-
 	@Test
 	public void testGetItems() {
 		final Pageable pageable = PageRequest.of(1, 10);
@@ -130,7 +124,7 @@ public final class ItemServiceTests {
 
 			Mockito.when(this.itemTransactionHandler.saveItem(item2, ItemAction.MODIFY)).thenReturn(item3);
 
-			final Item actualModifiedItem = this.itemService.modifyItem(item1, userId);
+			final Item actualModifiedItem = this.itemService.modifyItem(item1.getId(), item1, userId);
 
 			Assertions.assertThat(actualModifiedItem).isEqualTo(item3);
 		}
@@ -143,7 +137,28 @@ public final class ItemServiceTests {
 
 		Mockito.when(this.itemTransactionHandler.findById(item.getId())).thenReturn(null);
 
-		ItemServiceTests.assertThrowsWhenItemDoesntExist(() -> this.itemService.modifyItem(item, userId), item.getId());
+		ItemServiceTests.assertThrowsWhenItemDoesntExist(() -> this.itemService.modifyItem(item.getId(), item, userId),
+				item.getId());
+	}
+
+	@Test
+	public void testModifyItem_ThrowsWhenItemIdDoesntMatch() {
+		final Item item = ItemUtils.createItem(1l, 11l);
+		final long userId = 42;
+
+		Assertions.assertThatThrownBy(() -> this.itemService.modifyItem(item.getId() + 1, item, userId))//
+				.isInstanceOf(InvalidMessageException.class)//
+				.hasMessage("Path ID and payload ID mismatch!");
+	}
+
+	@Test
+	public void testModifyItem_ThrowsWhenNoVersion() {
+		final Item item = ItemUtils.createItem(1l, null);
+		final long userId = 42;
+
+		Assertions.assertThatThrownBy(() -> this.itemService.modifyItem(item.getId(), item, userId))//
+				.isInstanceOf(InvalidMessageException.class)//
+				.hasMessage("Version must not be null!");
 	}
 
 	@Test
@@ -176,5 +191,11 @@ public final class ItemServiceTests {
 		inOrder.verify(this.itemImageService).deleteImagesOnly(ArgumentMatchers.argThat(storageKeyMatcher));
 
 		inOrder.verifyNoMoreInteractions();
+	}
+
+	private static void assertThrowsWhenItemDoesntExist(final ThrowingCallable callable, final long itemId) {
+		Assertions.assertThatThrownBy(callable)//
+				.isInstanceOf(ItemNotFoundException.class)//
+				.hasMessage("Didn't find item with ID " + itemId + "!");
 	}
 }

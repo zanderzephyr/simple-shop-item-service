@@ -175,7 +175,7 @@ public class ItemControllerTests {
 		final ItemDto outgoingDto = DtoMapper.toDto(outgoingItem);
 		ItemControllerTests.adaptToSerialization(outgoingDto);
 
-		Mockito.when(this.itemService.modifyItem(incomingItem, executingUserId)).thenReturn(outgoingItem);
+		Mockito.when(this.itemService.modifyItem(itemId, incomingItem, executingUserId)).thenReturn(outgoingItem);
 
 		final String jsonResponse = this.mockMvc
 				.perform(MockMvcRequestBuilders.put(ItemControllerTests.BASE_URL + "modify-item/{itemId}", itemId)//

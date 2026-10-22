@@ -51,7 +51,6 @@ public final class ItemController {
 			@RequestBody final ItemDto itemDto) {
 
 		final Item itemToCreate = DtoMapper.toDomain(itemDto);
-
 		final Item createdItem = this.itemService.createItem(itemToCreate, executingUserId);
 		final ItemDto createdItemDto = DtoMapper.toDto(createdItem);
 		return ResponseEntity.status(HttpStatus.CREATED).body(createdItemDto);
@@ -64,14 +63,7 @@ public final class ItemController {
 			@RequestBody final ItemDto itemDto) {
 
 		final Item itemToModify = DtoMapper.toDomain(itemDto);
-		if (!Long.valueOf(itemId).equals(itemToModify.getId())) {
-			throw new InvalidMessageException("Path ID and payload ID mismatch!");
-		}
-		if (itemDto.getVersion() == null) {
-			throw new InvalidMessageException("Version must not be null!");
-		}
-
-		final Item modifiedItem = this.itemService.modifyItem(itemToModify, executingUserId);
+		final Item modifiedItem = this.itemService.modifyItem(itemId, itemToModify, executingUserId);
 		final ItemDto modifiedItemDto = DtoMapper.toDto(modifiedItem);
 		return ResponseEntity.status(HttpStatus.OK).body(modifiedItemDto);
 	}
