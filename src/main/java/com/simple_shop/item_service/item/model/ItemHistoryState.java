@@ -90,6 +90,45 @@ public final class ItemHistoryState {
 		return this.version;
 	}
 
+	@Override
+	public boolean equals(final Object object) {
+		if (this == object) {
+			return true;
+		}
+
+		if (!(object instanceof final ItemHistoryState other)) {
+			return false;
+		}
+
+		return Objects.equals(this.action, other.action) && //
+				Objects.equals(this.description, other.description) && //
+				Objects.equals(this.id, other.id) && //
+				Objects.equals(this.itemId, other.itemId) && //
+				Objects.equals(this.lastChange, other.lastChange) && //
+				Objects.equals(this.lastChangedBy, other.lastChangedBy) && //
+				Objects.equals(this.mediaType, other.mediaType) && //
+				Objects.equals(this.price, other.price) && //
+				Objects.equals(this.stock, other.stock) && //
+				Objects.equals(this.title, other.title) && //
+				Objects.equals(this.version, other.version);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(//
+				this.action, //
+				this.description, //
+				this.id, //
+				this.itemId, //
+				this.lastChange, //
+				this.lastChangedBy, //
+				this.mediaType, //
+				this.price, //
+				this.stock, //
+				this.title, //
+				this.version);
+	}
+
 	public static final class ItemHistoryStateBuilder {
 		private Long id;
 
